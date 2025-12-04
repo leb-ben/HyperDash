@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Trading Bot Dashboard</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .status {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .btn:hover { background: #2563eb; }
+    .btn.purple { background: #8b5cf6; }
+    .btn.purple:hover { background: #7c3aed; }
+    .btn.cyan { background: #06b6d4; }
+    .btn.cyan:hover { background: #0891b2; }
+    .btn.red { background: #ef4444; }
+    .btn.red:hover { background: #dc2626; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🤖 AI Trading Bot Dashboard</h1>
+      <p>Full Transparency Mode</p>
+    </div>
+
+    <div class="status">
+      <h3>⚠️ Preview Mode</h3>
+      <p>This is a static preview. To see the live dashboard with real data:</p>
+      <ol>
+        <li>Open terminal (Ctrl+`)</li>
+        <li>Run: <code>cd dashboard && npm run dev</code></li>
+        <li>Open http://localhost:5173</li>
+      </ol>
+    </div>
+
+    <div class="status">
+      <h3>🎮 Quick Start Guide</h3>
+      <p><strong>1. Start Backend:</strong></p>
+      <pre>cd c:\Coding\LocalTools\Trade_bot
+set PAPER_TRADING=true
+npm run dev</pre>
+      
+      <p><strong>2. Start Dashboard:</strong></p>
+      <pre>cd dashboard
+npm run dev</pre>
+      
+      <p><strong>3. Open Browser:</strong></p>
+      <a href="http://localhost:5173" target="_blank">http://localhost:5173</a>
+    </div>
+
+    <div class="status">
+      <h3>🔧 Features Available</h3>
+      <button class="btn purple">🧠 AI Config</button>
+      <button class="btn cyan">⚡ Playground</button>
+      <button class="btn red">🛡️ Safety</button>
+      
+      <ul style="margin-top: 20px;">
+        <li>✅ Real-time portfolio tracking</li>
+        <li>✅ Live price feeds</li>
+        <li>✅ AI-powered trading signals</li>
+        <li>✅ Paper trading with realistic fees</li>
+        <li>✅ Multi-provider AI support (Cerebras, OpenAI)</li>
+        <li>✅ Parameter testing with temperature/top_p</li>
+      </ul>
+    </div>
+
+    <div class="status">
+      <h3>📊 Current Status</h3>
+      <p>🟢 Bot: Ready to start (Paper Mode)</p>
+      <p>🟢 Dashboard: React + Vite</p>
+      <p>🟢 AI: Cerebras + OpenAI (o1 reasoning)</p>
+      <p>🟢 Exchange: Hyperliquid (Testnet)</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+# Trade Bot Configuration
+# ========================
+
+bot:
+  name: "AI Trade Bot"
+  version: "0.1.0"
+  cycle_interval_ms: 300000  # 5 minutes
+  paper_trading: true        # Start in paper mode!
+
+# Coins to track and trade
+coins:
+  stable: "USDC"  # Hyperliquid uses USDC
+  tracked:
+    - symbol: "BTC"
+      max_position_pct: 25
+      leverage: 3
+    - symbol: "ETH"
+      max_position_pct: 20
+      leverage: 3
+    - symbol: "SOL"
+      max_position_pct: 15
+      leverage: 5
+    - symbol: "HYPE"
+      max_position_pct: 10
+      leverage: 5
+    - symbol: "JUP"
+      max_position_pct: 10
+      leverage: 5
+
+# Risk Management
+risk:
+  # Portfolio allocation
+  min_stable_pct: 30          # Always keep 30% in USDC
+  max_single_position_pct: 25 # Never more than 25% in one coin
+  max_total_exposure_pct: 70  # Total position value / portfolio
+  
+  # Loss limits
+  max_daily_loss_pct: 10      # Pause bot if daily loss exceeds
+  max_drawdown_pct: 20        # Emergency stop if drawdown exceeds
+  
+  # Position sizing
+  default_leverage: 3
+  max_leverage: 10
+  
+  # Stop loss / Take profit
+  default_stop_loss_pct: 5
+  default_take_profit_pct: 10
+  use_trailing_stop: true
+  trailing_stop_pct: 3
+
+# AI Configuration
+ai:
+  provider: "cerebras"
+  model: "llama-3.3-70b"
+  temperature: 0.3           # Lower = more consistent
+  max_tokens: 2000
+  # Confidence thresholds
+  min_confidence_to_trade: 0.6
+  high_confidence_threshold: 0.8
+
+# Exchange Configuration
+exchange:
+  name: "hyperliquid"
+  testnet: true              # Start on testnet!
+  
+# Technical Analysis
+analysis:
+  timeframes:
+    - "5m"
+    - "15m" 
+    - "1h"
+    - "4h"
+  indicators:
+    rsi:
+      period: 14
+      overbought: 70
+      oversold: 30
+    macd:
+      fast: 12
+      slow: 26
+      signal: 9
+    bollinger:
+      period: 20
+      std_dev: 2
+    atr:
+      period: 14
+
+# Logging
+logging:
+  level: "info"
+  file: "data/bot.log"
+  console: true

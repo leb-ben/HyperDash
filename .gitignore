@@ -1,0 +1,45 @@
+# Environment variables (API KEYS - CRITICAL)
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Database and logs
+data/*.db
+data/*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Test coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Sensitive
+*secret*
+*private*
+*.pem
+*.key

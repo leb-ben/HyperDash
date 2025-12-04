@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Trading Bot Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .status { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: #1e293b; border-radius: 12px; padding: 20px; border: 1px solid #334155; }
+        .card h3 { margin-bottom: 15px; color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .card .value { font-size: 2rem; font-weight: bold; margin-bottom: 5px; }
+        .card .change { font-size: 0.9rem; }
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+        .neutral { color: #6b7280; }
+        .terminal { background: #0f172a; border-radius: 8px; padding: 20px; border: 1px solid #334155; font-family: 'Courier New', monospace; margin-bottom: 30px; }
+        .terminal-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .terminal-dots { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.red { background: #ef4444; }
+        .dot.yellow { background: #f59e0b; }
+        .dot.green { background: #10b981; }
+        .terminal-title { margin-left: 15px; color: #94a3b8; }
+        .terminal-content { color: #10b981; }
+        .terminal-input { color: #e2e8f0; }
+        .terminal-prompt { color: #3b82f6; }
+        .commands { background: #1e293b; border-radius: 8px; padding: 20px; border: 1px solid #334155; }
+        .commands h3 { margin-bottom: 15px; color: #94a3b8; }
+        .command-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .command { background: #334155; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.9rem; }
+        .command:hover { background: #475569; cursor: pointer; }
+        .api-status { text-align: center; padding: 20px; background: #1e293b; border-radius: 8px; border: 1px solid #334155; margin-bottom: 20px; }
+        .loading { color: #f59e0b; }
+        .connected { color: #10b981; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Trading Bot Dashboard</h1>
+            <p>Real-time trading performance and control</p>
+        </div>
+
+        <div class="api-status" id="apiStatus">
+            <div class="loading">🔄 Connecting to Bot API...</div>
+        </div>
+
+        <div class="status">
+            <div class="card">
+                <h3>Portfolio Value</h3>
+                <div class="value" id="portfolioValue">$430.74</div>
+                <div class="change positive" id="portfolioChange">+0.00% Today</div>
+            </div>
+            <div class="card">
+                <h3>Active Positions</h3>
+                <div class="value" id="activePositions">3</div>
+                <div class="change neutral">BTC, ETH, SOL</div>
+            </div>
+            <div class="card">
+                <h3>Daily P&L</h3>
+                <div class="value" id="dailyPnl">$0.00</div>
+                <div class="change neutral" id="dailyPnlPercent">0.00%</div>
+            </div>
+            <div class="card">
+                <h3>Bot Status</h3>
+                <div class="value positive">🟢 Online</div>
+                <div class="change neutral">Cycle 1 Running</div>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div class="terminal-title">🤖 AI Trading Bot Terminal v1.0</div>
+            </div>
+            <div class="terminal-content" id="terminal">
+                <div>10:42:30 AM <span class="terminal-prompt">$</span> <span class="terminal-input">help</span></div>
+                <div>Available Commands:</div>
+                <div>🤖 Bot Control: bot.start, bot.stop, bot.status</div>
+                <div>📊 Portfolio: portfolio.show</div>
+                <div>💰 Prices: prices.get [symbol], prices.all</div>
+                <div>📡 Signals: signals.list, signals.strong</div>
+                <div>🔍 Analysis: analyze [symbol], risk.check</div>
+                <div>⚙️ System: status, clear, help</div>
+                <div>10:42:37 AM <span class="terminal-prompt">$</span> <span class="terminal-input">portfolio.show</span></div>
+                <div>Loading portfolio...</div>
+            </div>
+        </div>
+
+        <div class="commands">
+            <h3>🚀 Quick Commands</h3>
+            <div class="command-grid">
+                <div class="command" onclick="sendCommand('portfolio.show')">📊 Show Portfolio</div>
+                <div class="command" onclick="sendCommand('prices.all')">💰 All Prices</div>
+                <div class="command" onclick="sendCommand('signals.strong')">📡 Strong Signals</div>
+                <div class="command" onclick="sendCommand('bot.status')">🤖 Bot Status</div>
+                <div class="command" onclick="sendCommand('risk.check')">🔍 Risk Check</div>
+                <div class="command" onclick="sendCommand('analyze BTC')">📈 Analyze BTC</div>
+                <div class="command" onclick="sendCommand('analyze ETH')">📈 Analyze ETH</div>
+                <div class="command" onclick="sendCommand('analyze SOL')">📈 Analyze SOL</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Connect to bot API
+        const API_BASE = 'http://localhost:3001';
+        let isConnected = false;
+
+        async function checkApiConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/api/bot/status`);
+                if (response.ok) {
+                    isConnected = true;
+                    document.getElementById('apiStatus').innerHTML = '<div class="connected">✅ Connected to Bot API</div>';
+                    updateBotData();
+                } else {
+                    throw new Error('API not responding');
+                }
+            } catch (error) {
+                document.getElementById('apiStatus').innerHTML = '<div class="error">❌ Bot API Offline - Start the bot first!</div>';
+            }
+        }
+
+        async function sendCommand(command) {
+            if (!isConnected) {
+                alert('Please start the bot first!');
+                return;
+            }
+
+            const terminal = document.getElementById('terminal');
+            terminal.innerHTML += `<div>10:42:${new Date().getSeconds().toString().padStart(2, '0')} AM <span class="terminal-prompt">$</span> <span class="terminal-input">${command}</span></div>`;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/terminal`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command })
+                });
+                
+                const result = await response.json();
+                terminal.innerHTML += `<div>${result.output || result.error}</div>`;
+            } catch (error) {
+                terminal.innerHTML += `<div>Error: ${error.message}</div>`;
+            }
+            
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        async function updateBotData() {
+            if (!isConnected) return;
+            
+            try {
+                // Update portfolio data
+                const portfolioResponse = await fetch(`${API_BASE}/api/portfolio`);
+                const portfolio = await portfolioResponse.json();
+                
+                document.getElementById('portfolioValue').textContent = `$${portfolio.totalValue.toFixed(2)}`;
+                document.getElementById('activePositions').textContent = portfolio.positions.length;
+                
+                const pnlChange = portfolio.totalValue - 430.74; // Starting value
+                const pnlPercent = (pnlChange / 430.74) * 100;
+                
+                document.getElementById('dailyPnl').textContent = `${pnlChange >= 0 ? '+' : ''}$${pnlChange.toFixed(2)}`;
+                document.getElementById('dailyPnlPercent').textContent = `${pnlPercent >= 0 ? '+' : ''}${pnlPercent.toFixed(2)}%`;
+                document.getElementById('dailyPnlPercent').className = `change ${pnlPercent >= 0 ? 'positive' : 'negative'}`;
+                
+            } catch (error) {
+                console.log('Error updating data:', error);
+            }
+        }
+
+        // Initialize
+        checkApiConnection();
+        setInterval(updateBotData, 5000); // Update every 5 seconds
+    </script>
+</body>
+</html>

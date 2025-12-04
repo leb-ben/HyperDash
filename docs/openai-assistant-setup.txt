@@ -1,0 +1,452 @@
+================================================================================
+OPENAI / GEMINI ASSISTANT SETUP - COPY/PASTE READY (STRICT MODE)
+================================================================================
+
+STEP 1: Go to https://platform.openai.com/assistants and click "Create"
+
+STEP 2: Copy this SYSTEM PROMPT into the "Instructions" box:
+--------------------------------------------------------------------------------
+
+You are an AI trading assistant for a crypto trading bot on Hyperliquid.
+
+Your job:
+- Analyze market data and give trading recommendations
+- Monitor positions and suggest when to take profits or cut losses
+- Explain technical indicators (RSI, MACD, Bollinger Bands)
+- Calculate risk/reward for potential trades
+
+Rules you MUST follow:
+1. Never recommend trades without stop losses
+2. Never suggest risking more than 5% on a single trade
+3. Always explain your reasoning
+4. Warn about high-risk situations
+5. Consider fees (0.05% per trade) in profit calculations
+
+When analyzing a trade opportunity:
+1. Check if RSI is overbought (>70) or oversold (<30)
+2. Look at MACD direction
+3. Note where price is in the Bollinger Bands
+4. Consider the funding rate for perpetuals
+5. Calculate the risk/reward ratio
+
+Always prioritize not losing money over making money.
+
+--------------------------------------------------------------------------------
+
+STEP 3: Copy these FUNCTIONS one at a time into "Add function":
+--------------------------------------------------------------------------------
+
+FUNCTION 1 - Get Portfolio:
+
+{
+  "name": "get_portfolio",
+  "description": "Get current portfolio value, available balance, and all open positions",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "include_history": {
+        "type": "boolean",
+        "description": "Set to true to include recent trade history, false for current state only"
+      }
+    },
+    "required": ["include_history"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 2 - Get Market Prices:
+
+{
+  "name": "get_prices",
+  "description": "Get current prices, 24h change, and volume for tracked coins across multiple exchanges",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "symbol": {
+        "type": "string",
+        "description": "Coin symbol to get price for: BTC, ETH, SOL, HYPE, or JUP. Use ALL for all coins."
+      },
+      "exchanges": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Exchanges to check: hyperliquid, binance, coinbase, okx, bybit, mexc, orangex. Default: ['hyperliquid']"
+      },
+      "compare_prices": {
+        "type": "boolean",
+        "description": "Set to true to show price differences between exchanges for arbitrage opportunities"
+      }
+    },
+    "required": ["symbol"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 3 - Get Trading Signals:
+
+{
+  "name": "get_signals",
+  "description": "Get active trading signals from technical analysis with detailed filtering options. Returns current buy/sell signals with strength, confidence, and technical indicators driving each signal.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "min_strength": {
+        "type": "number",
+        "description": "Minimum signal strength 0-100. Use 0 for all signals, 70+ for strong signals only, 85+ for very strong signals."
+      },
+      "signal_types": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Filter by signal types: ['RSI_Oversold', 'RSI_Overbought', 'MACD_Cross_Up', 'MACD_Cross_Down', 'BB_Squeeze', 'BB_Breakout', 'Volume_Spike', 'Price_Breakout']. Leave empty for all types."
+      },
+      "symbols": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Filter by symbols: ['BTC', 'ETH', 'SOL', 'HYPE', 'JUP']. Leave empty for all symbols."
+      },
+      "timeframes": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Filter by timeframes: ['5m', '15m', '1h', '4h']. Leave empty for all timeframes."
+      },
+      "include_indicators": {
+        "type": "boolean",
+        "description": "Set to true to include the specific indicator values (RSI, MACD, BB position) driving each signal."
+      },
+      "max_signals": {
+        "type": "number",
+        "description": "Maximum number of signals to return (1-50). Default: 10."
+      }
+    },
+    "required": ["min_strength"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 4 - Analyze Trade:
+
+{
+  "name": "analyze_trade",
+  "description": "Comprehensive trade analysis with risk assessment, fee calculation, and profit targets. Evaluates technical indicators, market conditions, and calculates optimal entry/exit points with detailed risk metrics.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "symbol": {
+        "type": "string",
+        "description": "Coin to trade: BTC, ETH, SOL, HYPE, or JUP"
+      },
+      "side": {
+        "type": "string",
+        "enum": ["long", "short"],
+        "description": "Trade direction - long to bet price goes up, short to bet price goes down"
+      },
+      "size_usd": {
+        "type": "number",
+        "description": "Trade size in US dollars (minimum 10, max based on portfolio)"
+      },
+      "leverage": {
+        "type": "number",
+        "description": "Leverage multiplier 1-10. Higher leverage = higher risk and reward"
+      },
+      "entry_price": {
+        "type": "number",
+        "description": "Specific entry price target. Leave empty to use current market price."
+      },
+      "stop_loss_distance_pct": {
+        "type": "number",
+        "description": "Stop loss distance as percentage (0.5-10). Default: 2% for longs, 2% above for shorts."
+      },
+      "take_profit_levels": {
+        "type": "array",
+        "items": { "type": "number" },
+        "description": "Take profit levels as percentages (e.g., [1, 2, 4] for 1%, 2%, 4% gains). Default: [1, 2, 4]."
+      },
+      "risk_reward_ratio": {
+        "type": "number",
+        "description": "Minimum risk/reward ratio required (1.0-5.0). Default: 2.0 means reward must be 2x risk."
+      },
+      "analysis_depth": {
+        "type": "string",
+        "enum": ["basic", "detailed", "comprehensive"],
+        "description": "Analysis level: basic (quick check), detailed (indicators), comprehensive (full market context). Default: detailed."
+      },
+      "include_funding_analysis": {
+        "type": "boolean",
+        "description": "Include funding rate analysis for perpetual positions (important for longer holds). Default: true."
+      },
+      "max_risk_pct": {
+        "type": "number",
+        "description": "Maximum risk as percentage of portfolio (0.1-5.0). Default: 1.0."
+      }
+    },
+    "required": ["symbol", "side", "size_usd", "leverage"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 5 - Control Bot:
+
+{
+  "name": "control_bot",
+  "description": "Start, stop, or check status of the automated trading bot",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": ["start", "stop", "pause", "status"],
+        "description": "start = begin trading, look for open positions, if none, open positions, stop = close positions and stop any further automated trades until further notice, pause = halt any automation task for up to 15 minutes, do not close or open any positions when asked to pause, just keep positions in the state they were in when asked to pause, resume trading automatically after 15 minutes being 'paused without any additional commands given', status = check the status of the trading bot, scheduled tasks, Open positions, daily trade count thus far, and PNL in each crypto for the day should be gathered and returned accurately when 'status' is requested"
+      }
+    },
+    "required": ["action"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 6 - Get Technical Indicators:
+
+{
+  "name": "get_indicators",
+  "description": "Get RSI, MACD, Bollinger Bands and other technical indicators for a coin",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "symbol": {
+        "type": "string",
+        "description": "Coin symbol: BTC, ETH, SOL, HYPE, or JUP"
+      },
+      "timeframe": {
+        "type": "string",
+        "enum": ["5m", "15m", "1h", "4h"],
+        "description": "Candle timeframe - 5m/15m for scalping, 1h/4h for swing trades"
+      }
+    },
+    "required": ["symbol", "timeframe"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 7 - Build Trade Strategy (from Gemini):
+
+{
+  "name": "build_trade_strategy",
+  "description": "Create a complete trade plan with entry, stop loss, and take profit targets. ONLY call this when confidence is 70+.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "ticker": {
+        "type": "string",
+        "description": "The asset symbol (e.g., BTC, ETH, SOL)"
+      },
+      "action": {
+        "type": "string",
+        "enum": ["BUY", "SELL"]
+      },
+      "entry_zone": {
+        "type": "string",
+        "description": "Price range for entry (e.g., '96500-97000')"
+      },
+      "stop_loss": {
+        "type": "number",
+        "description": "Stop loss price - where to exit if wrong"
+      },
+      "take_profit_targets": {
+        "type": "array",
+        "items": { "type": "number" },
+        "description": "List of price targets for taking profit (e.g., [98000, 99500, 101000])"
+      },
+      "confidence_score": {
+        "type": "integer",
+        "description": "Confidence level 0-100. Only execute if 70+"
+      }
+    },
+    "required": ["ticker", "action", "entry_zone", "stop_loss", "take_profit_targets", "confidence_score"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 8 - Save Trade Memory (Learning System):
+
+{
+  "name": "save_trade_memory",
+  "description": "Save a trade outcome to the database for future learning. Call this after every trade closes.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "strategy_name": {
+        "type": "string",
+        "description": "Name of the strategy (e.g., 'RSI_Oversold_Bounce', 'MACD_Crossover', 'Bollinger_Squeeze')"
+      },
+      "outcome": {
+        "type": "string",
+        "enum": ["PROFIT", "LOSS", "NO_TRADE"],
+        "description": "The result of the trade"
+      },
+      "reasoning_summary": {
+        "type": "string",
+        "description": "Brief explanation of why this worked or failed for future reference"
+      }
+    },
+    "required": ["strategy_name", "outcome", "reasoning_summary"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 9 - Get Market Context (Historical Pattern Match):
+
+{
+  "name": "get_market_context",
+  "description": "Find past trades in similar market conditions. Call this BEFORE making trading decisions.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "market_condition_tags": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Current market tags like: high_volatility, low_volatility, bullish_trend, bearish_trend, ranging, breakout, breakdown, oversold, overbought, high_volume, low_liquidity"
+      },
+      "lookback_period_hours": {
+        "type": "integer",
+        "description": "How far back to search: 24 (1 day), 168 (1 week), 720 (1 month)"
+      }
+    },
+    "required": ["market_condition_tags", "lookback_period_hours"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 10 - Web Search (Live Market Intel):
+
+{
+  "name": "web_search",
+  "description": "Search the web for live crypto news, analysis, and market sentiment. Use for breaking news, whale alerts, regulatory updates.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Search query (e.g., 'BTC whale movement today', 'crypto regulation news', 'ETH ETF inflows')"
+      },
+      "sources": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Preferred sources: twitter, coingecko, coinmarketcap, tradingview, cryptopanic, whale_alert"
+      },
+      "recency": {
+        "type": "string",
+        "enum": ["1h", "24h", "7d"],
+        "description": "How recent the results should be"
+      }
+    },
+    "required": ["query", "sources", "recency"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 11 - Multi-Exchange Price Check (Cross-Exchange Arbitrage):
+
+{
+  "name": "get_multi_exchange_prices",
+  "description": "Get the same token's price across multiple exchanges to spot price divergence BEFORE it hits Hyperliquid. Larger exchanges often lead price movements.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "symbol": {
+        "type": "string",
+        "description": "Token symbol: BTC, ETH, SOL, etc."
+      },
+      "exchanges": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Exchanges to check: binance, coinbase, okx, bybit, mexc, kraken, hyperliquid"
+      },
+      "include_orderbook_depth": {
+        "type": "boolean",
+        "description": "True to include buy/sell wall analysis (shows where big orders are sitting)"
+      }
+    },
+    "required": ["symbol", "exchanges", "include_orderbook_depth"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+FUNCTION 12 - Detect Price Lead/Lag (Early Warning System):
+
+{
+  "name": "detect_price_divergence",
+  "description": "Compare price movements across exchanges to detect if a move is starting on larger exchanges before hitting Hyperliquid. Can give 10-60 second edge.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "symbol": {
+        "type": "string",
+        "description": "Token to monitor: BTC, ETH, SOL"
+      },
+      "threshold_percent": {
+        "type": "number",
+        "description": "Minimum price difference to trigger alert (e.g., 0.1 for 0.1%)"
+      },
+      "reference_exchange": {
+        "type": "string",
+        "description": "The 'leading' exchange to compare against: binance, coinbase, okx"
+      }
+    },
+    "required": ["symbol", "threshold_percent", "reference_exchange"],
+    "additionalProperties": false
+  }
+}
+
+--------------------------------------------------------------------------------
+
+STEP 4: Pick a model:
+- For complex analysis: o1 or o1-mini (use "high" reasoning)
+- For quick questions: gpt-4o-mini (cheaper, faster)
+
+STEP 5: Save and test!
+
+--------------------------------------------------------------------------------
+
+ANALYSIS WORKFLOW (Pass current_step as variable each call):
+
+Step 1: get_market_context → Find similar past conditions
+Step 2: get_multi_exchange_prices → Check cross-exchange prices
+Step 3: get_indicators → Technical analysis
+Step 4: get_signals → Current signal strength
+Step 5: build_trade_strategy → Only if confidence 70+
+
+After trade closes: save_trade_memory → Learn from outcome
+
+================================================================================
