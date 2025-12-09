@@ -4,7 +4,7 @@ An AI-powered cryptocurrency trading bot for Hyperliquid perpetual futures, usin
 
 ## ✨ Features
 
-- **AI-Driven Decisions**: Cerebras AI (`llama-3.3-70b`) analyzes markets with ~700ms response times
+- **AI-Driven Decisions**: Cerebras AI (`gpt-oss-120b`) analyzes markets with ~700ms response times
 - **Technical Analysis**: RSI, MACD, Bollinger Bands, ATR, SMA, EMA across multiple timeframes
 - **Risk Management**: Position sizing, stop losses, take profits, drawdown protection
 - **Paper Trading**: Test strategies with $500 simulated funds before going live
@@ -15,7 +15,7 @@ An AI-powered cryptocurrency trading bot for Hyperliquid perpetual futures, usin
 
 ## 🧠 AI Model
 
-**Cerebras Cloud** - `llama-3.3-70b`
+**Cerebras Cloud** - `gpt-oss-120b`
 - Free tier API access
 - Fastest inference speeds globally (~700ms responses)
 - OpenAI-compatible API format
@@ -67,7 +67,7 @@ HYPERLIQUID_PRIVATE_KEY=your_wallet_private_key
 HYPERLIQUID_WALLET_ADDRESS=your_wallet_address
 
 # Bot mode
-PAPER_TRADING=true
+PAPER_TRADING=false
 HYPERLIQUID_TESTNET=true
 ```
 
