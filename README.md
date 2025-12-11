@@ -291,5 +291,4 @@ Features planned for future development:
 MIT License - feel free to modify and distribute.
 
 ---
-
-Built with 🤖 by AI + Human collaboration
+Bee Anon
