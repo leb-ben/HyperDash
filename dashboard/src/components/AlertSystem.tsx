@@ -18,6 +18,18 @@ interface AlertSettings {
   systemAlerts: boolean;
 }
 
+function loadAlertSettings(): AlertSettings | null {
+  try {
+    const saved = localStorage.getItem('alert_settings');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error('Failed to load alert settings:', e);
+  }
+  return null;
+}
+
 export default function AlertSystem() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [settings, setSettings] = useState<AlertSettings>(() => {
