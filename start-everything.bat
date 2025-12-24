@@ -12,9 +12,8 @@ if not exist "node_modules" (
     call bun install
     if %errorlevel% neq 0 (
         echo.
-        echo ❌ Failed to install backend dependencies!
-        echo Please check your Bun installation and try again.
-        pause
+        echo ERROR: Failed to install backend dependencies!
+        echo Check your Bun installation and try again.
         exit /b 1
     )
 )
@@ -30,8 +29,7 @@ if not exist "dashboard\node_modules" (
     call bun install
     if %errorlevel% neq 0 (
         echo.
-        echo ❌ Failed to install dashboard dependencies!
-        pause
+        echo ERROR: Failed to install dashboard dependencies!
         exit /b 1
     )
     cd ..
@@ -44,9 +42,8 @@ if not exist "dist" (
     call bun run build
     if %errorlevel% neq 0 (
         echo.
-        echo ❌ Build failed!
-        echo Please fix the build errors and try again.
-        pause
+        echo ERROR: Build failed!
+        echo Check build errors and try again.
         exit /b 1
     )
 )
@@ -57,11 +54,10 @@ if not exist ".env" (
     echo   ENVIRONMENT CONFIGURATION MISSING!
     echo ========================================
     echo.
-    echo Please copy .env.example to .env and configure your API keys.
+    echo Copy .env.example to .env and configure your API keys.
     echo Required: HYPERLIQUID_PRIVATE_KEY, HYPERLIQUID_WALLET_ADDRESS
     echo Optional: CEREBRAS_API_KEY, OPENAI_API_KEY, PERPLEXITY_API_KEY
     echo.
-    pause
     exit /b 1
 )
 
@@ -75,6 +71,7 @@ REM Kill any existing processes on our ports
 echo [*] Cleaning up existing processes...
 for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":3003 "') do taskkill /F /PID %%a >nul 2>&1
 for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":5173 "') do taskkill /F /PID %%a >nul 2>&1
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":5174 "') do taskkill /F /PID %%a >nul 2>&1
 timeout /t 2 /nobreak >nul
 
 echo.
@@ -95,23 +92,19 @@ echo [*] Waiting for dashboard to start (8 seconds)...
 timeout /t 8 /nobreak >nul
 
 echo.
-echo [*] Opening dashboard in browser...
-start "" http://localhost:5173
-
-echo.
 echo ========================================
 echo    STARTED SUCCESSFULLY
 echo ========================================
 echo.
-echo    Dashboard:    http://localhost:5173
 echo    Backend API:  http://localhost:3003
+echo    Dashboard:    http://localhost:5173 or 5174
 echo    Mode:         LIVE TRADING (Hyperliquid Testnet)
 echo    Wallet:       Real USDC funds
 echo.
 echo Two windows are running:
 echo    - "AI Trading Bot Backend" (port 3003)
-echo    - "AI Trading Dashboard" (port 5173)
+echo    - "AI Trading Dashboard" (port 5173/5174)
 echo.
-echo Close both windows to stop the system.
+echo Bot is now running in headless mode.
+echo Monitor logs in the backend window.
 echo.
-pause
