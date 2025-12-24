@@ -19,6 +19,9 @@ import ManualPositionControl from './components/ManualPositionControl.js';
 import LiveAnalysisView from './components/LiveAnalysisView.js';
 import PerformanceCharts from './components/PerformanceCharts.js';
 import AlertSystem from './components/AlertSystem.js';
+import AIConfigModal from './components/AIConfigModal.js';
+import SettingsPanel from './components/SettingsPanel.js';
+import StrategiesPanel from './components/StrategiesPanel.js';
 
 // Error Boundary to catch runtime errors
 interface ErrorBoundaryState {
@@ -129,8 +132,9 @@ function App() {
   const [chartData, setChartData] = useState<{time: string; value: number}[]>([])
   const [currentTime, setCurrentTime] = useState(new Date())
   const [showSafetySettings, setShowSafetySettings] = useState(false)
+  const [showAIConfig, setShowAIConfig] = useState(false)
   const [showPositionControl, setShowPositionControl] = useState(false)
-  const [activeTab, setActiveTab] = useState<'signals' | 'logs' | 'terminal' | 'pnl' | 'bandwidth' | 'risk' | 'analysis' | 'performance'>('signals')
+  const [activeTab, setActiveTab] = useState<'signals' | 'logs' | 'terminal' | 'pnl' | 'bandwidth' | 'risk' | 'analysis' | 'performance' | 'strategies' | 'settings'>('signals')
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => {
     const saved = localStorage.getItem('tradingbot_chat_history')
     if (saved) {
@@ -254,6 +258,10 @@ function App() {
               onStart={startBot} 
               onStop={stopBot} 
             />
+
+            <button onClick={() => setShowAIConfig(true)} className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 rounded-lg text-sm">
+              <Settings className="w-4 h-4" />AI Config
+            </button>
 
             <button onClick={() => setShowSafetySettings(true)} className="flex items-center gap-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm">
               <Shield className="w-4 h-4" />Safety
@@ -449,6 +457,26 @@ function App() {
               >
                 Terminal
               </button>
+              <button
+                onClick={() => setActiveTab('strategies')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'strategies'
+                    ? 'bg-slate-700/50 text-cyan-400 border-b-2 border-cyan-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Strategies
+              </button>
+              <button
+                onClick={() => setActiveTab('settings')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'settings'
+                    ? 'bg-slate-700/50 text-slate-300 border-b-2 border-slate-300'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Settings
+              </button>
             </div>
 
             {/* Tab Content */}
@@ -498,6 +526,18 @@ function App() {
               {activeTab === 'terminal' && (
                 <div className="h-full p-4">
                   <XTerminal className="h-full" />
+                </div>
+              )}
+
+              {activeTab === 'strategies' && (
+                <div className="h-full overflow-auto p-4">
+                  <StrategiesPanel />
+                </div>
+              )}
+
+              {activeTab === 'settings' && (
+                <div className="h-full overflow-auto p-4">
+                  <SettingsPanel />
                 </div>
               )}
             </div>
@@ -584,6 +624,7 @@ function App() {
 
       {/* Modals */}
       <SafetySettings isOpen={showSafetySettings} onClose={() => setShowSafetySettings(false)} />
+      <AIConfigModal isOpen={showAIConfig} onClose={() => setShowAIConfig(false)} />
       {showPositionControl && (
         <ManualPositionControl 
           positions={system.portfolio.positions}
