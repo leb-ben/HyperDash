@@ -46,9 +46,9 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
       },
-      error_file: './logs/dashboard-error.log',
-      out_file: './logs/dashboard-out.log',
-      log_file: './logs/dashboard-combined.log',
+      error_file: '../logs/dashboard-error.log',
+      out_file: '../logs/dashboard-out.log',
+      log_file: '../logs/dashboard-combined.log',
       time: true,
       merge_logs: true,
       restart_delay: 5000,
