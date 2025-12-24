@@ -72,7 +72,13 @@ echo [*] Cleaning up existing processes...
 for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":3003 "') do taskkill /F /PID %%a >nul 2>&1
 for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":5173 "') do taskkill /F /PID %%a >nul 2>&1
 for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":5174 "') do taskkill /F /PID %%a >nul 2>&1
-timeout /t 2 /nobreak >nul
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":5175 "') do taskkill /F /PID %%a >nul 2>&1
+
+REM Also kill any Vite processes by name to be thorough
+taskkill /F /IM "node.exe" /FI "WINDOWTITLE eq AI Trading Dashboard*" >nul 2>&1
+taskkill /F /IM "bun.exe" /FI "WINDOWTITLE eq AI Trading Dashboard*" >nul 2>&1
+
+timeout /t 3 /nobreak >nul
 
 echo.
 echo [1/2] Starting AI Trading Bot Backend...
