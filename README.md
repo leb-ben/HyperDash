@@ -7,9 +7,9 @@ An AI-powered cryptocurrency trading bot for Hyperliquid perpetual futures, usin
 - **AI-Driven Decisions**: Cerebras AI (`llama-3.3-70b`) analyzes markets with ~700ms response times
 - **Technical Analysis**: RSI, MACD, Bollinger Bands, ATR, SMA, EMA across multiple timeframes
 - **Risk Management**: Position sizing, stop losses, take profits, drawdown protection
-- **Paper Trading**: Test strategies with $500 simulated funds before going live
-- **Multi-Coin Portfolio**: Manages BTC, ETH, SOL, HYPE, JUP (configurable)
-- **Hyperliquid DEX**: Non-custodial perpetual futures trading - you keep your keys
+- **Live Trading**: Real USDC funds on Hyperliquid testnet
+- **Self-Custody**: Your funds stay in your wallet
+- **No Paper Trading**: Direct live trading with real money
 - **Real-Time Dashboard**: Beautiful web UI to monitor bot performance
 - **5-Minute Cycles**: Analyzes and trades every 5 minutes automatically
 
@@ -41,73 +41,66 @@ Get your free API key: https://cloud.cerebras.ai/
 
 **Your funds are NEVER held by a third party** - Hyperliquid's smart contracts handle settlement, but you can withdraw at any time.
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Live Trading on Hyperliquid Testnet)
 
-### 1. Install Dependencies
+### 1. Prerequisites
+
+- Node.js 20+
+- Ethereum-compatible wallet (MetaMask, Rabby, etc.)
+- USDC on Arbitrum network
+- Deposited funds to Hyperliquid testnet: https://app.hyperliquid.xyz/testnet
+
+### 2. Setup
 
 ```bash
+# Clone/install dependencies
+git clone <repository>
+cd Trade_bot
 npm install
-```
 
-### 2. Configure Environment
-
-```bash
-# Copy example config
+# Copy and configure environment
 copy .env.example .env
 ```
 
-Edit `.env`:
+Edit `.env` with your keys:
 
 ```env
+# Required for live trading
+HYPERLIQUID_PRIVATE_KEY=0x...your_private_key
+HYPERLIQUID_WALLET_ADDRESS=0x...your_wallet_address
+HYPERLIQUID_TESTNET=true
+
 # Required for AI analysis
 CEREBRAS_API_KEY=your_cerebras_api_key
 
-# Required ONLY for live trading (not needed for paper trading)
-HYPERLIQUID_PRIVATE_KEY=your_wallet_private_key
-HYPERLIQUID_WALLET_ADDRESS=your_wallet_address
-
-# Bot mode
-PAPER_TRADING=true
-HYPERLIQUID_TESTNET=true
+# Optional additional AI providers
+OPENAI_API_KEY=your_openai_key
+PERPLEXITY_API_KEY=your_perplexity_key
 ```
 
-### 3. Run Paper Trading (Recommended First!)
+### 3. Start the Bot
 
+**One-Click Startup:**
 ```bash
-# Start the bot
-node --import tsx src/index.ts
-
-# Start the dashboard (separate terminal)
-cd dashboard
-npm install --ignore-scripts
-.\node_modules\.bin\vite
+# Run this - it handles everything automatically!
+start-everything.bat
 ```
 
-Dashboard: http://localhost:3000
+The script will:
+- ✅ Check for dependencies and install if missing
+- ✅ Build the project
+- ✅ Validate your .env configuration
+- ✅ Start the bot in live trading mode
+- ✅ Open dashboard at http://localhost:3003
 
-### 4. Connect Real Hyperliquid Account (Live Trading)
+**Manual Startup:**
+```bash
+# Build and run
+npm run build
+npm run dev
+```
 
-**Prerequisites:**
-1. Ethereum-compatible wallet (MetaMask, Rabby, etc.)
-2. USDC on Arbitrum network
-3. Deposited funds to Hyperliquid via https://app.hyperliquid.xyz
-
-**Setup:**
-1. Export your wallet's private key:
-   - MetaMask: Settings → Security → Reveal Private Key
-   - **⚠️ NEVER share this with anyone!**
-2. Add to `.env`:
-   ```env
-   HYPERLIQUID_PRIVATE_KEY=0x...your_private_key
-   HYPERLIQUID_WALLET_ADDRESS=0x...your_wallet_address
-   PAPER_TRADING=false
-   HYPERLIQUID_TESTNET=false  # Use mainnet
-   ```
-3. Start with small amounts to test!
-
-**Testnet Practice:**
-- Get testnet funds: https://app.hyperliquid.xyz/testnet
-- Set `HYPERLIQUID_TESTNET=true` in `.env`
+Dashboard: http://localhost:3003
 
 ## Configuration
 

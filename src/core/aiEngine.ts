@@ -1,14 +1,30 @@
 import OpenAI from 'openai';
-import { config, getEnvRequired } from '../config/settings.js';
+import { config, getEnvRequired, getEnvOptional } from '../config/settings.js';
 import { logger, tradeLog } from '../utils/logger.js';
 import type { MarketReport, AIResponse, TradeDecision, CoinAnalysis, PortfolioState } from '../types/index.js';
 import { format } from 'date-fns';
 import { learningEngine } from './learningEngine.js';
+import { getModelById, AI_MODELS } from './aiProviderRegistry.js';
 
-// Cerebras uses OpenAI-compatible API
+// AI Provider Clients
 const cerebras = new OpenAI({
   apiKey: getEnvRequired('CEREBRAS_API_KEY'),
   baseURL: 'https://api.cerebras.ai/v1'
+});
+
+// Secondary Cerebras key for failover
+const cerebrasFailover = new OpenAI({
+  apiKey: getEnvOptional('CEREBRAS_API_KEY_2', ''),
+  baseURL: 'https://api.cerebras.ai/v1'
+});
+
+const perplexity = new OpenAI({
+  apiKey: getEnvOptional('PERPLEXITY_API_KEY', ''),
+  baseURL: 'https://api.perplexity.ai'
+});
+
+const openai = new OpenAI({
+  apiKey: getEnvOptional('OPENAI_API_KEY', ''),
 });
 
 const SYSTEM_PROMPT = `You are an expert cryptocurrency trading AI managing a portfolio on Hyperliquid (perpetual futures DEX).
@@ -62,12 +78,26 @@ export class AIEngine {
   private model: string;
   private temperature: number;
   private maxTokens: number;
+  private provider: 'cerebras' | 'perplexity' | 'openai';
   private lastDecision: AIResponse | null = null;
 
   constructor() {
-    this.model = config.ai.model;
-    this.temperature = config.ai.temperature;
-    this.maxTokens = config.ai.max_tokens;
+    // Get model configuration from registry
+    const modelId = config.ai?.model || 'gpt-oss-120b';
+    const aiModel = getModelById(modelId);
+    
+    if (!aiModel) {
+      throw new Error(`Invalid AI model: ${modelId}`);
+    }
+    
+    this.model = aiModel.id;
+    this.provider = aiModel.provider;
+    this.temperature = config.ai?.temperature || 0.3;
+    // Use max tokens from model registry, not config
+    this.maxTokens = config.ai?.max_tokens || 4000;
+    
+    logger.info(`AI Engine initialized: ${aiModel.name} (${aiModel.provider})`);
+    logger.info(`Max tokens: ${this.maxTokens}, Context window: ${aiModel.contextWindow}`);
   }
 
   async analyzeMarket(report: MarketReport): Promise<AIResponse> {
@@ -77,16 +107,10 @@ export class AIEngine {
     const startTime = Date.now();
 
     try {
-      const completion = await cerebras.chat.completions.create({
-        model: this.model,
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: prompt }
-        ],
-        temperature: this.temperature,
-        max_tokens: this.maxTokens,
-        response_format: { type: 'json_object' }
-      });
+      const completion = await this.callWithRetry([
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: prompt }
+      ]);
 
       const responseTime = Date.now() - startTime;
       tradeLog.ai('Response', `${responseTime}ms`);
@@ -156,7 +180,7 @@ export class AIEngine {
     }
 
     // Coin Analysis
-    prompt += `🪙 COIN ANALYSIS\n`;
+    prompt += `COIN ANALYSIS\n`;
     for (const coin of report.coins) {
       prompt += `\n═══ ${coin.symbol} ═══\n`;
       prompt += `Price: $${coin.ticker.price.toFixed(4)} `;
@@ -226,7 +250,7 @@ export class AIEngine {
 
     // Recent Decisions
     if (report.recentDecisions.length > 0) {
-      prompt += `\n📝 RECENT AI DECISIONS\n`;
+      prompt += `\nRECENT AI DECISIONS\n`;
       const lastDecision = report.recentDecisions[0];
       if (lastDecision) {
         prompt += `Last analysis: ${lastDecision.analysis}\n`;
@@ -237,7 +261,7 @@ export class AIEngine {
     // Add learning context from past trades
     const learningContext = learningEngine.getLearningContext();
     if (learningContext) {
-      prompt += `\n🧠 LEARNED FROM PAST TRADES\n`;
+      prompt += `\nLEARNED FROM PAST TRADES\n`;
       prompt += learningContext;
     }
 
@@ -250,7 +274,50 @@ export class AIEngine {
 
   private parseResponse(content: string): AIResponse {
     try {
-      const parsed = JSON.parse(content);
+      // Try to fix truncated JSON responses
+      let jsonContent = content.trim();
+      
+      // If JSON appears truncated, try to close it properly
+      if (!jsonContent.endsWith('}')) {
+        logger.warn('AI response appears truncated, attempting to fix...');
+        
+        // Count open braces and brackets
+        const openBraces = (jsonContent.match(/{/g) || []).length;
+        const closeBraces = (jsonContent.match(/}/g) || []).length;
+        const openBrackets = (jsonContent.match(/\[/g) || []).length;
+        const closeBrackets = (jsonContent.match(/]/g) || []).length;
+        
+        // Try to find a valid JSON substring
+        let lastValidIndex = jsonContent.length;
+        for (let i = jsonContent.length - 1; i >= 0; i--) {
+          if (jsonContent[i] === '"' || jsonContent[i] === ',' || jsonContent[i] === ':') {
+            lastValidIndex = i;
+            break;
+          }
+        }
+        
+        // Truncate at last clean point and close brackets/braces
+        jsonContent = jsonContent.substring(0, lastValidIndex);
+        
+        // Remove trailing commas or colons
+        jsonContent = jsonContent.replace(/[,:\s]+$/, '');
+        
+        // Close any unclosed strings
+        const quoteCount = (jsonContent.match(/"/g) || []).length;
+        if (quoteCount % 2 !== 0) {
+          jsonContent += '"';
+        }
+        
+        // Close brackets and braces
+        for (let i = 0; i < openBrackets - closeBrackets; i++) {
+          jsonContent += ']';
+        }
+        for (let i = 0; i < openBraces - closeBraces; i++) {
+          jsonContent += '}';
+        }
+      }
+      
+      const parsed = JSON.parse(jsonContent);
       
       // Validate required fields
       if (!parsed.analysis || !parsed.decisions || !Array.isArray(parsed.decisions)) {
@@ -289,6 +356,92 @@ export class AIEngine {
     }
   }
 
+  private async getProviderClient(): Promise<OpenAI> {
+    switch (this.provider) {
+      case 'cerebras':
+        // Try primary key first
+        if (cerebras.apiKey) {
+          return cerebras;
+        }
+        // Failover to secondary key
+        if (cerebrasFailover.apiKey) {
+          logger.warn('Primary Cerebras key failed, using secondary key');
+          return cerebrasFailover;
+        }
+        throw new Error('Both CEREBRAS_API_KEY and CEREBRAS_API_KEY_2 not configured');
+      case 'perplexity':
+        if (!perplexity.apiKey) {
+          throw new Error('PERPLEXITY_API_KEY not configured');
+        }
+        return perplexity;
+      case 'openai':
+        if (!openai.apiKey) {
+          throw new Error('OPENAI_API_KEY not configured');
+        }
+        return openai;
+      default:
+        throw new Error(`Unknown provider: ${this.provider}`);
+    }
+  }
+
+  private async callWithRetry(messages: any[], attempt: number = 1): Promise<any> {
+    const maxRetries = 3;
+    const baseDelay = 1000; // 1 second
+    
+    try {
+      const client = await this.getProviderClient();
+      
+      const response = await client.chat.completions.create({
+        model: this.model,
+        messages,
+        temperature: this.temperature,
+        max_tokens: this.maxTokens,
+      });
+      
+      return response;
+    } catch (error: any) {
+      // If Cerebras fails and we haven't tried failover yet
+      if (this.provider === 'cerebras' && attempt === 1 && cerebrasFailover.apiKey) {
+        logger.warn(`Cerebras API call failed, attempting failover: ${error.message}`);
+        
+        // Try with failover client
+        try {
+          const response = await cerebrasFailover.chat.completions.create({
+            model: this.model,
+            messages,
+            temperature: this.temperature,
+            max_tokens: this.maxTokens,
+          });
+          
+          logger.info('Successfully used failover Cerebras key');
+          return response;
+        } catch (failoverError: any) {
+          logger.error(`Both Cerebras keys failed: ${failoverError.message}`);
+          
+          // If we still have retries, try again with delay
+          if (attempt < maxRetries) {
+            const delay = baseDelay * Math.pow(2, attempt - 1);
+            logger.warn(`Retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return this.callWithRetry(messages, attempt + 1);
+          }
+          
+          throw failoverError;
+        }
+      }
+      
+      // For other providers or if out of retries
+      if (attempt < maxRetries) {
+        const delay = baseDelay * Math.pow(2, attempt - 1);
+        logger.warn(`${this.provider} API call failed, retrying in ${delay}ms: ${error.message}`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.callWithRetry(messages, attempt + 1);
+      }
+      
+      throw error;
+    }
+  }
+
   private formatNumber(num: number): string {
     if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
     if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
@@ -320,12 +473,9 @@ User question: ${message}
 Respond helpfully and concisely. If they ask about trading, provide analysis. If they ask about status, give current state. Be conversational but professional.`;
 
     try {
-      const completion = await cerebras.chat.completions.create({
-        model: config.ai.model,
-        messages: [{ role: 'user', content: chatPrompt }],
-        temperature: config.ai.temperature,
-        max_tokens: 500
-      });
+      const completion = await this.callWithRetry([
+        { role: 'user', content: chatPrompt }
+      ]);
 
       return completion.choices[0]?.message?.content || 'I apologize, but I could not generate a response.';
     } catch (error) {

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Settings, Brain, Key, Sliders } from 'lucide-react'
+import { X, Settings, Brain, Sliders } from 'lucide-react'
 
 interface Props {
   isOpen: boolean
@@ -7,21 +7,38 @@ interface Props {
 }
 
 export function AIConfigModal({ isOpen, onClose }: Props) {
-  const [apiKey, setApiKey] = useState('')
-  const [selectedModel, setSelectedModel] = useState('cerebras-llama3.1-70b')
+  const [selectedProvider, setSelectedProvider] = useState('cerebras')
+  const [selectedModel, setSelectedModel] = useState('llama-3.3-70b')
   const [temperature, setTemperature] = useState(0.7)
   const [maxTokens, setMaxTokens] = useState(2048)
   const [riskAggression, setRiskAggression] = useState('moderate')
 
   if (!isOpen) return null
 
-  const availableModels = [
-    'cerebras-llama3.1-70b',
-    'gpt-4',
-    'gpt-3.5-turbo',
-    'claude-3-sonnet',
-    'claude-3-haiku'
-  ]
+  const providers = {
+    cerebras: {
+      name: 'Cerebras',
+      models: ['gpt-oss-120b', 'llama-3.3-70b', 'llama3.1-8b', 'qwen-3-235b-a22b-instruct-2507']
+    },
+    perplexity: {
+      name: 'Perplexity',
+      models: ['llama-3.1-sonar-large-128k-online', 'llama-3.1-sonar-small-128k-online', 'llama-3.1-sonar-huge-128k-online']
+    },
+    groq: {
+      name: 'Groq',
+      models: ['llama-3.3-70b-versatile', 'llama-3.1-70b-versatile', 'mixtral-8x7b-32768', 'gemma2-9b-it']
+    },
+    venice: {
+      name: 'Venice AI',
+      models: ['llama-3.3-70b', 'llama-3.1-405b', 'qwen2.5-coder-32b-instruct']
+    },
+    gemini: {
+      name: 'Google Gemini',
+      models: ['gemini-2.0-flash-exp', 'gemini-2.0-flash-thinking-exp', 'gemini-1.5-pro', 'gemini-1.5-flash']
+    }
+  }
+
+  const currentModels = providers[selectedProvider as keyof typeof providers]?.models || []
 
   const riskLevels = [
     { value: 'conservative', label: 'Conservative', description: 'High confidence required (75%+)' },
@@ -40,7 +57,7 @@ export function AIConfigModal({ isOpen, onClose }: Props) {
     }[riskAggression]
 
     console.log('Saving AI config:', { 
-      apiKey, 
+      selectedProvider,
       selectedModel, 
       temperature, 
       maxTokens,
@@ -66,19 +83,27 @@ export function AIConfigModal({ isOpen, onClose }: Props) {
 
         {/* Content */}
         <div className="p-4 space-y-4">
-          {/* API Key */}
+          {/* Provider Selection */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium mb-2">
-              <Key className="w-4 h-4" />
-              API Key
+              <Brain className="w-4 h-4" />
+              AI Provider
             </label>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Enter your API key"
+            <select
+              value={selectedProvider}
+              onChange={(e) => {
+                setSelectedProvider(e.target.value)
+                const newProvider = providers[e.target.value as keyof typeof providers]
+                if (newProvider) {
+                  setSelectedModel(newProvider.models[0])
+                }
+              }}
               className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500"
-            />
+            >
+              {Object.entries(providers).map(([key, provider]) => (
+                <option key={key} value={key}>{provider.name}</option>
+              ))}
+            </select>
           </div>
 
           {/* Model Selection */}
@@ -92,7 +117,7 @@ export function AIConfigModal({ isOpen, onClose }: Props) {
               onChange={(e) => setSelectedModel(e.target.value)}
               className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500"
             >
-              {availableModels.map(model => (
+              {currentModels.map(model => (
                 <option key={model} value={model}>{model}</option>
               ))}
             </select>

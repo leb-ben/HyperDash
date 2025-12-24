@@ -14,9 +14,8 @@ import { signalProcessor, type TradingSignal, SignalDirection, SignalUrgency, Si
 import { safetyManager } from './safetyManager.js';
 import { feesCalculator } from './tradingFees.js';
 import { riskManager } from './riskManager.js';
-import { paperPortfolio } from './portfolio.js';
 import { config } from '../config/settings.js';
-// import { tradingModeManager } from './tradingModeManager.js'; // Temporarily disabled for debugging
+import { exchange } from '../exchange/hyperliquid.js';
 
 interface ExecutionConfig {
   enabled: boolean;
@@ -40,7 +39,7 @@ interface ExecutionResult {
 }
 
 const DEFAULT_CONFIG: ExecutionConfig = {
-  enabled: true,
+  enabled: false,  // Disabled for main AI bot focus
   minSignalStrength: 60,
   minUrgency: SignalUrgency.MEDIUM,
   maxPositionPct: 10,
@@ -102,7 +101,7 @@ class ReactiveExecutor {
     
     try {
       // Check safety
-      const portfolioState = paperPortfolio.getState();
+      const portfolioState = await exchange.getPortfolioState();
       const safetyCheck = safetyManager.checkSafety(portfolioState.totalValue);
       
       if (!safetyCheck.safe) {
@@ -137,7 +136,7 @@ class ReactiveExecutor {
    * Evaluate signal and execute trade
    */
   private async evaluateAndExecute(signal: TradingSignal): Promise<ExecutionResult> {
-    const portfolioState = paperPortfolio.getState();
+    const portfolioState = await exchange.getPortfolioState();
     const existingPosition = portfolioState.positions.find(p => p.symbol === signal.symbol);
     
     // Skip conditions
@@ -184,75 +183,8 @@ class ReactiveExecutor {
    * Execute open position
    */
   private async executeOpen(signal: TradingSignal, side: 'long' | 'short'): Promise<ExecutionResult> {
-    try {
-      const portfolioState = paperPortfolio.getState();
-      
-      // Calculate position size based on signal strength
-      const strengthMultiplier = signal.strength / 100;
-      const maxPosition = portfolioState.availableBalance * (this.config.maxPositionPct / 100);
-      const positionValue = maxPosition * strengthMultiplier;
-      
-      // Apply fees
-      const costs = feesCalculator.calculateTradeCosts(
-        positionValue,
-        side,
-        true, // market order
-        signal.price
-      );
-      
-      const size = (positionValue - costs.totalCost) / costs.effectivePrice;
-      
-      // Validate with risk manager
-      const coinConfig = config.coins.tracked.find((c: { symbol: string }) => c.symbol === signal.symbol);
-      const leverage = coinConfig?.leverage || this.config.defaultLeverage;
-      
-      // Execute trade using basic paper trading (realistic mode temporarily disabled)
-      if (config.bot.paper_trading) {
-        // Use existing simulation mode
-        // Set stop loss at 5% from entry
-        const stopLoss = side === 'long' 
-          ? costs.effectivePrice * 0.95 
-          : costs.effectivePrice * 1.05;
-        
-        // Set take profit at 10% from entry
-        const takeProfit = side === 'long'
-          ? costs.effectivePrice * 1.10
-          : costs.effectivePrice * 0.90;
-        
-        paperPortfolio.openPosition(
-          signal.symbol,
-          side,
-          size,
-          costs.effectivePrice,
-          leverage,
-          stopLoss,
-          takeProfit
-        );
-        
-        logger.info(`REACTIVE TRADE: ${side.toUpperCase()} ${signal.symbol} @ $${costs.effectivePrice.toFixed(2)} (size: ${size.toFixed(6)}, signal: ${signal.type})`);
-        
-        return {
-          success: true,
-          signal,
-          action: side === 'long' ? 'open_long' : 'open_short',
-          reason: `Opened ${side} position on ${signal.type}`,
-          executedPrice: costs.effectivePrice,
-          size,
-          fees: costs.totalCost
-        };
-      }
-      
-      // Live trading would go here
-      return this.skipResult(signal, 'Live trading not implemented');
-      
-    } catch (error) {
-      return {
-        success: false,
-        signal,
-        action: 'error',
-        reason: `Execution error: ${error}`
-      };
-    }
+    // Disabled for now - reactive trading not implemented for live mode
+    return this.skipResult(signal, 'Reactive trading disabled');
   }
 
   /**
@@ -267,9 +199,10 @@ class ReactiveExecutor {
         signal.price
       );
       
+      /*
       if (config.bot.paper_trading) {
         // Use existing simulation mode for now
-        paperPortfolio.closePosition(signal.symbol, costs.effectivePrice, signal.type);
+        // paperPortfolio.closePosition(signal.symbol, costs.effectivePrice, signal.type);
         
         logger.info(`REACTIVE CLOSE: ${signal.symbol} @ $${costs.effectivePrice.toFixed(2)} (signal: ${signal.type})`);
         
@@ -282,6 +215,7 @@ class ReactiveExecutor {
           fees: costs.totalCost
         };
       }
+      */
       
       return this.skipResult(signal, 'Live trading not implemented');
       

@@ -5,80 +5,186 @@ description: Complete remaining development tasks for AI trading bot
 # Remaining Development Workflow
 
 ## Current Status
-- ✅ Core trading engine with paper trading
-- ✅ Dashboard with real-time updates
-- ✅ AI Playground for parameter testing
-- ✅ OpenAI support (including o1 reasoning)
-- ✅ Terminal UI with read-only commands
-- ✅ Enhanced AI chat (conversational responses)
-- 🔄 Terminal mutation endpoints (position management, dashboard changes)
-- 🔄 Backend API for OpenAI Assistant functions (12 functions)
-- 🔄 Multi-exchange price feeds (Binance, Coinbase, OKX)
-- 🔄 Shadow mode implementation
-- 🔄 Backtesting engine
+- [x] Core trading engine with paper trading
+- [x] Dashboard with real-time updates
+- [x] AI Playground for parameter testing
+- [x] Cerebras AI integration (llama-3.3-70b)
+- [x] Basic terminal UI (read-only commands)
+- [x] Enhanced AI chat (conversational responses)
+- [x] Full terminal with real shell (xterm.js + child_process)
+- [ ] AI agent with terminal control
+- [ ] Multi-exchange price feeds
+- [ ] Shadow mode / backtesting
 
-## Phase 1: Complete Terminal Mutation Capabilities
+## Notes
+- **BlackBox API**: Primary AI provider (keys being fixed, ETA: end of week)
+- **Perplexity API**: Temporary primary until BlackBox keys ready
+- **Cerebras API**: Backup AI provider
+- Last updated: 2025-12-06
 
-### 1.1 Add Position Management Endpoints
+---
+
+## Phase 1: Full Terminal Integration (xterm.js + node-pty)
+
+**Goal**: Replace mock terminal with real shell access, enabling AI to control platform via commands.
+
+### 1.1 Backend: WebSocket Terminal Server
 ```bash
 # Files to create/modify:
-- src/api/positionManager.ts  (new)
-- src/api/server.ts          (add POST endpoints)
+- src/api/terminalServer.ts     (new - WebSocket + node-pty)
+- src/api/server.ts             (integrate terminal WS endpoint)
 ```
 
-**Endpoints needed:**
-- `POST /api/positions/close` - Close specific position
-- `POST /api/positions/modify` - Modify position size/SL/TP
-- `POST /api/dashboard/update` - Update dashboard settings
-- `POST /api/bot/config` - Update bot configuration
-
-### 1.2 Terminal Command Extensions
+**Dependencies:**
 ```bash
-# Extend terminal commands in src/api/server.ts:
-- positions.close [symbol]     - Close position
-- positions.modify [symbol]    - Modify SL/TP
-- dashboard.theme [dark/light] - Change theme
-- bot.config [param] [value]   - Update settings
+npm install node-pty ws @types/ws
 ```
 
-## Phase 2: Implement OpenAI Assistant Backend Functions
+**Features:**
+- Spawn real shell process (PowerShell/Bash based on OS)
+- WebSocket connection for real-time I/O
+- Session management (multiple terminals if needed)
+- Resize handling
+- Graceful shutdown
 
-### 2.1 Create Function Handlers
+### 1.2 Frontend: xterm.js Integration
+```bash
+# Files to create/modify:
+- dashboard/src/components/XTerminal.tsx  (new - replaces Terminal.tsx)
+- dashboard/package.json                   (add xterm dependencies)
+```
+
+**Dependencies (dashboard):**
+```bash
+cd dashboard && npm install xterm xterm-addon-fit xterm-addon-web-links
+```
+
+**Features:**
+- Full ANSI color support
+- Auto-resize to container
+- Copy/paste support
+- Clickable links
+- Command history (shell-native)
+
+### 1.3 Custom Bot Commands
+```bash
+# Add shell aliases/scripts for bot control:
+- bot start        -> Start trading bot
+- bot stop         -> Stop trading bot  
+- bot status       -> Show bot status
+- bot paper        -> Switch to paper mode
+- bot live         -> Switch to live mode
+- portfolio        -> Show portfolio
+- prices           -> Show current prices
+- signals          -> Show active signals
+- config [key]     -> View/edit config
+```
+
+**Implementation options:**
+- PowerShell module with bot functions
+- Bash aliases sourced on shell start
+- Custom CLI tool (TypeScript compiled to executable)
+
+---
+
+## Phase 2: AI Agent with Terminal Control
+
+**Goal**: AI can control entire platform via terminal commands with full unrestricted backend access.
+
+### Notes
+- **Current primary**: Perplexity API (temporary)
+- **Future primary**: BlackBox API (once keys fixed)
+- **Backup**: Cerebras API
+
+---
+
+## Phase 2.5: Testnet Live Trading
+
+**Goal**: Disable paper trading and run AI-driven trading on Hyperliquid testnet with real testnet coins (~1000 USDC from faucet).
+
+### Configuration Changes
+```yaml
+# config.yaml changes:
+bot:
+  paper_trading: false    # Disable paper mode
+
+exchange:
+  testnet: true           # Keep testnet enabled
+```
+
+### Requirements
+- [x] Hyperliquid testnet wallet funded (~1000 testnet USDC)
+- [ ] HYPERLIQUID_PRIVATE_KEY configured in .env (testnet wallet)
+- [ ] HYPERLIQUID_WALLET_ADDRESS configured in .env
+- [ ] AI agent operational (Phase 2 complete)
+
+### Behavior
+- AI makes all trading decisions (entry, exit, position sizing)
+- Real orders placed on Hyperliquid testnet
+- Real P&L tracking (testnet coins)
+- Full risk management active
+- Dashboard shows live positions
+
+### Activation
+```bash
+# When ready to start testnet trading:
+npm run start
+# or via terminal command once implemented:
+bot start --testnet
+```
+
+### 2.1 AI Provider Abstraction
+```bash
+# Files to create/modify:
+- src/core/aiProviders/index.ts       (new - provider interface)
+- src/core/aiProviders/perplexity.ts  (new - primary for now)
+- src/core/aiProviders/blackbox.ts    (new - future primary)
+- src/core/aiProviders/cerebras.ts    (refactor from aiEngine.ts)
+```
+
+**Provider interface:**
+```typescript
+interface AIProvider {
+  name: string;
+  chat(messages: Message[]): Promise<string>;
+  analyze(context: MarketContext): Promise<AIResponse>;
+  isAvailable(): Promise<boolean>;
+}
+```
+
+### 2.2 AI Agent with Shell Execution
 ```bash
 # Files to create:
-- src/api/assistantFunctions.ts  (new)
+- src/core/aiAgent.ts                 (new - agent orchestrator)
+- src/core/agentTools.ts              (new - tool definitions)
 ```
 
-**Functions to implement:**
-- `get_portfolio()` - Portfolio state with history
-- `get_prices()` - Multi-exchange price comparison
-- `get_signals()` - Filtered signal data
-- `analyze_trade()` - Full trade analysis with risk
-- `build_trade_strategy()` - Strategy generation
-- `save_trade_memory()` - Learning system
-- `get_market_context()` - Historical patterns
-- `web_search()` - Live market intel
-- `get_multi_exchange_prices()` - Cross-exchange data
-- `detect_price_divergence()` - Arbitrage alerts
-- `control_bot()` - Bot lifecycle
-- `get_indicators()` - Technical analysis
+**Existing open-source options to consider:**
+- **LangChain.js** - Agent framework with tool use (npm install langchain)
+- **OpenInterpreter** - Python-based, could run as subprocess
+- **Vercel AI SDK** - Lightweight, good for streaming
 
-### 2.2 API Endpoints for Assistant
+**Agent capabilities:**
+- Execute shell commands (full access)
+- Read/write files
+- Control bot lifecycle
+- Modify configuration
+- Query market data
+- Place/manage trades
+
+### 2.3 Chat Interface with Agent
 ```bash
-# Add to src/api/server.ts:
-- POST /api/assistant/portfolio
-- POST /api/assistant/prices
-- POST /api/assistant/signals
-- POST /api/assistant/analyze_trade
-- POST /api/assistant/build_strategy
-- POST /api/assistant/save_memory
-- POST /api/assistant/market_context
-- POST /api/assistant/web_search
-- POST /api/assistant/multi_exchange
-- POST /api/assistant/divergence
-- POST /api/assistant/indicators
-- POST /api/assistant/bot_control
+# Files to modify:
+- dashboard/src/components/AIChat.tsx  (connect to agent)
+- src/api/server.ts                    (agent chat endpoint)
 ```
+
+**Flow:**
+```
+User message -> AI Agent -> Decides action -> Executes via terminal/API -> Returns result
+```
+
+---
 
 ## Phase 3: Multi-Exchange Price Intelligence
 
@@ -86,82 +192,63 @@ description: Complete remaining development tasks for AI trading bot
 ```bash
 # Files to create:
 - src/core/multiExchangeFeed.ts    (new)
-- src/core/divergenceDetector.ts  (new)
-- src/core/webSearch.ts           (new)
+- src/core/divergenceDetector.ts   (new)
 ```
 
-**Exchange integrations:**
-- Binance API (primary lead source)
-- Coinbase Pro API (US institutional flow)
-- OKX API (Asia market leader)
-- Bybit API (perpetual specialist)
-- MEXC API (non-KYC alternative)
+**Exchange integrations (via ccxt):**
+- Binance (primary lead source)
+- Coinbase Pro (US institutional flow)
+- OKX (Asia market leader)
+- Bybit (perpetual specialist)
 - Hyperliquid (execution target)
 
-### 3.2 Divergence Detection Logic
+**Dependencies:**
 ```bash
-# Features:
-- Real-time price comparison
-- Volume-weighted average calculation
-- Lead/lag detection (10-60 second edge)
-- Order book depth analysis
-- Arbitrage opportunity alerts
+npm install ccxt
 ```
 
-## Phase 4: Shadow Mode Implementation
+### 3.2 Divergence Detection
+- Real-time price comparison across exchanges
+- Volume-weighted average calculation
+- Lead/lag detection (10-60 second edge)
+- Arbitrage opportunity alerts
+
+---
+
+## Phase 4: Shadow Mode & Backtesting
 
 ### 4.1 Shadow Trading Engine
 ```bash
 # Files to create:
 - src/core/shadowMode.ts          (new)
-- src/core/backtestingEngine.ts  (new)
 ```
 
-**Shadow mode features:**
+**Features:**
 - Track what bot WOULD do without executing
 - Record hypothetical trades with P&L
 - Compare shadow vs actual performance
-- Risk-free strategy testing
-- Performance analytics dashboard
 
-### 4.2 Backtesting Capabilities
+### 4.2 Backtesting Engine
 ```bash
-# Features:
+# Files to create:
+- src/core/backtestingEngine.ts   (new)
+```
+
+**Features:**
 - Historical data replay
 - Strategy parameter optimization
 - Performance metrics (Sharpe, max drawdown, win rate)
-- Visual backtest results
-- Export trade history
-```
 
-## Phase 5: Enterprise Features
+---
 
-### 5.1 Advanced Risk Management
-```bash
-# Files to modify:
-- src/core/riskManager.ts
-```
+## Phase 5: Enterprise Features (Future)
 
-**Features:**
-- Dynamic position sizing
-- Portfolio heat map
-- Correlation analysis
-- VaR (Value at Risk) calculations
-- Stress testing scenarios
-
-### 5.2 Monitoring & Alerting
-```bash
-# Files to create:
-- src/core/monitoring.ts          (new)
-- src/core/alerting.ts           (new)
-```
-
-**Features:**
-- Real-time performance monitoring
-- Custom alert thresholds
+- Advanced risk management (VaR, correlation analysis)
 - Email/Telegram notifications
-- System health checks
-- Error tracking and reporting
+- Multi-user support
+- Audit logging
+
+---
 
 ## Quick Commands
 
@@ -174,33 +261,28 @@ npm run check
 npm run paper
 npm run start:dashboard
 
-# Test OpenAI integration
-npx ts-node scripts/test-openai.ts
-
 # Run tests
 npm test
 ```
 
-## Dependencies to Add
+---
 
-```bash
-# Multi-exchange APIs
-npm install ccxt @types/node-fetch
+## Open Source Tools to Evaluate
 
-# Web search
-npm install cheerio node-fetch
+| Tool | Use Case | Link |
+|------|----------|------|
+| xterm.js | Browser terminal emulator | https://xtermjs.org |
+| node-pty | Spawn shell processes | https://github.com/microsoft/node-pty |
+| LangChain.js | AI agent framework | https://js.langchain.com |
+| Vercel AI SDK | Streaming AI responses | https://sdk.vercel.ai |
+| ccxt | Multi-exchange API | https://github.com/ccxt/ccxt |
 
-# Advanced analytics
-npm install technicalindicators lodash
-
-# Monitoring
-npm install prom-client
-```
+---
 
 ## Priority Order
 
-1. **Phase 1** - Terminal mutations (enables testing)
-2. **Phase 2** - Assistant backend functions (enables AI integration)
+1. **Phase 1** - Full terminal (enables AI control foundation)
+2. **Phase 2** - AI agent with terminal access (enables autonomous operation)
 3. **Phase 3** - Multi-exchange feeds (provides trading edge)
-4. **Phase 4** - Shadow mode (enables safe testing)
+4. **Phase 4** - Shadow mode / backtesting (enables safe testing)
 5. **Phase 5** - Enterprise features (polish & scale)

@@ -1,40 +1,117 @@
 @echo off
+title AI Trading Bot Launcher
+color 0A
+
+REM Check and install backend dependencies
+if not exist "node_modules" (
+    echo.
+    echo ========================================
+    echo   INSTALLING BACKEND DEPENDENCIES
+    echo ========================================
+    echo.
+    call bun install
+    if %errorlevel% neq 0 (
+        echo.
+        echo ❌ Failed to install backend dependencies!
+        echo Please check your Bun installation and try again.
+        pause
+        exit /b 1
+    )
+)
+
+REM Check and install dashboard dependencies
+if not exist "dashboard\node_modules" (
+    echo.
+    echo ========================================
+    echo   INSTALLING DASHBOARD DEPENDENCIES
+    echo ========================================
+    echo.
+    cd dashboard
+    call bun install
+    if %errorlevel% neq 0 (
+        echo.
+        echo ❌ Failed to install dashboard dependencies!
+        pause
+        exit /b 1
+    )
+    cd ..
+)
+
+if not exist "dist" (
+    echo.
+    echo Building project...
+    echo.
+    call bun run build
+    if %errorlevel% neq 0 (
+        echo.
+        echo ❌ Build failed!
+        echo Please fix the build errors and try again.
+        pause
+        exit /b 1
+    )
+)
+
+if not exist ".env" (
+    echo.
+    echo ========================================
+    echo   ENVIRONMENT CONFIGURATION MISSING!
+    echo ========================================
+    echo.
+    echo Please copy .env.example to .env and configure your API keys.
+    echo Required: HYPERLIQUID_PRIVATE_KEY, HYPERLIQUID_WALLET_ADDRESS
+    echo Optional: CEREBRAS_API_KEY, OPENAI_API_KEY, PERPLEXITY_API_KEY
+    echo.
+    pause
+    exit /b 1
+)
+
+echo.
 echo ========================================
-echo   AI Trading Bot + Dashboard Launcher
+echo    AI Trading Bot Launcher
 echo ========================================
 echo.
 
-REM Kill any existing processes on ports 3001 and 5175
-echo Cleaning up existing processes...
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3001') do taskkill /F /PID %%a 2>nul
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5175') do taskkill /F /PID %%a 2>nul
+REM Kill any existing processes on our ports
+echo [*] Cleaning up existing processes...
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":3003 "') do taskkill /F /PID %%a >nul 2>&1
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":5173 "') do taskkill /F /PID %%a >nul 2>&1
+timeout /t 2 /nobreak >nul
 
 echo.
-echo [1/3] Starting Trading Bot (Paper Trading Mode)...
-start "AI Trading Bot" cmd /k "cd /d %~dp0 && bun run start"
+echo [1/2] Starting AI Trading Bot Backend...
+start "AI Trading Bot Backend" cmd /k "cd /d %~dp0 && bun run dev"
 
-echo [2/3] Starting Dashboard...
-timeout /t 3 /nobreak >nul
-start "Dashboard" cmd /k "cd /d %~dp0\dashboard && bun run dev"
+echo.
+echo [*] Waiting for backend to initialize (10 seconds)...
+echo     The backend needs time to connect to exchange and load AI models
+timeout /t 10 /nobreak >nul
 
-echo [3/3] Opening Web Dashboard...
-timeout /t 5 /nobreak >nul
-start http://localhost:5175
-start http://localhost:3001/api/bot/status
+echo.
+echo [2/2] Starting Dashboard (React)...
+start "AI Trading Dashboard" cmd /k "cd /d %~dp0\dashboard && bun run dev"
+
+echo.
+echo [*] Waiting for dashboard to start (8 seconds)...
+timeout /t 8 /nobreak >nul
+
+echo.
+echo [*] Opening dashboard in browser...
+start "" http://localhost:5173
 
 echo.
 echo ========================================
-echo   ✅ Everything Started Successfully!
+echo    STARTED SUCCESSFULLY
 echo ========================================
 echo.
-echo 📡 Trading Bot API: Running on port 3001
-echo 🌐 Web Dashboard: http://localhost:5175
-echo 🤖 Bot Status: http://localhost:3001/api/bot/status
+echo    Dashboard:    http://localhost:5173
+echo    Backend API:  http://localhost:3003
+echo    Mode:         LIVE TRADING (Hyperliquid Testnet)
+echo    Wallet:       Real USDC funds
 echo.
-echo Mode: PAPER TRADING (Safe for testing)
-echo Features: Sentiment-enhanced AI, Build Mode, Risk Settings
+echo Two windows are running:
+echo    - "AI Trading Bot Backend" (port 3003)
+echo    - "AI Trading Dashboard" (port 5173)
 echo.
-echo Both windows will stay open for monitoring.
-echo Press Ctrl+C in each window to stop services.
+echo Close both windows to stop the system.
 echo.
 pause

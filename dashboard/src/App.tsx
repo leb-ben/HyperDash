@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { 
   DollarSign, Brain,
-  Zap, Settings, Send, Shield, Terminal as TerminalIcon
+  Zap, Settings, Send, Shield
 } from 'lucide-react'
 import AIModelManager from './components/AIModelManager.js';
 import AIPlayground from './components/AIPlayground.js';
 import SafetySettings from './components/SafetySettings.js';
-import Terminal from './components/Terminal.js';
+import XTerminal from './components/XTerminal.js';
+import BotLogs from './components/BotLogs.js';
 import LivePrices from './components/LivePrices.js';
 import ActiveSignals from './components/ActiveSignals.js';
 import PortfolioHistoryChart from './components/PortfolioHistoryChart.js';
@@ -15,6 +16,13 @@ import ActivityFeed from './components/ActivityFeed.js';
 import BotControl from './components/BotControl.js';
 import AIConfigModal from './components/AIConfigModal.js';
 import TestnetFaucet from './components/TestnetFaucet.js';
+import PnLDashboard from './components/PnLDashboard.js';
+import BandwidthMonitor from './components/BandwidthMonitor.js';
+import RiskSettingsPanel from './components/RiskSettingsPanel.js';
+import ManualPositionControl from './components/ManualPositionControl.js';
+import LiveAnalysisView from './components/LiveAnalysisView.js';
+import PerformanceCharts from './components/PerformanceCharts.js';
+import AlertSystem from './components/AlertSystem.js';
 
 // Types
 interface Position {
@@ -55,11 +63,14 @@ interface SystemState {
     paperTrading: boolean
   }
   portfolio: { totalValue: number; availableBalance: number; positions: Position[] }
+  realWallet?: { totalValue: number; availableBalance: number; positions: Position[] }
+  mainnetWallet?: { totalValue: number; availableBalance: number; positions: Position[] }
   signals: { active: Signal[]; stats: { totalSignals: number; activeSignals: number } }
   prices: Record<string, { price: number; change24h: number; volume24h: number }>
   executor: { totalExecutions: number; successfulExecutions: number; totalFees: number }
   safety: { globalStopLossEnabled: boolean; stopLossPercentage: number; isKilled: boolean }
   errors: { total: number }
+  ai?: { model?: string; models: any[] }
   activity: ActivityEvent[]
 }
 
@@ -79,9 +90,19 @@ function App() {
   const [showSafetySettings, setShowSafetySettings] = useState(false)
   const [showAIPlayground, setShowAIPlayground] = useState(false)
   const [showAIConfig, setShowAIConfig] = useState(false)
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', content: '👋 Hello! I\'m your trading assistant. Try "status", "signals", "positions", or "help" for commands.', timestamp: Date.now() }
-  ])
+  const [showPositionControl, setShowPositionControl] = useState(false)
+  const [activeTab, setActiveTab] = useState<'signals' | 'logs' | 'terminal' | 'pnl' | 'bandwidth' | 'risk' | 'analysis' | 'performance'>('signals')
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => {
+    const saved = localStorage.getItem('tradingbot_chat_history')
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch {
+        return [{ role: 'assistant', content: 'Hello! I\'m your trading assistant. Try "status", "signals", "positions", or "help" for commands.', timestamp: Date.now() }]
+      }
+    }
+    return [{ role: 'assistant', content: 'Hello! I\'m your trading assistant. Try "status", "signals", "positions", or "help" for commands.', timestamp: Date.now() }]
+  })
   const [chatInput, setChatInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const chatEndRef = useRef<HTMLDivElement>(null)
@@ -143,9 +164,10 @@ function App() {
     setIsLoading(false)
   }
 
-  // Auto-scroll chat
+  // Auto-scroll chat and persist to localStorage
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    localStorage.setItem('tradingbot_chat_history', JSON.stringify(chatMessages))
   }, [chatMessages])
 
   // Polling
@@ -221,15 +243,38 @@ function App() {
         
         {/* Left Column - Portfolio & Positions */}
         <div className="col-span-3 space-y-4 overflow-auto">
-          {/* Portfolio Card */}
-          <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+          {/* Main Portfolio Card - shows real wallet in live mode */}
+          <div className={`rounded-xl p-4 border ${system.bot.mode === 'live' ? 'bg-gradient-to-br from-green-900/30 to-emerald-900/20 border-green-700/30' : 'bg-slate-800/50 border-slate-700/50'}`}>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-slate-400 text-sm">Portfolio</span>
-              <DollarSign className="w-4 h-4 text-slate-500" />
+              <span className={system.bot.mode === 'live' ? 'text-green-400 text-sm' : 'text-slate-400 text-sm'}>
+                {system.bot.mode === 'live' 
+                  ? `Live Wallet ${system.config?.testnet ? '(Testnet)' : ''}` 
+                  : 'Paper Portfolio'}
+              </span>
+              <DollarSign className={`w-4 h-4 ${system.bot.mode === 'live' ? 'text-green-500' : 'text-slate-500'}`} />
             </div>
-            <div className="text-2xl font-bold mb-1">{formatCurrency(system.portfolio.totalValue)}</div>
-            <div className="text-sm text-slate-400">Available: {formatCurrency(system.portfolio.availableBalance)}</div>
+            <div className={`text-2xl font-bold mb-1 ${system.bot.mode === 'live' ? 'text-green-400' : ''}`}>
+              {formatCurrency(system.bot.mode === 'live' && system.realWallet ? system.realWallet.totalValue : system.portfolio.totalValue)}
+            </div>
+            <div className={`text-sm ${system.bot.mode === 'live' ? 'text-green-300/70' : 'text-slate-400'}`}>
+              Available: {formatCurrency(system.bot.mode === 'live' && system.realWallet ? system.realWallet.availableBalance : system.portfolio.availableBalance)}
+            </div>
           </div>
+          
+          {/* Mainnet Wallet Card (Real Money) */}
+          {system.mainnetWallet && (
+            <div className="bg-gradient-to-br from-yellow-900/20 to-amber-900/10 rounded-xl p-4 border border-yellow-700/30">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-yellow-400 text-sm">Mainnet (Real)</span>
+                <DollarSign className="w-4 h-4 text-yellow-500" />
+              </div>
+              <div className="text-2xl font-bold text-yellow-400 mb-1">{formatCurrency(system.mainnetWallet.totalValue)}</div>
+              <div className="text-sm text-yellow-300/70">Available: {formatCurrency(system.mainnetWallet.availableBalance)}</div>
+              {system.mainnetWallet.positions.length > 0 && (
+                <div className="text-xs text-yellow-400/60 mt-1">{system.mainnetWallet.positions.length} position(s)</div>
+              )}
+            </div>
+          )}
 
           {/* Stats Row */}
           <div className="grid grid-cols-2 gap-2">
@@ -247,7 +292,12 @@ function App() {
           <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-semibold">Open Positions</span>
-              <span className="text-xs text-slate-500">{system.portfolio.positions.length}</span>
+              <button 
+                onClick={() => setShowPositionControl(true)}
+                className="text-xs px-2 py-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded"
+              >
+                Manage
+              </button>
             </div>
             {system.portfolio.positions.length === 0 ? (
               <div className="text-slate-500 text-sm text-center py-4">No open positions</div>
@@ -279,22 +329,147 @@ function App() {
           <PortfolioHistoryChart data={chartData} />
         </div>
 
-        {/* Center Column - Signals & Activity Feed */}
+        {/* Center Column - Tabbed View */}
         <div className="col-span-6 space-y-4 overflow-auto">
           {/* Live Prices */}
           <LivePrices prices={system.prices || {}} />
 
-          {/* Active Signals */}
-          <ActiveSignals signals={system.signals?.active || []} />
-
-          {/* Terminal */}
-          <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex-1">
-            <div className="flex items-center gap-2 mb-3">
-              <TerminalIcon className="w-4 h-4 text-green-400" />
-              <span className="text-sm font-semibold">Command Terminal</span>
-              <span className="text-xs text-slate-500 ml-auto">Type "help" for commands</span>
+          {/* Tabbed Interface */}
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
+            {/* Tab Headers */}
+            <div className="flex border-b border-slate-700 overflow-x-auto">
+              <button
+                onClick={() => setActiveTab('signals')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'signals'
+                    ? 'bg-slate-700/50 text-blue-400 border-b-2 border-blue-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Active Signals
+              </button>
+              <button
+                onClick={() => setActiveTab('logs')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'logs'
+                    ? 'bg-slate-700/50 text-cyan-400 border-b-2 border-cyan-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Bot Diagnostics
+              </button>
+              <button
+                onClick={() => setActiveTab('pnl')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'pnl'
+                    ? 'bg-slate-700/50 text-green-400 border-b-2 border-green-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                P&L Tracking
+              </button>
+              <button
+                onClick={() => setActiveTab('bandwidth')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'bandwidth'
+                    ? 'bg-slate-700/50 text-yellow-400 border-b-2 border-yellow-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Bandwidth
+              </button>
+              <button
+                onClick={() => setActiveTab('risk')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'risk'
+                    ? 'bg-slate-700/50 text-purple-400 border-b-2 border-purple-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Risk Settings
+              </button>
+              <button
+                onClick={() => setActiveTab('analysis')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'analysis'
+                    ? 'bg-slate-700/50 text-orange-400 border-b-2 border-orange-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Live Analysis
+              </button>
+              <button
+                onClick={() => setActiveTab('performance')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'performance'
+                    ? 'bg-slate-700/50 text-pink-400 border-b-2 border-pink-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Performance
+              </button>
+              <button
+                onClick={() => setActiveTab('terminal')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'terminal'
+                    ? 'bg-slate-700/50 text-green-400 border-b-2 border-green-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Terminal
+              </button>
             </div>
-            <Terminal />
+
+            {/* Tab Content */}
+            <div className="flex-1 overflow-hidden">
+              {activeTab === 'signals' && (
+                <div className="h-full overflow-auto p-4">
+                  <ActiveSignals signals={system.signals?.active || []} />
+                </div>
+              )}
+              
+              {activeTab === 'logs' && (
+                <div className="h-full">
+                  <BotLogs className="h-full" />
+                </div>
+              )}
+
+              {activeTab === 'pnl' && (
+                <div className="h-full overflow-auto p-4">
+                  <PnLDashboard />
+                </div>
+              )}
+
+              {activeTab === 'bandwidth' && (
+                <div className="h-full overflow-auto p-4">
+                  <BandwidthMonitor />
+                </div>
+              )}
+
+              {activeTab === 'risk' && (
+                <div className="h-full overflow-auto p-4">
+                  <RiskSettingsPanel />
+                </div>
+              )}
+
+              {activeTab === 'analysis' && (
+                <div className="h-full overflow-auto p-4">
+                  <LiveAnalysisView />
+                </div>
+              )}
+
+              {activeTab === 'performance' && (
+                <div className="h-full overflow-auto p-4">
+                  <PerformanceCharts />
+                </div>
+              )}
+              
+              {activeTab === 'terminal' && (
+                <div className="h-full p-4">
+                  <XTerminal className="h-full" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -303,21 +478,48 @@ function App() {
           {/* System Status */}
           <SystemStatus system={system} />
 
-          {/* Testnet Faucet */}
-          <TestnetFaucet 
-            walletAddress={system.config?.walletAddress || 'Not configured'} 
-            isTestnet={system.config?.testnet || false} 
-            isPaperTrading={system.bot?.mode === 'paper'} 
+          {/* AI Model Selector */}
+          <AIModelSelector 
+            currentModel={system.ai?.model || 'qwen-3-235b-a22b-instruction-2507'}
+            onModelChange={async (modelId) => {
+              try {
+                const response = await fetch('/api/ai/config', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ model: modelId })
+                });
+                if (response.ok) {
+                  console.log('AI model updated:', modelId);
+                }
+              } catch (error) {
+                console.error('Failed to update AI model:', error);
+              }
+            }}
+            availableModels={system.ai?.models || []}
           />
 
           {/* Activity Feed */}
           <ActivityFeed activities={system.activity || []} />
 
+          {/* Alert System */}
+          <AlertSystem />
+
           {/* Chat Interface */}
           <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 flex-1 flex flex-col min-h-0">
-            <div className="flex items-center gap-2 p-3 border-b border-slate-700">
-              <Zap className="w-4 h-4 text-blue-400" />
-              <span className="text-sm font-semibold">AI Assistant</span>
+            <div className="flex items-center justify-between p-3 border-b border-slate-700">
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-semibold">AI Assistant</span>
+              </div>
+              <button
+                onClick={() => {
+                  setChatMessages([{ role: 'assistant', content: 'Chat history cleared. How can I help you?', timestamp: Date.now() }])
+                  localStorage.removeItem('tradingbot_chat_history')
+                }}
+                className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 rounded text-slate-400"
+              >
+                Clear
+              </button>
             </div>
             
             <div className="flex-1 overflow-auto p-3 space-y-3">
@@ -374,6 +576,13 @@ function App() {
       <SafetySettings isOpen={showSafetySettings} onClose={() => setShowSafetySettings(false)} />
       <AIPlayground isOpen={showAIPlayground} onClose={() => setShowAIPlayground(false)} />
       <AIConfigModal isOpen={showAIConfig} onClose={() => setShowAIConfig(false)} />
+      {showPositionControl && (
+        <ManualPositionControl 
+          positions={system.portfolio.positions}
+          onClose={() => setShowPositionControl(false)}
+          onRefresh={fetchSystem}
+        />
+      )}
     </div>
   )
 }

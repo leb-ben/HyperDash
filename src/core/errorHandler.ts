@@ -196,13 +196,13 @@ class ErrorHandler {
         console.error('='.repeat(60) + '\n');
         break;
       case ErrorSeverity.HIGH:
-        logger.error(`❌ HIGH: ${logMsg}`);
+        logger.error(`HIGH: ${logMsg}`);
         break;
       case ErrorSeverity.MEDIUM:
         logger.warn(`MEDIUM: ${logMsg}`);
         break;
       case ErrorSeverity.LOW:
-        logger.debug(`ℹ️ LOW: ${logMsg}`);
+        logger.debug(`LOW: ${logMsg}`);
         break;
     }
   }

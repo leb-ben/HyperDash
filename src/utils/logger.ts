@@ -1,6 +1,31 @@
 import winston from 'winston';
 import chalk from 'chalk';
 import { format } from 'date-fns';
+import TransportStream from 'winston-transport';
+
+// Custom transport for streaming logs to dashboard
+class DashboardTransport extends TransportStream {
+  private pushLog: ((level: string, message: string, meta?: any) => void) | null = null;
+
+  constructor(opts?: any) {
+    super(opts);
+  }
+
+  setPushLog(fn: (level: string, message: string, meta?: any) => void) {
+    this.pushLog = fn;
+  }
+
+  log(info: any, callback: () => void) {
+    if (this.pushLog) {
+      // Strip ANSI color codes for dashboard
+      const cleanMessage = info.message.replace(/\x1b\[[0-9;]*m/g, '');
+      this.pushLog(info.level, cleanMessage, info.meta);
+    }
+    callback();
+  }
+}
+
+const dashboardTransport = new DashboardTransport();
 
 const customFormat = winston.format.printf(({ level, message, timestamp, ...meta }) => {
   const ts = format(new Date(timestamp as string), 'yyyy-MM-dd HH:mm:ss');
@@ -54,9 +79,15 @@ export const logger = winston.createLogger({
         winston.format.timestamp(),
         winston.format.json()
       )
-    })
+    }),
+    dashboardTransport
   ]
 });
+
+// Export function to connect logger to dashboard
+export function connectDashboard(pushLog: (level: string, message: string, meta?: any) => void) {
+  dashboardTransport.setPushLog(pushLog);
+}
 
 // Trade-specific logging
 export const tradeLog = {

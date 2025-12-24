@@ -160,7 +160,7 @@ export class LearningEngine {
       Date.now()
     );
 
-    logger.info(`📝 Recorded trade: ${id}`);
+    logger.info(`Recorded trade: ${id}`);
     return id;
   }
 

@@ -130,7 +130,7 @@ What would you like to do?`,
     if (lower.includes('add') && (lower.includes('token') || lower.includes('doge') || lower.includes('coin'))) {
       const token = lower.match(/add\s+(\w+)/)?.[1]?.toUpperCase() || 'TOKEN'
       return {
-        content: `✅ I've added **${token}** to the trading rotation. The bot will start analyzing it on the next cycle.\n\nCurrent tracked tokens: BTC, ETH, SOL, HYPE, JUP, ${token}`,
+        content: `I've added **${token}** to the trading rotation. The bot will start analyzing it on the next cycle.\n\nCurrent tracked tokens: BTC, ETH, SOL, HYPE, JUP, ${token}`,
         toolCalls: [{ tool: 'addToken', result: `Added ${token} to rotation` }]
       }
     }
@@ -139,28 +139,28 @@ What would you like to do?`,
       const token = lower.match(/remove\s+(\w+)/)?.[1]?.toUpperCase() || 
                    lower.match(/stop tracking\s+(\w+)/)?.[1]?.toUpperCase() || 'TOKEN'
       return {
-        content: `✅ I've removed **${token}** from the trading rotation. Any open positions will be closed.\n\nRemaining tokens: BTC, ETH, HYPE, JUP`,
+        content: `I've removed **${token}** from the trading rotation. Any open positions will be closed.\n\nRemaining tokens: BTC, ETH, HYPE, JUP`,
         toolCalls: [{ tool: 'removeToken', result: `Removed ${token}` }]
       }
     }
 
     if (lower.includes('p&l') || lower.includes('pnl') || lower.includes('profit') || lower.includes('performance')) {
       return {
-        content: `📊 **Current Performance**\n\n• Portfolio Value: **$512.45**\n• 24h P&L: **+$12.45 (+2.49%)**\n• Win Rate: **67.5%**\n• Total Trades: **23**\n\nBest performer: BTC (+4.2%)\nWorst performer: SOL (-1.8%)`,
+        content: `**Current Performance**\n\n• Portfolio Value: **$512.45**\n• 24h P&L: **+$12.45 (+2.49%)**\n• Win Rate: **67.5%**\n• Total Trades: **23**\n\nBest performer: BTC (+4.2%)\nWorst performer: SOL (-1.8%)`,
         toolCalls: [{ tool: 'getPerformance', result: 'Retrieved stats' }]
       }
     }
 
     if (lower.includes('pause') || lower.includes('stop')) {
       return {
-        content: `⏸️ Bot has been **paused**. Auto-trading is now disabled.\n\nTo resume, just say "start trading" or "resume".`,
+        content: `Bot has been **paused**. Auto-trading is now disabled.\n\nTo resume, just say "start trading" or "resume".`,
         toolCalls: [{ tool: 'pauseBot', result: 'Bot paused' }]
       }
     }
 
     if (lower.includes('start') || lower.includes('resume')) {
       return {
-        content: `▶️ Bot has been **started**! Auto-trading is now active.\n\nNext analysis cycle in ~5 minutes.`,
+        content: `Bot has been **started**! Auto-trading is now active.\n\nNext analysis cycle in ~5 minutes.`,
         toolCalls: [{ tool: 'startBot', result: 'Bot started' }]
       }
     }
@@ -170,21 +170,21 @@ What would you like to do?`,
                       lower.includes('grid') ? 'grid' : 
                       lower.includes('momentum') ? 'momentum' : 'custom'
       return {
-        content: `🤖 Creating new bot session with **${strategy}** strategy...\n\n⚠️ **Build Mode Required**\n\nTo create custom strategies, I need to pause the main bot and enter build mode. This ensures safe configuration without interfering with active trades.\n\nWould you like me to:\n1. Enter build mode (pauses main bot)\n2. Configure alongside running bot (limited options)`,
+        content: `Creating new bot session with **${strategy}** strategy...\n\n**Build Mode Required**\n\nTo create custom strategies, I need to pause the main bot and enter build mode. This ensures safe configuration without interfering with active trades.\n\nWould you like me to:\n1. Enter build mode (pauses main bot)\n2. Configure alongside running bot (limited options)`,
         toolCalls: []
       }
     }
 
     if (lower.includes('tokens') || lower.includes('trading what') || lower.includes('what am i trading')) {
       return {
-        content: `📋 **Currently Tracked Tokens**\n\n• **BTC** - Max 25%, 3x leverage\n• **ETH** - Max 20%, 3x leverage\n• **SOL** - Max 15%, 3x leverage\n• **HYPE** - Max 10%, 3x leverage\n• **JUP** - Max 10%, 3x leverage\n\nWant me to add or remove any?`,
+        content: `**Currently Tracked Tokens**\n\n• **BTC** - Max 25%, 3x leverage\n• **ETH** - Max 20%, 3x leverage\n• **SOL** - Max 15%, 3x leverage\n• **HYPE** - Max 10%, 3x leverage\n• **JUP** - Max 10%, 3x leverage\n\nWant me to add or remove any?`,
         toolCalls: [{ tool: 'getTokens', result: 'Listed tokens' }]
       }
     }
 
     if (lower.includes('build mode')) {
       return {
-        content: `🔧 **Build Mode** ${buildMode ? 'is currently ACTIVE' : 'is currently OFF'}.\n\nIn build mode:\n• Main bot auto-trading is paused\n• You can safely modify strategies\n• Create new bot sessions\n• Edit configurations\n\nSay "enter build mode" or "exit build mode" to toggle.`,
+        content: `**Build Mode** ${buildMode ? 'is currently ACTIVE' : 'is currently OFF'}.\n\nIn build mode:\n• Main bot auto-trading is paused\n• You can safely modify strategies\n• Create new bot sessions\n• Edit configurations\n\nSay "enter build mode" or "exit build mode" to toggle.`,
         toolCalls: []
       }
     }

@@ -25,10 +25,6 @@ function loadConfig(): BotConfig {
     const config = parse(fileContents) as BotConfig;
     
     // Override with environment variables
-    if (process.env.PAPER_TRADING !== undefined) {
-      config.bot.paper_trading = process.env.PAPER_TRADING === 'true';
-    }
-    
     if (process.env.HYPERLIQUID_TESTNET !== undefined) {
       config.exchange.testnet = process.env.HYPERLIQUID_TESTNET === 'true';
     }
@@ -65,13 +61,11 @@ export function validateConfig(): boolean {
   const errors: string[] = [];
 
   // Check required env vars for live trading
-  if (!config.bot.paper_trading) {
-    if (!process.env.HYPERLIQUID_PRIVATE_KEY) {
-      errors.push('HYPERLIQUID_PRIVATE_KEY required for live trading');
-    }
-    if (!process.env.HYPERLIQUID_WALLET_ADDRESS) {
-      errors.push('HYPERLIQUID_WALLET_ADDRESS required for live trading');
-    }
+  if (!process.env.HYPERLIQUID_PRIVATE_KEY) {
+    errors.push('HYPERLIQUID_PRIVATE_KEY required for live trading');
+  }
+  if (!process.env.HYPERLIQUID_WALLET_ADDRESS) {
+    errors.push('HYPERLIQUID_WALLET_ADDRESS required for live trading');
   }
 
   if (!process.env.CEREBRAS_API_KEY) {

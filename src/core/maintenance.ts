@@ -122,8 +122,8 @@ export class MaintenanceSystem {
 
     logger.info('Maintenance complete!');
     logger.info(`   Trimmed ${report.actionsToken.dataPointsTrimmed} old records`);
-    logger.info(`   📝 Removed ${report.actionsToken.notesRemoved} redundant notes`);
-    logger.info(`   💡 Added ${report.actionsToken.notesAdded} new insights`);
+    logger.info(`   Removed ${report.actionsToken.notesRemoved} redundant notes`);
+    logger.info(`   Added ${report.actionsToken.notesAdded} new insights`);
 
     return report;
   }

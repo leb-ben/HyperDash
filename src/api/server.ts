@@ -11,13 +11,14 @@
 import http from 'http';
 import { URL } from 'url';
 import OpenAI from 'openai';
+import type { MarketReport, PortfolioState, AIResponse, CoinAnalysis, Trade } from '../types/index.js';
 import { logger } from '../utils/logger.js';
+import { getEnvOptional } from '../config/settings.js';
 import { aiOrchestrator, AI_PROVIDERS, type ModelConfig } from '../core/aiOrchestrator.js';
 import { aiEngine } from '../core/aiEngine.js';
 import { learningEngine } from '../core/learningEngine.js';
 import { maintenanceSystem } from '../core/maintenance.js';
 import { riskManager } from '../core/riskManager.js';
-import { paperPortfolio } from '../core/portfolio.js';
 import { safetyManager } from '../core/safetyManager.js';
 import { signalProcessor } from '../core/signalProcessor.js';
 import { reactiveExecutor } from '../core/reactiveExecutor.js';
@@ -25,8 +26,33 @@ import { positionManager, dashboardManager } from './positionManager.js';
 import { assistantFunctions } from './assistantFunctions.js';
 import { SecurityValidator, AuditLogger } from './security.js';
 import { realtimeFeed } from '../core/realtimeFeed.js';
+import { initTerminalServer, shutdownTerminalServer } from './terminalServer.js';
+import { initLogStreamServer, shutdownLogStreamServer, pushLog } from './logStreamServer.js';
+import { hyperliquidProxy } from '../utils/hyperliquidProxy.js';
 import { errorHandler } from '../core/errorHandler.js';
 import { config } from '../config/settings.js';
+import { exchange } from '../exchange/hyperliquid.js';
+import { connectDashboard } from '../utils/logger.js';
+import { pnlTracker } from '../core/pnlTracker.js';
+import { bandwidthTracker } from '../core/bandwidthTracker.js';
+import { dynamicRiskManager } from '../core/dynamicRiskManager.js';
+import { analysisTracker } from '../core/analysisTracker.js';
+import { alertManager } from '../core/alertManager.js';
+
+// AI Provider Clients - Initialize at module level
+const cerebras = new OpenAI({
+  apiKey: process.env.CEREBRAS_API_KEY || '',
+  baseURL: 'https://api.cerebras.ai/v1'
+});
+
+const perplexity = new OpenAI({
+  apiKey: process.env.PERPLEXITY_API_KEY || '',
+  baseURL: 'https://api.perplexity.ai'
+});
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || '',
+});
 
 // Activity log for real-time transparency
 interface ActivityEvent {
@@ -135,23 +161,23 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
 
     // Bot Control
     if (path === '/api/bot/status') {
-      const portfolio = config.bot.paper_trading ? paperPortfolio.getState() : null;
+      const portfolio = await exchange.getPortfolioState();
       const metrics = riskManager.getPerformanceMetrics();
       const learningStats = learningEngine.getStats();
       const aiConfig = aiOrchestrator.getConfig();
 
       sendJson(res, {
         running: botController?.isRunning() || false,
-        mode: config.bot.paper_trading ? 'paper' : 'live',
+        mode: 'live',
         testnet: config.exchange.testnet,
         cycleCount: botController?.getCycleCount() || 0,
         lastCycleTime: botController?.getLastCycleTime() || 0,
-        portfolio: portfolio ? {
+        portfolio: {
           totalValue: portfolio.totalValue,
           availableBalance: portfolio.availableBalance,
           unrealizedPnl: portfolio.unrealizedPnl,
           positions: portfolio.positions
-        } : null,
+        },
         performance: {
           dailyPnl: metrics.dailyPnl,
           dailyPnlPct: metrics.dailyPnlPct,
@@ -209,12 +235,38 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
 
     // AI Model Management
     if (path === '/api/ai/providers') {
-      // Return available providers with configured status
-      const providers = AI_PROVIDERS.map(p => ({
-        ...p,
-        configured: apiKeys.has(p.id) || !!process.env[`${p.id.toUpperCase()}_API_KEY`]
-      }));
-      sendJson(res, { providers });
+      sendJson(res, { 
+        providers: Object.entries(AI_PROVIDERS).map(([key, provider]) => ({
+          id: key,
+          name: provider.name,
+          models: provider.models,
+          enabled: apiKeys.has(key.toUpperCase())
+        }))
+      });
+      return;
+    }
+
+    // AI Models endpoint - get available models from registry
+    if (path === '/api/ai/models' && method === 'GET') {
+      try {
+        const { getAllModels } = await import('../core/aiProviderRegistry.js');
+        const models = getAllModels();
+        
+        sendJson(res, { 
+          models: models.map(m => ({
+            id: m.id,
+            name: m.name,
+            provider: m.provider,
+            maxTokens: m.maxTokens,
+            contextWindow: m.contextWindow,
+            rateLimits: m.rateLimits,
+            description: m.description,
+            isPreview: m.isPreview
+          }))
+        });
+      } catch (error: any) {
+        sendJson(res, { error: error.message }, 500);
+      }
       return;
     }
 
@@ -327,20 +379,52 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
 
     // Trades
     if (path === '/api/trades/recent') {
-      const trades = config.bot.paper_trading 
-        ? paperPortfolio.getTrades(20)
-        : [];
+      const trades: Trade[] = []; // Live trades executed directly on exchange
       sendJson(res, { trades });
       return;
     }
 
     // Portfolio
     if (path === '/api/portfolio') {
-      if (config.bot.paper_trading) {
-        const state = paperPortfolio.getState();
-        sendJson(res, state);
-      } else {
-        sendJson(res, { error: 'Live portfolio not implemented' }, 501);
+      const state = await exchange.getPortfolioState();
+      sendJson(res, state);
+      return;
+    }
+
+    // Real Hyperliquid wallet balance (testnet based on config)
+    if (path === '/api/wallet/real') {
+      try {
+        const realBalance = await exchange.getRealWalletBalance();
+        
+        sendJson(res, {
+          ...realBalance,
+          isTestnet: config.exchange.testnet,
+          source: 'hyperliquid'
+        });
+      } catch (error: any) {
+        sendJson(res, { 
+          error: 'Failed to fetch real wallet balance', 
+          details: error.message 
+        }, 500);
+      }
+      return;
+    }
+
+    // Mainnet wallet balance (real money, separate from trading)
+    if (path === '/api/wallet/mainnet') {
+      try {
+        const mainnetBalance = await exchange.getMainnetBalance();
+        
+        sendJson(res, {
+          ...mainnetBalance,
+          isTestnet: false,
+          source: 'hyperliquid-mainnet'
+        });
+      } catch (error: any) {
+        sendJson(res, { 
+          error: 'Failed to fetch mainnet balance', 
+          details: error.message 
+        }, 500);
       }
       return;
     }
@@ -377,14 +461,193 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
       return;
     }
 
-    // Chat endpoint - Real AI integration
+    // P&L Tracking Endpoints
+    if (path === '/api/pnl/current') {
+      const currentPnL = pnlTracker.getCurrentPnL();
+      sendJson(res, { pnl: currentPnL });
+      return;
+    }
+
+    if (path === '/api/pnl/history') {
+      const urlObj = new URL(req.url || '', 'http://localhost');
+      const period = (urlObj.searchParams.get('period') || 'day') as 'day' | 'week' | 'month' | 'all';
+      const history = pnlTracker.getHistoricalPnL(period);
+      sendJson(res, { history, period });
+      return;
+    }
+
+    if (path === '/api/pnl/statistics') {
+      const stats = pnlTracker.getStatistics();
+      sendJson(res, stats);
+      return;
+    }
+
+    if (path === '/api/performance/by-coin') {
+      // Mock data - will be replaced when pnlTracker.getCoinPerformance() is implemented
+      const coinStats = [
+        { symbol: 'BTC', trades: 15, pnl: 245.50, winRate: 66.7, avgReturn: 1.2 },
+        { symbol: 'ETH', trades: 12, pnl: 180.25, winRate: 58.3, avgReturn: 0.9 },
+        { symbol: 'SOL', trades: 8, pnl: -45.75, winRate: 37.5, avgReturn: -0.5 },
+        { symbol: 'HYPE', trades: 5, pnl: 95.00, winRate: 60.0, avgReturn: 1.5 },
+      ];
+      sendJson(res, { coins: coinStats });
+      return;
+    }
+
+    // Bandwidth Tracking Endpoints
+    if (path === '/api/bandwidth/current') {
+      const usage = bandwidthTracker.getCurrentUsage();
+      sendJson(res, {
+        used: bandwidthTracker.formatBytes(usage.used),
+        remaining: bandwidthTracker.formatBytes(usage.remaining),
+        percentage: usage.percentage.toFixed(2),
+        resetDate: usage.resetDate,
+        isNearLimit: usage.isNearLimit,
+        recommendedInterval: bandwidthTracker.getRecommendedInterval()
+      });
+      return;
+    }
+
+    if (path === '/api/bandwidth/daily') {
+      const urlObj = new URL(req.url || '', 'http://localhost');
+      const days = parseInt(urlObj.searchParams.get('days') || '30');
+      const daily = bandwidthTracker.getDailyUsage(days);
+      sendJson(res, {
+        data: daily.map(d => ({
+          date: d.date,
+          bytes: bandwidthTracker.formatBytes(d.bytes),
+          requests: d.requests
+        }))
+      });
+      return;
+    }
+
+    if (path === '/api/bandwidth/by-endpoint') {
+      const endpoints = bandwidthTracker.getUsageByEndpoint();
+      sendJson(res, {
+        endpoints: endpoints.map(e => ({
+          endpoint: e.endpoint,
+          totalBytes: bandwidthTracker.formatBytes(e.totalBytes),
+          requests: e.requestCount,
+          avgSize: bandwidthTracker.formatBytes(e.avgRequestSize)
+        }))
+      });
+      return;
+    }
+
+    if (path === '/api/bandwidth/burn-rate') {
+      const burnRate = bandwidthTracker.getDailyBurnRate();
+      sendJson(res, {
+        avgDaily: bandwidthTracker.formatBytes(burnRate.avgDaily),
+        projectedMonthly: bandwidthTracker.formatBytes(burnRate.projectedMonthly),
+        daysUntilReset: burnRate.daysUntilReset
+      });
+      return;
+    }
+
+    // Risk Settings Endpoints
+    if (path === '/api/risk/settings' && method === 'GET') {
+      const settings = dynamicRiskManager.getSettings();
+      sendJson(res, settings);
+      return;
+    }
+
+    if (path === '/api/risk/settings' && method === 'PUT') {
+      const body = await parseBody(req);
+      const { setting, value, reason } = body;
+      
+      if (!setting || value === undefined) {
+        sendError(res, 'setting and value required');
+        return;
+      }
+      
+      dynamicRiskManager.updateSetting(setting, value, reason);
+      sendJson(res, { success: true, message: `Risk setting ${setting} updated` });
+      return;
+    }
+
+    if (path === '/api/risk/explanations') {
+      const explanations = dynamicRiskManager.getSettingExplanations();
+      sendJson(res, { explanations });
+      return;
+    }
+
+    if (path === '/api/risk/presets' && method === 'GET') {
+      const urlObj = new URL(req.url || '', 'http://localhost');
+      const preset = urlObj.searchParams.get('preset') as 'conservative' | 'moderate' | 'aggressive' | null;
+      
+      if (preset) {
+        const presetSettings = dynamicRiskManager.getPreset(preset);
+        sendJson(res, { preset, settings: presetSettings });
+      } else {
+        sendJson(res, {
+          presets: ['conservative', 'moderate', 'aggressive'],
+          description: 'Available risk management presets'
+        });
+      }
+      return;
+    }
+
+    if (path === '/api/risk/presets/apply' && method === 'POST') {
+      const body = await parseBody(req);
+      const { preset } = body;
+      
+      if (!preset || !['conservative', 'moderate', 'aggressive'].includes(preset)) {
+        sendError(res, 'Valid preset required: conservative, moderate, or aggressive');
+        return;
+      }
+      
+      dynamicRiskManager.applyPreset(preset);
+      sendJson(res, { success: true, message: `Applied ${preset} risk preset` });
+      return;
+    }
+
+    if (path === '/api/risk/history') {
+      const urlObj = new URL(req.url || '', 'http://localhost');
+      const limit = parseInt(urlObj.searchParams.get('limit') || '50');
+      const history = dynamicRiskManager.getSettingsHistory(limit);
+      sendJson(res, { history });
+      return;
+    }
+
+    if (path === '/api/risk/auto-adjust' && method === 'POST') {
+      await dynamicRiskManager.autoAdjustSettings();
+      sendJson(res, { success: true, message: 'Risk settings auto-adjusted based on performance' });
+      return;
+    }
+
+    // Live Analysis Tracking
+    if (path === '/api/analysis/live') {
+      const current = analysisTracker.getCurrentAnalysis();
+      const recent = analysisTracker.getRecentAnalyses();
+      sendJson(res, { current, recent });
+      return;
+    }
+
+    // Alerts
+    if (path === '/api/alerts') {
+      const alerts = alertManager.getAlerts();
+      sendJson(res, { alerts, unreadCount: alertManager.getUnreadCount() });
+      return;
+    }
+
+    if (path === '/api/alerts/mark-read' && method === 'POST') {
+      const body = await parseBody(req);
+      if (body.id) {
+        alertManager.markAsRead(body.id);
+      } else if (body.all) {
+        alertManager.markAllAsRead();
+      }
+      sendJson(res, { success: true });
+      return;
+    }
     if (path === '/api/chat' && method === 'POST') {
       const body = await parseBody(req);
       const userMessage = body.message || '';
       
       try {
         // Get current context for AI
-        const portfolioState = paperPortfolio.getState();
+        const portfolioState = await exchange.getPortfolioState();
         const activeSignals = signalProcessor.getActiveSignals();
         const prices = realtimeFeed.getAllPrices();
         
@@ -439,7 +702,7 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
         } else if (lowerMsg.includes('start') || lowerMsg.includes('resume')) {
           if (botController) {
             await botController.start();
-            response = '▶️ Bot started! Monitoring markets...';
+            response = 'Bot started! Monitoring markets...';
             toolCalls.push({ action: 'start_bot' });
             logActivity('info', 'Chat', 'Bot started via chat command');
           }
@@ -447,7 +710,7 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
           const priceList = Array.from(prices.entries()).map(([sym, p]) => 
             `• ${sym}: $${p.price.toFixed(2)} (${p.change24h >= 0 ? '+' : ''}${p.change24h.toFixed(2)}%)`
           ).join('\n');
-          response = '💰 Current Prices:\n' + priceList;
+          response = 'Current Prices:\n' + priceList;
         } else if (lowerMsg.includes('help')) {
           response = `I can help you with:\n• "status" - Bot & portfolio status\n• "signals" - Active trading signals\n• "positions" - Open positions\n• "prices" - Current prices\n• "start/stop" - Control the bot\n• Ask me anything about trading!`;
         } else if (lowerMsg.includes('close') && lowerMsg.includes('position')) {
@@ -553,7 +816,7 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
 
     // Full system status (everything in one call)
     if (path === '/api/system') {
-      const portfolioState = paperPortfolio.getState();
+      const portfolioState = await exchange.getPortfolioState();
       
       // Mask wallet address for security
       const walletAddress = process.env.HYPERLIQUID_WALLET_ADDRESS || '';
@@ -561,19 +824,34 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
         ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
         : 'Not configured';
       
+      // Try to get real wallet balance (non-blocking)
+      let realWalletBalance = null;
+      let mainnetBalance = null;
+      try {
+        realWalletBalance = await exchange.getRealWalletBalance();
+      } catch (e) {
+        // Silently fail - real balance is optional
+      }
+      try {
+        mainnetBalance = await exchange.getMainnetBalance();
+      } catch (e) {
+        // Silently fail - mainnet balance is optional
+      }
+      
       sendJson(res, {
         bot: {
           running: botController?.isRunning() || false,
           cycleCount: botController?.getCycleCount() || 0,
           lastCycleTime: botController?.getLastCycleTime() || 0,
-          mode: config.bot.paper_trading ? 'paper' : 'live'
+          mode: 'live'
         },
         config: {
           walletAddress: maskedAddress,
-          testnet: config.exchange.testnet,
-          paperTrading: config.bot.paper_trading
+          testnet: config.exchange.testnet
         },
         portfolio: portfolioState,
+        realWallet: realWalletBalance,
+        mainnetWallet: mainnetBalance,
         signals: {
           active: signalProcessor.getActiveSignals(),
           stats: signalProcessor.getStats()
@@ -582,7 +860,23 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
         executor: reactiveExecutor.getStats(),
         safety: safetyManager.getConfig(),
         errors: errorHandler.getStats(),
-        activity: activityLog.slice(0, 20)
+        ai: {
+          model: config.ai?.model || 'qwen-3-235b-a22b-instruction-2507',
+          models: [] // Will be populated by AIModelSelector from /api/ai/models
+        },
+        proxy: {
+          ...hyperliquidProxy.getProxyStatus(),
+          bandwidth: hyperliquidProxy.getBandwidthStats()
+        }
+      });
+      return;
+    }
+
+    // Dedicated proxy bandwidth endpoint
+    if (path === '/api/proxy/bandwidth') {
+      sendJson(res, {
+        ...hyperliquidProxy.getProxyStatus(),
+        bandwidth: hyperliquidProxy.getBandwidthStats()
       });
       return;
     }
@@ -590,41 +884,21 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
     // AI Playground endpoint - test prompts with different providers/parameters
     if (path === '/api/ai/playground' && method === 'POST') {
       const body = await parseBody(req);
-      const { provider, model, systemPrompt, userPrompt, parameters } = body;
+      const { prompt, provider, model, temperature, max_tokens } = body;
       
-      if (!provider || !model || !userPrompt) {
-        sendError(res, 'provider, model, and userPrompt required');
-        return;
-      }
-
-      const apiKey = apiKeys.get(provider) || process.env[`${provider.toUpperCase()}_API_KEY`];
-      if (!apiKey) {
-        sendError(res, `API key not configured for ${provider}. Add ${provider.toUpperCase()}_API_KEY to .env`);
-        return;
-      }
-
       try {
-        let response = '';
-        let usage = { prompt: 0, completion: 0, total: 0 };
+        let response;
+        let usage;
         let cost = 0;
-
+        
         if (provider === 'cerebras') {
-          const cerebras = new OpenAI({
-            apiKey,
-            baseURL: 'https://api.cerebras.ai/v1'
-          });
-
           const completion = await cerebras.chat.completions.create({
-            model,
-            messages: [
-              { role: 'system', content: systemPrompt || 'You are a helpful trading assistant.' },
-              { role: 'user', content: userPrompt }
-            ],
-            temperature: parameters?.temperature ?? 0.3,
-            top_p: parameters?.top_p ?? 0.9,
-            max_tokens: parameters?.max_tokens ?? 1000
+            model: model || 'llama-3.3-70b',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: temperature || 0.7,
+            max_tokens: max_tokens || 2000
           });
-
+          
           response = completion.choices[0]?.message?.content || 'No response';
           usage = {
             prompt: completion.usage?.prompt_tokens || 0,
@@ -633,68 +907,53 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
           };
           // Cerebras is free tier
           cost = 0;
-
-        } else if (provider === 'openai') {
-          const openai = new OpenAI({ apiKey });
-
-          // Check if it's a reasoning model (o1 series)
-          const isReasoningModel = model.startsWith('o1');
           
-          if (isReasoningModel) {
-            // o1 models don't support temperature/top_p, use reasoning_effort instead
-            const completion = await openai.chat.completions.create({
-              model,
-              messages: [
-                { role: 'user', content: `${systemPrompt ? systemPrompt + '\n\n' : ''}${userPrompt}` }
-              ],
-              max_completion_tokens: parameters?.max_tokens ?? 2000,
-              // @ts-ignore - reasoning_effort is valid for o1 models
-              reasoning_effort: parameters?.reasoning_effort ?? 'high'
-            } as any);
-
-            response = completion.choices[0]?.message?.content || 'No response';
-            usage = {
-              prompt: completion.usage?.prompt_tokens || 0,
-              completion: completion.usage?.completion_tokens || 0,
-              total: completion.usage?.total_tokens || 0
-            };
-          } else {
-            // Standard OpenAI models
-            const completion = await openai.chat.completions.create({
-              model,
-              messages: [
-                { role: 'system', content: systemPrompt || 'You are a helpful trading assistant.' },
-                { role: 'user', content: userPrompt }
-              ],
-              temperature: parameters?.temperature ?? 0.3,
-              top_p: parameters?.top_p ?? 0.9,
-              max_tokens: parameters?.max_tokens ?? 1000
-            });
-
-            response = completion.choices[0]?.message?.content || 'No response';
-            usage = {
-              prompt: completion.usage?.prompt_tokens || 0,
-              completion: completion.usage?.completion_tokens || 0,
-              total: completion.usage?.total_tokens || 0
-            };
-          }
-
-          // Estimate cost (approximate pricing)
+        } else if (provider === 'perplexity') {
+          const completion = await perplexity.chat.completions.create({
+            model: model || 'llama-3.1-sonar-small-128k-online',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: temperature || 0.7,
+            max_tokens: max_tokens || 2000
+          });
+          
+          response = completion.choices[0]?.message?.content || 'No response';
+          usage = {
+            prompt: completion.usage?.prompt_tokens || 0,
+            completion: completion.usage?.completion_tokens || 0,
+            total: completion.usage?.total_tokens || 0
+          };
+          cost = 0; // Perplexity pricing varies
+          
+        } else if (provider === 'openai') {
+          const completion = await openai.chat.completions.create({
+            model: model || 'gpt-4-turbo',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: temperature || 0.7,
+            max_tokens: max_tokens || 2000
+          });
+          
+          response = completion.choices[0]?.message?.content || 'No response';
+          usage = {
+            prompt: completion.usage?.prompt_tokens || 0,
+            completion: completion.usage?.completion_tokens || 0,
+            total: completion.usage?.total_tokens || 0
+          };
+          
+          // Estimate cost
           const pricing: Record<string, { input: number; output: number }> = {
             'gpt-4o': { input: 0.0025, output: 0.01 },
             'gpt-4o-mini': { input: 0.00015, output: 0.0006 },
-            'gpt-4.1': { input: 0.002, output: 0.008 },
-            'gpt-3.5-turbo': { input: 0.0005, output: 0.0015 },
-            'o1': { input: 0.015, output: 0.06 },
-            'o1-mini': { input: 0.003, output: 0.012 }
+            'gpt-4-turbo': { input: 0.01, output: 0.03 }
           };
           const p = pricing[model] || { input: 0.001, output: 0.002 };
           cost = (usage.prompt / 1000 * p.input) + (usage.completion / 1000 * p.output);
+        } else {
+          throw new Error('Unsupported provider');
         }
 
         sendJson(res, { response, usage, cost });
         logActivity('info', 'Playground', `Tested ${provider}/${model} - ${usage.total} tokens`);
-
+        
       } catch (error: any) {
         logger.error('Playground error:', error);
         sendJson(res, { 
@@ -716,7 +975,7 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
       }
 
       // Fetch current system data
-      const portfolioState = paperPortfolio.getState();
+      const portfolioState = await exchange.getPortfolioState();
       const activeSignals = signalProcessor.getActiveSignals();
       const prices: Record<string, any> = {};
       realtimeFeed.getAllPrices().forEach((value, key) => {
@@ -780,7 +1039,7 @@ Analysis:
         } else if (cmd === 'bot.status' || cmd === 'status') {
           const isRunning = botController?.isRunning() || false;
           const cycleCount = botController?.getCycleCount() || 0;
-          output = `Bot Status: ${isRunning ? '🟢 RUNNING' : '🔴 STOPPED'}
+          output = `Bot Status: ${isRunning ? 'RUNNING' : 'STOPPED'}
 Cycles: ${cycleCount}
 Portfolio: $${portfolioState.totalValue.toFixed(2)}
 Positions: ${portfolioState.positions.length}
@@ -816,8 +1075,17 @@ ${portfolioState.positions.map((p: any) =>
           
         } else if (cmd === 'prices.all') {
           const priceStrings: string[] = [];
-          for (const [sym, p] of prices.entries()) {
-            priceStrings.push(`${sym}: $${p.price.toFixed(2)} (${p.change24h >= 0 ? '+' : ''}${p.change24h.toFixed(2)}%)`);
+          const priceObj: Record<string, any> = {};
+          if (prices instanceof Map) {
+            prices.forEach((value, key) => {
+              priceObj[key] = value;
+            });
+          } else if (typeof prices === 'object') {
+            Object.assign(priceObj, prices);
+          }
+          
+          for (const [sym, p] of Object.entries(priceObj)) {
+            priceStrings.push(`${sym}: $${p.price?.toFixed(2) || 'N/A'} (${p.change24h >= 0 ? '+' : ''}${p.change24h?.toFixed(2) || '0.00'}%)`);
           }
           output = priceStrings.join('\n');
           
@@ -844,11 +1112,21 @@ ${strongSignals.map((s: any) =>
           
         } else if (cmd.startsWith('analyze ')) {
           const symbol = cmd.split(' ')[1]?.toUpperCase();
-          if (symbol && prices.has(symbol)) {
-            const price = prices.get(symbol)!;
+          let hasSymbol = false;
+          let price = null;
+          
+          if (prices instanceof Map) {
+            hasSymbol = prices.has(symbol);
+            price = prices.get(symbol);
+          } else if (typeof prices === 'object') {
+            hasSymbol = symbol in prices;
+            price = prices[symbol];
+          }
+          
+          if (symbol && hasSymbol && price) {
             const signal = activeSignals.find((s: any) => s.symbol === symbol);
             output = `${symbol} Analysis:
-Price: $${price.price.toFixed(2)} (${price.change24h >= 0 ? '+' : ''}${price.change24h.toFixed(2)}%)
+Price: $${price.price?.toFixed(2) || 'N/A'} (${price.change24h >= 0 ? '+' : ''}${price.change24h?.toFixed(2) || '0.00'}%)
 Signal: ${signal ? `${signal.type} ${signal.direction} (${signal.strength}%)` : 'No signal'}
 Volume: $${price.volume24h ? price.volume24h.toFixed(0) : 'N/A'}
 Recommendation: ${signal && signal.strength >= 70 ? 'Consider trading' : 'Hold/Wait'}`;
@@ -864,7 +1142,7 @@ Recommendation: ${signal && signal.strength >= 70 ? 'Consider trading' : 'Hold/W
 Total Exposure: $${totalExposure.toFixed(2)} (${exposurePct.toFixed(1)}% of portfolio)
 Open Positions: ${portfolioState.positions.length}
 Max Leverage: 10x
-Current Risk Level: ${exposurePct > 50 ? '🔴 HIGH' : exposurePct > 25 ? '🟡 MEDIUM' : '🟢 LOW'}`;
+Current Risk Level: ${exposurePct > 50 ? 'HIGH' : exposurePct > 25 ? 'MEDIUM' : 'LOW'}`;
           
         } else if (cmd === 'clear') {
           output = 'Terminal cleared - clear command handled by frontend';
@@ -961,6 +1239,36 @@ Type 'help' for available commands`;
       return;
     }
 
+    if (path === '/api/positions/open' && method === 'POST') {
+      const body = await parseBody(req);
+      const { symbol, side, size, leverage } = body;
+      
+      if (!symbol || !side || !size || !leverage) {
+        sendError(res, 'symbol, side, size, and leverage required');
+        return;
+      }
+
+      try {
+        const result = await positionManager.openPosition(symbol, side, size, leverage);
+        sendJson(res, result);
+        logActivity('info', 'Position', `Opened ${symbol} ${side} position`);
+      } catch (error: any) {
+        sendJson(res, { success: false, message: error.message }, 500);
+      }
+      return;
+    }
+
+    if (path === '/api/positions/close-all' && method === 'POST') {
+      try {
+        const result = await positionManager.closeAllPositions();
+        sendJson(res, result);
+        logActivity('warning', 'Position', `Emergency close all: ${result.closed} positions closed`);
+      } catch (error: any) {
+        sendJson(res, { success: false, message: error.message }, 500);
+      }
+      return;
+    }
+
     if (path === '/api/positions/modify' && method === 'POST') {
       const body = await parseBody(req);
       const { symbol, size, stopLoss, takeProfit } = body;
@@ -1015,7 +1323,7 @@ Type 'help' for available commands`;
       }
 
       try {
-        const portfolioState = paperPortfolio.getState();
+        const portfolioState = await exchange.getPortfolioState();
         const activeSignals = signalProcessor.getActiveSignals();
         const prices: Record<string, any> = {};
         realtimeFeed.getAllPrices().forEach((value, key) => {
@@ -1193,7 +1501,29 @@ export function startApiServer(port: number = 3001): http.Server {
     logger.info(`Dashboard available at http://localhost:${port}/`);
   });
 
+  // Start terminal WebSocket server on port 3002
+  try {
+    initTerminalServer(3002);
+  } catch (error) {
+    logger.error('Failed to start terminal server:', error);
+  }
+
+  // Start log stream WebSocket server on port 3003
+  try {
+    initLogStreamServer(3003);
+    // Connect logger to dashboard stream
+    connectDashboard(pushLog);
+    logger.info('Logger connected to dashboard stream');
+  } catch (error) {
+    logger.error('Failed to start log stream server:', error);
+  }
+
   return server;
 }
 
-export default { startApiServer, setBotController, setApiKey };
+export function stopApiServer(): void {
+  shutdownTerminalServer();
+  shutdownLogStreamServer();
+}
+
+export default { startApiServer, stopApiServer, setBotController, setApiKey };

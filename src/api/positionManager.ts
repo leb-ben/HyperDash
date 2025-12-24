@@ -1,5 +1,5 @@
 import { logger } from '../utils/logger.js';
-import { paperPortfolio } from '../core/portfolio.js';
+import { exchange } from '../exchange/hyperliquid.js';
 import { reactiveExecutor } from '../core/reactiveExecutor.js';
 import { SecurityValidator, AuditLogger } from './security.js';
 
@@ -28,7 +28,7 @@ export class PositionManager {
         return { success: false, message: symbolValidation.error! };
       }
 
-      const portfolio = paperPortfolio.getState();
+      const portfolio = await exchange.getPortfolioState();
       const position = portfolio.positions.find(p => p.symbol === symbol);
       
       if (!position) {
@@ -39,14 +39,14 @@ export class PositionManager {
       // Get current price from feed
       const currentPrice = 95000 + Math.random() * 2000; // Mock current price - in real implementation, get from realtimeFeed
       
-      // Actually close the position using paperPortfolio
-      const trade = paperPortfolio.closePosition(symbol, currentPrice, 'terminal_command');
+      // Actually close the position using exchange
+      const success = await exchange.closePosition(symbol);
       
-      if (!trade) {
+      if (!success) {
         return { success: false, message: `Failed to close ${symbol} position` };
       }
 
-      const pnl = trade.realizedPnl || 0;
+      const pnl = 0; // Live exchange doesn't return P&L in closePosition call
       
       AuditLogger.logPositionAction('CLOSED', symbol, { 
         exitPrice: currentPrice, 
@@ -80,6 +80,106 @@ export class PositionManager {
     } catch (error: any) {
       logger.error('Failed to modify position:', error);
       return { success: false, message: `Failed to modify position: ${error.message}` };
+    }
+  }
+
+  async openPosition(symbol: string, side: 'long' | 'short', size: number, leverage: number, clientId?: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const symbolValidation = SecurityValidator.validateSymbol(symbol);
+      if (!symbolValidation.valid) {
+        SecurityValidator.logSecurityEvent('INVALID_SYMBOL', { symbol }, clientId);
+        return { success: false, message: symbolValidation.error! };
+      }
+
+      // Validate leverage
+      if (leverage < 1 || leverage > 20) {
+        return { success: false, message: 'Leverage must be between 1x and 20x' };
+      }
+
+      // Validate size
+      if (size < 10) {
+        return { success: false, message: 'Minimum position size is $10' };
+      }
+
+      // Get current price
+      const currentPrice = 95000 + Math.random() * 2000; // Mock - in real implementation, get from realtimeFeed
+      
+      // Open position via exchange
+      const success = await exchange.openPosition(symbol, side, size, leverage);
+      
+      if (!success) {
+        return { success: false, message: `Failed to open ${symbol} ${side} position` };
+      }
+
+      AuditLogger.logPositionAction('OPENED', symbol, { 
+        side,
+        size,
+        leverage,
+        entryPrice: currentPrice,
+        reason: 'manual_dashboard'
+      }, clientId);
+      
+      return { 
+        success: true, 
+        message: `✅ Opened ${symbol} ${side.toUpperCase()} position with ${leverage}x leverage`
+      };
+    } catch (error: any) {
+      logger.error('Failed to open position:', error);
+      SecurityValidator.logSecurityEvent('POSITION_OPEN_ERROR', { symbol, error: error.message }, clientId);
+      return { success: false, message: `Failed to open position: ${error.message}` };
+    }
+  }
+
+  async closeAllPositions(clientId?: string): Promise<{ success: boolean; message: string; closed: number }> {
+    try {
+      const portfolio = await exchange.getPortfolioState();
+      
+      if (portfolio.positions.length === 0) {
+        return { success: true, message: 'No positions to close', closed: 0 };
+      }
+
+      let closedCount = 0;
+      const errors: string[] = [];
+
+      for (const position of portfolio.positions) {
+        try {
+          const success = await exchange.closePosition(position.symbol);
+          if (success) {
+            closedCount++;
+            AuditLogger.logPositionAction('CLOSED', position.symbol, { 
+              reason: 'emergency_close_all'
+            }, clientId);
+          } else {
+            errors.push(position.symbol);
+          }
+        } catch (error: any) {
+          errors.push(position.symbol);
+          logger.error(`Failed to close ${position.symbol}:`, error);
+        }
+      }
+
+      SecurityValidator.logSecurityEvent('EMERGENCY_CLOSE_ALL', { 
+        total: portfolio.positions.length,
+        closed: closedCount,
+        failed: errors.length
+      }, clientId);
+
+      if (errors.length > 0) {
+        return { 
+          success: false, 
+          message: `Closed ${closedCount} positions, failed to close: ${errors.join(', ')}`,
+          closed: closedCount
+        };
+      }
+
+      return { 
+        success: true, 
+        message: `✅ Successfully closed all ${closedCount} positions`,
+        closed: closedCount
+      };
+    } catch (error: any) {
+      logger.error('Failed to close all positions:', error);
+      return { success: false, message: `Failed to close all positions: ${error.message}`, closed: 0 };
     }
   }
 }

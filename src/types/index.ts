@@ -209,7 +209,6 @@ export interface BotConfig {
     name: string;
     version: string;
     cycle_interval_ms: number;
-    paper_trading: boolean;
   };
   coins: {
     stable: string;

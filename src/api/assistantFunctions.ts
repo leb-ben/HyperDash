@@ -1,7 +1,7 @@
 import { logger } from '../utils/logger.js';
 import { realtimeFeed } from '../core/realtimeFeed.js';
 import { signalProcessor } from '../core/signalProcessor.js';
-import { paperPortfolio } from '../core/portfolio.js';
+import { exchange } from '../exchange/hyperliquid.js';
 
 export interface PriceRequest {
   symbol: string;
@@ -195,7 +195,7 @@ export class AssistantFunctions {
 
   async getPortfolio(include_history: boolean = false): Promise<{ success: boolean; data?: any; message?: string }> {
     try {
-      const portfolio = paperPortfolio.getState();
+      const portfolio = await exchange.getPortfolioState();
       
       const data: any = {
         total_value: portfolio.totalValue,

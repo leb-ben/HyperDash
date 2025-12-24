@@ -1,7 +1,8 @@
 import { Hyperliquid } from 'hyperliquid';
 import { ethers } from 'ethers';
-import { logger, tradeLog } from '../utils/logger.js';
 import { config, getEnvRequired } from '../config/settings.js';
+import { logger, tradeLog } from '../utils/logger.js';
+import { hyperliquidProxy } from '../utils/hyperliquidProxy.js';
 import type {
   OHLCV,
   Ticker,
@@ -18,6 +19,11 @@ export class HyperliquidExchange {
   private wallet: ethers.Wallet | null = null;
   private isTestnet: boolean;
   private isConnected: boolean = false;
+  
+  // Cache to reduce proxy bandwidth usage (critical for bandwidth limits)
+  private portfolioCache: PortfolioState | null = null;
+  private portfolioCacheTime: number = 0;
+  private readonly PORTFOLIO_CACHE_TTL = 30000; // 30 second cache to save bandwidth
 
   constructor() {
     this.isTestnet = config.exchange.testnet;
@@ -25,27 +31,18 @@ export class HyperliquidExchange {
 
   async connect(): Promise<void> {
     try {
-      // For paper trading, we don't need wallet auth
-      if (!config.bot.paper_trading) {
-        const privateKey = getEnvRequired('HYPERLIQUID_PRIVATE_KEY');
-        this.wallet = new ethers.Wallet(privateKey);
-        
-        this.client = new Hyperliquid({
-          privateKey,
-          testnet: this.isTestnet,
-          enableWs: false // Disable WebSocket for simplicity
-        });
-        
-        logger.info(`Connected to Hyperliquid ${this.isTestnet ? 'TESTNET' : 'MAINNET'}`);
-        logger.info(`Wallet: ${this.wallet.address}`);
-      } else {
-        // Public API only for paper trading
-        this.client = new Hyperliquid({
-          testnet: this.isTestnet,
-          enableWs: false
-        });
-        logger.info('Connected to Hyperliquid (Paper Trading Mode - Read Only)');
-      }
+      // Always use wallet auth for testnet trading
+      const privateKey = getEnvRequired('HYPERLIQUID_PRIVATE_KEY');
+      this.wallet = new ethers.Wallet(privateKey);
+      
+      this.client = new Hyperliquid({
+        privateKey,
+        testnet: this.isTestnet,
+        enableWs: false // Disable WebSocket for simplicity
+      });
+      
+      logger.info(`Connected to Hyperliquid ${this.isTestnet ? 'TESTNET' : 'MAINNET'}`);
+      logger.info(`Wallet: ${this.wallet.address}`);
       
       this.isConnected = true;
     } catch (error) {
@@ -200,47 +197,8 @@ export class HyperliquidExchange {
   // ==================== Account & Positions ====================
 
   async getPortfolioState(): Promise<PortfolioState> {
-    if (config.bot.paper_trading) {
-      // Return mock portfolio for paper trading
-      return this.getMockPortfolio();
-    }
-
-    try {
-      const client = this.ensureClient();
-      const address = getEnvRequired('HYPERLIQUID_WALLET_ADDRESS');
-      const state = await client.info.getClearinghouseState(address);
-      
-      const positions: Position[] = state.assetPositions
-        .filter((p: any) => parseFloat(p.position.szi) !== 0)
-        .map((p: any) => ({
-          symbol: p.position.coin,
-          side: parseFloat(p.position.szi) > 0 ? 'long' : 'short',
-          size: Math.abs(parseFloat(p.position.szi)),
-          entryPrice: parseFloat(p.position.entryPx),
-          currentPrice: parseFloat(p.position.positionValue) / Math.abs(parseFloat(p.position.szi)),
-          unrealizedPnl: parseFloat(p.position.unrealizedPnl),
-          unrealizedPnlPct: (parseFloat(p.position.unrealizedPnl) / parseFloat(p.position.marginUsed)) * 100,
-          leverage: parseFloat(p.position.leverage.value),
-          liquidationPrice: parseFloat(p.position.liquidationPx || '0'),
-          marginUsed: parseFloat(p.position.marginUsed),
-          openedAt: Date.now() // Not available from API directly
-        }));
-
-      const marginSummary = state.marginSummary;
-      
-      return {
-        totalValue: parseFloat(marginSummary.accountValue),
-        availableBalance: parseFloat(marginSummary.totalRawUsd),
-        marginUsed: parseFloat(marginSummary.totalMarginUsed),
-        unrealizedPnl: positions.reduce((sum, p) => sum + p.unrealizedPnl, 0),
-        positions,
-        stableBalance: parseFloat(marginSummary.totalRawUsd),
-        lastUpdated: Date.now()
-      };
-    } catch (error) {
-      tradeLog.error('getPortfolioState', error as Error);
-      throw error;
-    }
+    // Always use real wallet balance
+    return this.getRealWalletBalance();
   }
 
   private getMockPortfolio(): PortfolioState {
@@ -256,7 +214,156 @@ export class HyperliquidExchange {
     };
   }
 
+  /**
+   * Get mainnet Hyperliquid wallet balance (real money)
+   */
+  async getMainnetBalance(): Promise<PortfolioState> {
+    try {
+      const walletAddress = process.env.HYPERLIQUID_WALLET_ADDRESS;
+      
+      if (!walletAddress) {
+        throw new Error('HYPERLIQUID_WALLET_ADDRESS required');
+      }
+
+      const state = await hyperliquidProxy.makeRequest('https://api.hyperliquid.xyz/info', {
+        type: 'clearinghouseState',
+        user: walletAddress
+      });
+
+      if (!state) {
+        throw new Error('Failed to fetch mainnet balance');
+      }
+      const marginSummary = state.marginSummary || {};
+      
+      const positions: Position[] = (state.assetPositions || [])
+        .filter((p: any) => parseFloat(p.position.szi) !== 0)
+        .map((p: any) => ({
+          symbol: p.position.coin,
+          side: parseFloat(p.position.szi) > 0 ? 'long' : 'short',
+          size: Math.abs(parseFloat(p.position.szi)),
+          entryPrice: parseFloat(p.position.entryPx),
+          currentPrice: parseFloat(p.position.positionValue) / Math.abs(parseFloat(p.position.szi)),
+          unrealizedPnl: parseFloat(p.position.unrealizedPnl),
+          unrealizedPnlPct: (parseFloat(p.position.unrealizedPnl) / parseFloat(p.position.marginUsed)) * 100,
+          leverage: parseFloat(p.position.leverage?.value || '1'),
+          liquidationPrice: parseFloat(p.position.liquidationPx || '0'),
+          marginUsed: parseFloat(p.position.marginUsed),
+          openedAt: Date.now()
+        }));
+
+      return {
+        totalValue: parseFloat(marginSummary.accountValue || '0'),
+        availableBalance: parseFloat(marginSummary.totalRawUsd || '0'),
+        marginUsed: parseFloat(marginSummary.totalMarginUsed || '0'),
+        unrealizedPnl: positions.reduce((sum, p) => sum + p.unrealizedPnl, 0),
+        positions,
+        stableBalance: parseFloat(marginSummary.totalRawUsd || '0'),
+        lastUpdated: Date.now()
+      };
+    } catch (error) {
+      tradeLog.error('getMainnetBalance', error as Error);
+      throw error;
+    }
+  }
+
+  async getRealWalletBalance(): Promise<PortfolioState> {
+    try {
+      // Return cached value if still fresh (reduces proxy bandwidth)
+      const now = Date.now();
+      if (this.portfolioCache && (now - this.portfolioCacheTime) < this.PORTFOLIO_CACHE_TTL) {
+        return this.portfolioCache;
+      }
+      
+      const walletAddress = process.env.HYPERLIQUID_WALLET_ADDRESS;
+      
+      if (!walletAddress) {
+        throw new Error('HYPERLIQUID_WALLET_ADDRESS required');
+      }
+
+      // Use direct HTTP API call
+      const baseUrl = this.isTestnet 
+        ? 'https://api.hyperliquid-testnet.xyz' 
+        : 'https://api.hyperliquid.xyz';
+      
+      const state = await hyperliquidProxy.makeRequest(`${baseUrl}/info`, {
+        type: 'clearinghouseState',
+        user: walletAddress
+      });
+
+      if (!state) {
+        throw new Error('Failed to fetch real wallet balance');
+      }
+
+      logger.info(`[Portfolio] Fetched ${state.assetPositions?.length || 0} asset positions`);
+      logger.info(`[Portfolio] Account value: $${state.marginSummary?.accountValue || 0}`);
+      
+      const positions: Position[] = (state.assetPositions || [])
+        .filter((p: any) => parseFloat(p.position.szi) !== 0)
+        .map((p: any) => {
+          // Extract base symbol from PERP format (e.g., "BTC-PERP" -> "BTC")
+          const symbol = p.position.coin.replace('-PERP', '');
+          
+          return {
+            symbol,
+            side: parseFloat(p.position.szi) > 0 ? 'long' : 'short',
+            size: Math.abs(parseFloat(p.position.szi)),
+            entryPrice: parseFloat(p.position.entryPx),
+            currentPrice: parseFloat(p.position.positionValue) / Math.abs(parseFloat(p.position.szi)),
+            unrealizedPnl: parseFloat(p.position.unrealizedPnl),
+            unrealizedPnlPct: (parseFloat(p.position.unrealizedPnl) / parseFloat(p.position.marginUsed)) * 100,
+            leverage: parseFloat(p.position.leverage?.value || '1'),
+            liquidationPrice: parseFloat(p.position.liquidationPx || '0'),
+            marginUsed: parseFloat(p.position.marginUsed),
+            openedAt: Date.now()
+          };
+        });
+
+      const marginSummary = state.marginSummary || {};
+      
+      // Calculate correct values:
+      // accountValue = total portfolio value (equity)
+      // totalMarginUsed = margin locked in positions
+      // availableBalance = accountValue - totalMarginUsed (what you can use for new trades)
+      const accountValue = parseFloat(marginSummary.accountValue || '0');
+      const marginUsed = parseFloat(marginSummary.totalMarginUsed || '0');
+      const availableBalance = accountValue - marginUsed;
+      
+      const portfolio: PortfolioState = {
+        totalValue: accountValue,
+        availableBalance: Math.max(0, availableBalance), // Can't be negative
+        marginUsed: marginUsed,
+        unrealizedPnl: positions.reduce((sum, p) => sum + p.unrealizedPnl, 0),
+        positions,
+        stableBalance: parseFloat(marginSummary.totalRawUsd || '0'), // Raw USD deposited
+        lastUpdated: Date.now()
+      };
+      
+      // Update cache to reduce bandwidth on subsequent calls
+      this.portfolioCache = portfolio;
+      this.portfolioCacheTime = Date.now();
+      
+      return portfolio;
+    } catch (error) {
+      tradeLog.error('getRealWalletBalance', error as Error);
+      throw error;
+    }
+  }
+
   // ==================== Trading ====================
+
+  // Round price to valid tick size for Hyperliquid
+  private roundToTickSize(price: number, symbol: string): number {
+    // Hyperliquid tick sizes (price must be divisible by these)
+    const tickSizes: Record<string, number> = {
+      'BTC': 1,      // $1 increments
+      'ETH': 0.1,    // $0.10 increments  
+      'SOL': 0.01,   // $0.01 increments
+      'HYPE': 0.001, // $0.001 increments
+      'JUP': 0.0001, // $0.0001 increments
+    };
+    const tickSize = tickSizes[symbol] || 0.01;
+    return Math.round(price / tickSize) * tickSize;
+  }
 
   async placeOrder(
     symbol: string,
@@ -267,46 +374,118 @@ export class HyperliquidExchange {
     leverage?: number,
     reduceOnly: boolean = false
   ): Promise<Order | null> {
-    if (config.bot.paper_trading) {
-      logger.info(`[PAPER] Would place ${type} ${side} ${size} ${symbol} @ ${price || 'market'}`);
-      return null;
-    }
-
     try {
       const client = this.ensureClient();
       const perpSymbol = `${symbol}-PERP`;
       const isBuy = side === 'buy';
+      
+      // Round size to avoid SDK floatToWire precision errors
+      // Different assets have different precision requirements
+      const sizeDecimals = symbol === 'BTC' ? 5 : symbol === 'ETH' ? 4 : 2;
+      const roundedSize = Math.floor(size * Math.pow(10, sizeDecimals)) / Math.pow(10, sizeDecimals);
+      
+      if (roundedSize === 0) {
+        logger.warn(`Order size too small after rounding: ${size} -> ${roundedSize}`);
+        return null;
+      }
       
       // Set leverage if specified
       if (leverage) {
         await client.exchange.updateLeverage(perpSymbol, 'cross', leverage);
       }
 
-      const orderResult = await client.exchange.placeOrder({
+      // Log the order type being processed
+      logger.info(`[placeOrder] Processing order: ${type} ${side} ${roundedSize} ${perpSymbol}`);
+
+      let orderTypeObj: any;
+      let limitPx: number;
+      
+      switch (type) {
+        case 'market':
+          // Hyperliquid doesn't have 'market' type - use limit with Ioc (Immediate or Cancel)
+          orderTypeObj = { limit: { tif: 'Ioc' } };
+          // For market orders, use current price with slippage buffer
+          // Get current price if not provided
+          if (!price) {
+            const ticker = await this.getTicker(symbol);
+            price = ticker.price;
+          }
+          // Add 2% slippage buffer for buys, subtract for sells, then round to tick size
+          const rawLimitPx = isBuy ? (price || 0) * 1.02 : (price || 0) * 0.98;
+          limitPx = this.roundToTickSize(rawLimitPx, symbol);
+          break;
+        case 'limit':
+          orderTypeObj = { limit: { tif: 'Gtc' } };
+          limitPx = this.roundToTickSize(price || 0, symbol);
+          break;
+        case 'stop':
+          // For stop orders, use trigger order type
+          if (!price) {
+            throw new Error('Stop orders require a trigger price');
+          }
+          orderTypeObj = { 
+            trigger: { 
+              triggerPx: price.toString(), 
+              isMarket: true, 
+              tpsl: 'sl' 
+            } 
+          };
+          limitPx = 0;
+          break;
+        case 'stop_limit':
+          // For stop-limit orders
+          if (!price) {
+            throw new Error('Stop-limit orders require a trigger price');
+          }
+          orderTypeObj = { 
+            trigger: { 
+              triggerPx: price.toString(), 
+              isMarket: false, 
+              tpsl: 'sl' 
+            } 
+          };
+          limitPx = price;
+          break;
+        default:
+          throw new Error(`Unsupported order type: ${type}`);
+      }
+
+      const orderPayload = {
         coin: perpSymbol,
         is_buy: isBuy,
-        sz: size,
-        limit_px: type === 'market' ? 0 : (price || 0),
-        order_type: type === 'market' ? { market: {} } : { limit: { tif: 'Gtc' } },
+        sz: roundedSize,
+        limit_px: limitPx,
+        order_type: orderTypeObj,
         reduce_only: reduceOnly
-      } as any);
+      };
 
-      const orderId = orderResult.response?.data?.statuses?.[0]?.resting?.oid || 
-                      orderResult.response?.data?.statuses?.[0]?.filled?.oid ||
-                      'unknown';
+      // Log the exact payload being sent
+      logger.info(`[placeOrder] Sending payload: ${JSON.stringify(orderPayload)}`);
 
-      tradeLog.executed(symbol, side, size, price || 0);
+      const orderResult = await client.exchange.placeOrder(orderPayload as any);
+
+      logger.info(`[placeOrder] Order response: ${JSON.stringify(orderResult.response?.data?.statuses?.[0] || {})}`);
+
+      const status = orderResult.response?.data?.statuses?.[0];
+      const orderId = status?.resting?.oid || status?.filled?.oid || 'unknown';
+      
+      // Parse actual fill price from response
+      const fillData = status?.filled;
+      const actualFillPrice = fillData?.avgPx ? parseFloat(fillData.avgPx) : (price || 0);
+      const actualFillSize = fillData?.totalSz ? parseFloat(fillData.totalSz) : size;
+
+      tradeLog.executed(symbol, side, actualFillSize, actualFillPrice);
 
       return {
         id: orderId.toString(),
         symbol,
         type,
         side,
-        size,
-        price,
-        status: 'filled',
-        filledSize: size,
-        filledPrice: price || 0,
+        size: actualFillSize,
+        price: actualFillPrice,
+        status: fillData ? 'filled' : 'open',
+        filledSize: actualFillSize,
+        filledPrice: actualFillPrice,
         createdAt: Date.now(),
         updatedAt: Date.now()
       };
@@ -316,12 +495,29 @@ export class HyperliquidExchange {
     }
   }
 
-  async closePosition(symbol: string): Promise<boolean> {
-    if (config.bot.paper_trading) {
-      logger.info(`[PAPER] Would close position for ${symbol}`);
-      return true;
-    }
+  async openPosition(symbol: string, side: 'long' | 'short', sizeUsd: number, leverage: number): Promise<boolean> {
+    try {
+      const ticker = await this.getTicker(symbol);
+      const currentPrice = ticker.price;
+      const sizeInCoin = sizeUsd / currentPrice;
+      
+      const orderSide: OrderSide = side === 'long' ? 'buy' : 'sell';
+      const order = await this.placeOrder(symbol, orderSide, sizeInCoin, 'market', undefined, leverage);
+      
+      if (!order) {
+        logger.error(`Failed to open ${side} position for ${symbol}`);
+        return false;
+      }
 
+      logger.info(`Opened ${side} position: ${symbol} ${sizeInCoin.toFixed(4)} @ $${currentPrice.toFixed(2)} with ${leverage}x leverage`);
+      return true;
+    } catch (error) {
+      tradeLog.error('openPosition', error as Error);
+      return false;
+    }
+  }
+
+  async closePosition(symbol: string): Promise<boolean> {
     try {
       const portfolio = await this.getPortfolioState();
       const position = portfolio.positions.find(p => p.symbol === symbol);
@@ -342,11 +538,6 @@ export class HyperliquidExchange {
   }
 
   async setStopLoss(symbol: string, stopPrice: number): Promise<boolean> {
-    if (config.bot.paper_trading) {
-      logger.info(`[PAPER] Would set stop loss for ${symbol} @ ${stopPrice}`);
-      return true;
-    }
-
     try {
       const portfolio = await this.getPortfolioState();
       const position = portfolio.positions.find(p => p.symbol === symbol);
@@ -384,11 +575,6 @@ export class HyperliquidExchange {
   }
 
   async setTakeProfit(symbol: string, takeProfitPrice: number): Promise<boolean> {
-    if (config.bot.paper_trading) {
-      logger.info(`[PAPER] Would set take profit for ${symbol} @ ${takeProfitPrice}`);
-      return true;
-    }
-
     try {
       const portfolio = await this.getPortfolioState();
       const position = portfolio.positions.find(p => p.symbol === symbol);

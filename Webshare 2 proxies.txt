@@ -1,0 +1,16 @@
+
+31.59.20.176:6754:hfcdichy:z6wrmdeybunf
+198.105.121.200:6462:hfcdichy:z6wrmdeybunf
+
+Curl connection example:
+	curl --proxy "http://hfcdichy:z6wrmdeybunf@31.59.20.176:6754/" https://ipv4.webshare.io/
+
+NodeJS connection example(we should confirm if this works with BUN):
+	require('request-promise')({
+	  url: 'http://ipv4.webshare.io/',
+	  proxy: 'http://hfcdichy:z6wrmdeybunf@31.59.20.176:6754'
+	}).then(function(data){
+	  console.log(data); 
+	}, function(err){ 
+	  console.error(err); 
+	});

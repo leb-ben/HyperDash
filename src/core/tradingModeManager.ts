@@ -1,5 +1,4 @@
 import { logger } from '../utils/logger.js';
-import { paperPortfolio } from './portfolio.js';
 import { realisticPaperTrader, RealisticPaperTrader } from './realisticPaperTrader.js';
 import { realtimeFeed } from './realtimeFeed.js';
 
@@ -33,20 +32,8 @@ export class TradingModeManager {
   }
 
   private determineMode(): TradingMode {
-    const isLive = process.env.LIVE_TRADING === 'true';
-    const isRealisticPaper = process.env.REALISTIC_PAPER_TRADING === 'true';
-    const isPaper = process.env.PAPER_TRADING === 'true';
-
-    if (isLive) {
-      return 'live';
-    } else if (isRealisticPaper && isPaper) {
-      return 'realistic_paper';
-    } else if (isPaper) {
-      return 'simulation';
-    } else {
-      logger.warn('No valid trading mode specified, defaulting to simulation');
-      return 'simulation';
-    }
+    // Always live trading on testnet since paper trading removed
+    return 'live';
   }
 
   private loadConfig(): TradingModeConfig {
@@ -166,7 +153,7 @@ export class TradingModeManager {
         }
         return this.realisticTrader.getPortfolioState();
       case 'simulation':
-        return paperPortfolio.getState();
+        return { error: 'Simulation mode not available - using live trading only' };
       case 'live':
         return { error: 'Live trading not implemented yet' };
       default:
@@ -268,18 +255,9 @@ export class TradingModeManager {
   }
 
   private getSimulationPerformance(): any {
-    const portfolio = paperPortfolio.getState();
     return {
-      startTime: Date.now() - (24 * 60 * 60 * 1000),
-      endTime: Date.now(),
-      startingBalance: 100000, // Simulation default
-      endingBalance: portfolio.totalValue,
-      profitLoss: portfolio.totalValue - 100000,
-      profitLossPercent: ((portfolio.totalValue - 100000) / 100000) * 100,
-      totalFees: 0, // Simulation doesn't track fees
-      tradesExecuted: portfolio.positions.length,
-      feeToProfitRatio: 0,
-      mode: 'simulation'
+      error: 'Simulation performance not available - using live trading only',
+      mode: 'live'
     };
   }
 

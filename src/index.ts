@@ -1,3 +1,6 @@
+// MUST BE FIRST: Patch global fetch to use proxy before any SDK imports
+import './utils/globalProxySetup.js';
+
 import { config, validateConfig } from './config/settings.js';
 import { exchange } from './exchange/hyperliquid.js';
 import { dataCollector } from './core/dataCollector.js';
@@ -5,7 +8,6 @@ import { aiEngine } from './core/aiEngine.js';
 import { aiOrchestrator } from './core/aiOrchestrator.js';
 import { executor } from './core/executor.js';
 import { riskManager } from './core/riskManager.js';
-import { paperPortfolio } from './core/portfolio.js';
 import { learningEngine } from './core/learningEngine.js';
 import { maintenanceSystem } from './core/maintenance.js';
 import { startApiServer, setBotController, logActivity } from './api/server.js';
@@ -14,6 +16,9 @@ import { safetyManager } from './core/safetyManager.js';
 import { signalProcessor } from './core/signalProcessor.js';
 import { realtimeFeed } from './core/realtimeFeed.js';
 import { reactiveExecutor } from './core/reactiveExecutor.js';
+import { pnlTracker } from './core/pnlTracker.js';
+import { bandwidthTracker } from './core/bandwidthTracker.js';
+import { dynamicRiskManager } from './core/dynamicRiskManager.js';
 import { logger, tradeLog } from './utils/logger.js';
 import type { MarketReport, PortfolioState, AIResponse, CoinAnalysis } from './types/index.js';
 
@@ -40,20 +45,23 @@ class TradingBot {
   }
 
   async startBot(): Promise<void> {
-    if (this.isRunning) return;
+    if (this.isRunning) {
+      logger.warn('startBot called but already running - ignoring');
+      return;
+    }
+    logger.info('>>> BOT STARTING - User initiated start');
     this.isRunning = true;
     await this.runCycle();
     this.intervalId = setInterval(
       () => this.runCycle(),
       config.bot.cycle_interval_ms
     );
-    logger.info('Bot started via API');
+    logger.info('Bot started via dashboard - trading active');
   }
 
   async start(): Promise<void> {
     logger.info('═══════════════════════════════════════════');
     logger.info(`  ${config.bot.name} v${config.bot.version}`);
-    logger.info(`  Mode: ${config.bot.paper_trading ? 'PAPER TRADING' : 'LIVE TRADING'}`);
     logger.info(`  Exchange: ${config.exchange.name} (${config.exchange.testnet ? 'testnet' : 'mainnet'})`);
     logger.info('═══════════════════════════════════════════');
 
@@ -104,6 +112,16 @@ class TradingBot {
     logger.info('Starting reactive executor...');
     reactiveExecutor.start();
 
+    // Start API server for dashboard
+    logger.info('Starting API server...');
+    // const server = startApiServer(0);
+    // server.on('listening', () => {
+    //   const address = server.address();
+    //   if (address && typeof address === 'object') {
+    //     logger.info(`Dashboard available at: http://localhost:${address.port}`);
+    //   }
+    // });
+
     // Log signal processor status
     signalProcessor.on('urgent-signal', (signal) => {
       logger.info(`URGENT SIGNAL: ${signal.symbol} ${signal.type} ${signal.direction} (${signal.strength}%)`);
@@ -111,16 +129,8 @@ class TradingBot {
 
     logger.info('───────────────────────────────────────────');
 
-    this.isRunning = true;
-
-    // Run first cycle immediately
-    await this.runCycle();
-
-    // Schedule recurring cycles
-    this.intervalId = setInterval(
-      () => this.runCycle(),
-      config.bot.cycle_interval_ms
-    );
+    // Start in PAUSED state - user must explicitly start trading from dashboard
+    this.isRunning = false;
 
     // Handle graceful shutdown
     process.on('SIGINT', () => this.shutdown());
@@ -136,7 +146,8 @@ class TradingBot {
     });
     startApiServer(3001);
 
-    logger.info('Bot started. Press Ctrl+C to stop.');
+    logger.info('Bot initialized in PAUSED state.');
+    logger.info('Use the dashboard to configure settings and START trading.');
   }
 
   private async runCycle(): Promise<void> {
@@ -193,12 +204,6 @@ class TradingBot {
       // Step 2: Get portfolio state
       const portfolio = await this.getPortfolioState();
 
-      // Update prices in paper portfolio if paper trading
-      if (config.bot.paper_trading) {
-        const prices = new Map(coinAnalyses.map(c => [c.symbol, c.ticker.price]));
-        paperPortfolio.updatePrices(prices);
-      }
-
       // Step 3: Build market report
       const report = this.buildMarketReport(coinAnalyses, portfolio, sentimentData);
 
@@ -206,11 +211,6 @@ class TradingBot {
       logger.debug('Requesting AI analysis...');
       logActivity('info', 'AI', `Analyzing ${coinAnalyses.length} coins...`);
       const aiResponse = await aiEngine.analyzeMarket(report);
-
-      // Save AI decision
-      if (config.bot.paper_trading) {
-        paperPortfolio.saveAIDecision(aiResponse);
-      }
 
       // Log AI analysis
       logger.info(`Market: ${aiResponse.marketRegime} | Risk: ${aiResponse.riskLevel}`);
@@ -227,37 +227,36 @@ class TradingBot {
 
       // Log each AI decision
       for (const decision of aiResponse.decisions) {
-        logActivity('ai_decision', 'AI', 
-          `${decision.action} ${decision.symbol} (${decision.confidence}% confidence): ${decision.reason?.substring(0, 80) || 'No reason'}...`
-        );
+        const decisionLog = `DECISION ${decision.symbol} ${decision.action} ${decision.side || 'long'} (${decision.confidence}% confidence) - ${decision.reason || 'No reason'}`;
+        logger.info(decisionLog);
+        logActivity('ai_decision', 'AI', decisionLog);
       }
 
-      // Step 5: Process pending orders (realistic paper trading)
-      if (config.bot.paper_trading) {
-        const pendingResults = reactiveExecutor.processPendingOrders();
-        if (pendingResults.length > 0) {
-          logger.info(`Processed ${pendingResults.length} pending orders`);
-          pendingResults.forEach(result => {
-            logActivity('trade', 'Executor', result.message);
-          });
-        }
-      }
-
-      // Step 6: Execute decisions
+      // Step 5: Execute decisions
       if (aiResponse.decisions.length > 0) {
         logger.info(`Executing ${aiResponse.decisions.length} trading decisions...`);
         logActivity('trade', 'Executor', `Executing ${aiResponse.decisions.length} trade decisions`);
         
-        if (config.bot.paper_trading) {
-          await this.executePaperTrades(aiResponse, portfolio);
-        } else {
-          await executor.executeDecisions(aiResponse, portfolio);
-        }
+        const executedTrades = await executor.executeDecisions(aiResponse, portfolio);
+        logger.info(`Executed ${executedTrades.length} trades successfully`);
       }
 
       // Step 6: Update risk manager
       const updatedPortfolio = await this.getPortfolioState();
       riskManager.updateHighWaterMark(updatedPortfolio.totalValue);
+
+      // Step 7: Record P&L snapshot
+      pnlTracker.recordSnapshot(updatedPortfolio);
+      
+      // Step 8: Check bandwidth usage
+      const bandwidthUsage = bandwidthTracker.getCurrentUsage();
+      if (bandwidthUsage.isNearLimit) {
+        logger.warn(`Bandwidth usage high: ${bandwidthUsage.percentage.toFixed(2)}%`);
+        logActivity('warning', 'Bandwidth', `Usage at ${bandwidthUsage.percentage.toFixed(2)}%`);
+      }
+
+      // Step 9: Auto-adjust risk settings if enabled
+      await dynamicRiskManager.autoAdjustSettings();
 
       const duration = Date.now() - startTime;
       logger.debug(`Cycle ${this.cycleCount} completed in ${duration}ms`);
@@ -268,9 +267,6 @@ class TradingBot {
   }
 
   private async getPortfolioState(): Promise<PortfolioState> {
-    if (config.bot.paper_trading) {
-      return paperPortfolio.getState();
-    }
     return exchange.getPortfolioState();
   }
 
@@ -291,104 +287,10 @@ class TradingBot {
         socialSentiment: sentimentData?.socialSentiment || {},
         newsCount: sentimentData?.newsCount || {}
       },
-      recentTrades: config.bot.paper_trading 
-        ? paperPortfolio.getTrades(10)
-        : executor.getExecutedTrades().slice(-10),
-      recentDecisions: config.bot.paper_trading
-        ? paperPortfolio.getRecentDecisions(3)
-        : [aiEngine.getLastDecision()].filter(Boolean) as AIResponse[],
+      recentTrades: executor.getExecutedTrades().slice(-10),
+      recentDecisions: [aiEngine.getLastDecision()].filter(Boolean) as AIResponse[],
       botPerformance: riskManager.getPerformanceMetrics()
     };
-  }
-
-  private async executePaperTrades(
-    aiResponse: AIResponse,
-    portfolio: PortfolioState
-  ): Promise<void> {
-    for (const decision of aiResponse.decisions) {
-      if (decision.action === 'HOLD') continue;
-
-      const prices = new Map<string, number>();
-      const marketData = await dataCollector.collectMarketData();
-      marketData.analyses.forEach(c => prices.set(c.symbol, c.ticker.price));
-
-      const currentPrice = prices.get(decision.symbol);
-      if (!currentPrice) continue;
-
-      switch (decision.action) {
-        case 'BUY': {
-          const riskCheck = riskManager.validateTrade(decision, portfolio, currentPrice);
-          if (!riskCheck.allowed) {
-            logger.warn(`[PAPER] Trade rejected: ${riskCheck.reason}`);
-            continue;
-          }
-
-          const size = riskManager.calculatePositionSize(decision, portfolio, currentPrice);
-          const leverage = decision.leverage || config.risk.default_leverage;
-          const stopLoss = decision.stopLoss || 
-            riskManager.calculateStopLoss(currentPrice, decision.side || 'long');
-          const takeProfit = decision.takeProfit ||
-            riskManager.calculateTakeProfit(currentPrice, decision.side || 'long');
-
-          paperPortfolio.openPosition(
-            decision.symbol,
-            decision.side || 'long',
-            size,
-            currentPrice,
-            leverage,
-            stopLoss,
-            takeProfit
-          );
-
-          // Record trade for learning
-          const analysis = this.lastCoinAnalyses.find(c => c.symbol === decision.symbol);
-          if (analysis) {
-            const tradeId = learningEngine.recordTrade(decision, analysis, currentPrice, size);
-            this.activeTradeIds.set(decision.symbol, tradeId);
-          }
-          break;
-        }
-
-        case 'SELL': {
-          // Open short position
-          const riskCheck = riskManager.validateTrade(decision, portfolio, currentPrice);
-          if (!riskCheck.allowed) continue;
-
-          const size = riskManager.calculatePositionSize(decision, portfolio, currentPrice);
-          const leverage = decision.leverage || config.risk.default_leverage;
-          const stopLoss = decision.stopLoss ||
-            riskManager.calculateStopLoss(currentPrice, 'short');
-
-          paperPortfolio.openPosition(
-            decision.symbol,
-            'short',
-            size,
-            currentPrice,
-            leverage,
-            stopLoss
-          );
-          break;
-        }
-
-        case 'CLOSE': {
-          // Record trade outcome before closing
-          const tradeId = this.activeTradeIds.get(decision.symbol);
-          const position = portfolio.positions.find(p => p.symbol === decision.symbol);
-          if (tradeId && position) {
-            learningEngine.closeTrade(tradeId, currentPrice, position.unrealizedPnl);
-            this.activeTradeIds.delete(decision.symbol);
-          }
-          
-          paperPortfolio.closePosition(decision.symbol, currentPrice, 'ai_decision');
-          break;
-        }
-
-        case 'REDUCE': {
-          paperPortfolio.reducePosition(decision.symbol, decision.percentage, currentPrice);
-          break;
-        }
-      }
-    }
   }
 
   async shutdown(): Promise<void> {

@@ -224,13 +224,13 @@ export class AIOrchestrator {
   private plannerIntervalMs: number = 15 * 60 * 1000; // 15 minutes
 
   constructor() {
-    // Default executor is Cerebras Llama
+    // Default executor is Cerebras GPT-OSS-120B
     this.executorConfig = {
       providerId: 'cerebras',
-      modelId: config.ai.model || 'llama-3.3-70b',
+      modelId: config.ai.model || 'gpt-oss-120b',
       apiKey: process.env.CEREBRAS_API_KEY || '',
       temperature: config.ai.temperature || 0.3,
-      maxTokens: config.ai.max_tokens || 2000
+      maxTokens: config.ai.max_tokens || 4000
     };
   }
 
@@ -278,7 +278,7 @@ export class AIOrchestrator {
    */
   setPlannerModel(config: ModelConfig): void {
     this.plannerConfig = config;
-    logger.info(`🧠 Planner model set: ${config.providerId}/${config.modelId}`);
+    logger.info(`Planner model set: ${config.providerId}/${config.modelId}`);
   }
 
   /**
@@ -295,7 +295,7 @@ export class AIOrchestrator {
   disablePlanner(): void {
     this.plannerConfig = null;
     this.currentDirective = null;
-    logger.info('🧠 Planner disabled - using executor only');
+    logger.info('Planner disabled - using executor only');
   }
 
   /**
@@ -323,7 +323,7 @@ export class AIOrchestrator {
       return; // Directive still valid
     }
 
-    logger.info('🧠 Running planner model for strategic analysis...');
+    logger.info('Running planner model for strategic analysis...');
     
     try {
       const client = this.getClient(this.plannerConfig.providerId, this.plannerConfig.apiKey);
@@ -341,7 +341,7 @@ export class AIOrchestrator {
       });
 
       const responseTime = Date.now() - startTime;
-      logger.info(`🧠 Planner response: ${responseTime}ms`);
+      logger.info(`Planner response: ${responseTime}ms`);
 
       const content = completion.choices[0]?.message?.content;
       if (content) {
@@ -489,7 +489,7 @@ export class AIOrchestrator {
     }
 
     // Coin Analysis
-    prompt += `🪙 COIN ANALYSIS\n`;
+    prompt += `COIN ANALYSIS\n`;
     for (const coin of report.coins) {
       prompt += `\n═══ ${coin.symbol} ═══\n`;
       prompt += `Price: $${coin.ticker.price.toFixed(4)}\n`;
@@ -507,7 +507,7 @@ export class AIOrchestrator {
     // Learning context
     const learningContext = learningEngine.getLearningContext();
     if (learningContext) {
-      prompt += `\n🧠 LEARNED FROM PAST TRADES\n${learningContext}`;
+      prompt += `\nLEARNED FROM PAST TRADES\n${learningContext}`;
     }
 
     prompt += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
