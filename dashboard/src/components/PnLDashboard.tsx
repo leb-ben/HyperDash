@@ -38,13 +38,20 @@ export default function PnLDashboard() {
   const fetchPnLData = async () => {
     try {
       const response = await fetch(`/api/pnl/current`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
       const data = await response.json();
+      console.log('PnL API response:', data);
       if (data.pnl) {
         setPnlData(data.pnl);
+      } else {
+        console.warn('No pnl data in response:', data);
       }
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch P&L data:', error);
+      setLoading(false);
     }
   };
 

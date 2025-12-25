@@ -35,20 +35,26 @@ export default function BandwidthMonitor() {
         fetch('/api/bandwidth/burn-rate')
       ]);
 
+      if (!usageRes.ok || !burnRes.ok) {
+        throw new Error('Bandwidth API error');
+      }
+
       const usageData = await usageRes.json();
       const burnData = await burnRes.json();
 
+      console.log('Bandwidth API response:', usageData, burnData);
       setUsage(usageData);
       setBurnRate(burnData);
       
       // Save to persistence
-      const used = parseFloat(usageData.used.replace(/[^0-9.]/g, '')) || 0;
-      const limit = parseFloat(usageData.limit.replace(/[^0-9.]/g, '')) || 1000000000;
+      const used = parseFloat((usageData.used || '0').replace(/[^0-9.]/g, '')) || 0;
+      const limit = parseFloat((usageData.limit || '1000000000').replace(/[^0-9.]/g, '')) || 1000000000;
       saveBandwidthData(used, limit);
       
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch bandwidth data:', error);
+      setLoading(false);
     }
   };
 

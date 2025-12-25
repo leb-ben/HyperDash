@@ -40,14 +40,20 @@ export default function RiskSettingsPanel() {
         fetch('/api/risk/explanations')
       ]);
 
+      if (!settingsRes.ok || !explanationsRes.ok) {
+        throw new Error('Risk API error');
+      }
+
       const settingsData = await settingsRes.json();
       const explanationsData = await explanationsRes.json();
 
+      console.log('Risk API response:', settingsData, explanationsData);
       setSettings(settingsData);
-      setExplanations(explanationsData.explanations);
+      setExplanations(explanationsData.explanations || []);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch risk settings:', error);
+      setLoading(false);
     }
   };
 

@@ -10,7 +10,6 @@ import LivePrices from './components/LivePrices.js';
 import ActiveSignals from './components/ActiveSignals.js';
 import PortfolioHistoryChart from './components/PortfolioHistoryChart.js';
 import SystemStatus from './components/SystemStatus.js';
-import ActivityFeed from './components/ActivityFeed.js';
 import BotControl from './components/BotControl.js';
 import PnLDashboard from './components/PnLDashboard.js';
 import BandwidthMonitor from './components/BandwidthMonitor.js';
@@ -548,9 +547,6 @@ function App() {
         <div className="col-span-3 flex flex-col space-y-4">
           {/* System Status */}
           <SystemStatus system={system} />
-
-          {/* Activity Feed */}
-          <ActivityFeed activities={system.activity || []} />
 
           {/* Alert System */}
           <AlertSystem />
