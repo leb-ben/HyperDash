@@ -203,7 +203,7 @@ export function loadPositions() {
  */
 export function saveAlertSettings(settings: any): boolean {
   const data = loadDashboardData();
-  data.settings.alerts = { ...data.settings.alerts, ...settings };
+  data.settings = { ...data.settings, ...settings };
   return saveDashboardData({ settings: data.settings });
 }
 
@@ -212,7 +212,7 @@ export function saveAlertSettings(settings: any): boolean {
  */
 export function loadAlertSettings() {
   const data = loadDashboardData();
-  return data.settings.alerts;
+  return data.settings;
 }
 
 /**
