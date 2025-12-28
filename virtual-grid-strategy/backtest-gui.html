@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamburger Bot Backtesting</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    h1 { color: #1e293b; margin-bottom: 8px; }
+    .subtitle { color: #64748b; margin-bottom: 24px; }
+    .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-label { font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 4px; }
+    .form-input, .form-select { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+    .form-input:focus, .form-select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    .btn { padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; border: none; }
+    .btn-primary { background: #3b82f6; color: white; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary { background: #f3f4f6; color: #374151; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .progress-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 12px; }
+    .progress-fill { height: 100%; background: #3b82f6; transition: width 0.3s; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .metric-card { background: #f8fafc; padding: 16px; border-radius: 6px; }
+    .metric-label { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+    .metric-value { font-size: 24px; font-weight: 600; color: #1e293b; }
+    .metric-change { font-size: 14px; margin-top: 4px; }
+    .positive { color: #059669; }
+    .negative { color: #dc2626; }
+    .error { color: #dc2626; font-size: 14px; display: flex; align-items: center; gap: 4px; }
+    .table { width: 100%; border-collapse: collapse; }
+    .table th { text-align: left; padding: 8px; font-size: 12px; font-weight: 500; color: #64748b; background: #f8fafc; }
+    .table td { padding: 8px; font-size: 14px; border-top: 1px solid #e5e7eb; }
+    .badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+    .badge-long { background: #dcfce7; color: #166534; }
+    .badge-short { background: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { Play, Pause, Download, Settings, TrendingUp, AlertCircle } = lucide;
+
+    // Available symbols with their max leverage
+    const SYMBOLS = [
+      { name: 'BTC', maxLeverage: 40, category: 'Tier 1' },
+      { name: 'ETH', maxLeverage: 40, category: 'Tier 1' },
+      { name: 'SOL', maxLeverage: 40, category: 'Tier 1' },
+      { name: 'XRP', maxLeverage: 40, category: 'Tier 1' },
+      { name: 'DOGE', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'SUI', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'WLD', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'LTC', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'LINK', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'AVAX', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'HYPE', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'TIA', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'APT', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'NEAR', maxLeverage: 20, category: 'Tier 2' },
+      { name: 'OP', maxLeverage: 10, category: 'Tier 3' },
+      { name: 'ARB', maxLeverage: 10, category: 'Tier 3' },
+      { name: 'LDO', maxLeverage: 10, category: 'Tier 3' },
+      { name: 'TON', maxLeverage: 10, category: 'Tier 3' },
+      { name: 'BNB', maxLeverage: 10, category: 'Tier 3' },
+      { name: 'DOT', maxLeverage: 10, category: 'Tier 3' },
+      { name: 'AAVE', maxLeverage: 5, category: 'Tier 4' },
+      { name: 'UNI', maxLeverage: 5, category: 'Tier 4' },
+      { name: 'USDC', maxLeverage: 3, category: 'Stablecoins' },
+      { name: 'USDT', maxLeverage: 3, category: 'Stablecoins' }
+    ];
+
+    function BacktestApp() {
+      const [config, setConfig] = useState({
+        symbol: 'BTC',
+        startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        endDate: new Date().toISOString().split('T')[0],
+        initialCapital: 10000,
+        leverage: 10,
+        gridSpacing: 1.0,
+        aggressiveness: 'medium',
+        confidenceThreshold: 70
+      });
+
+      const [isRunning, setIsRunning] = useState(false);
+      const [progress, setProgress] = useState(0);
+      const [result, setResult] = useState(null);
+      const [error, setError] = useState(null);
+
+      const getMaxLeverage = () => {
+        const symbol = SYMBOLS.find(s => s.name === config.symbol);
+        return symbol?.maxLeverage || 3;
+      };
+
+      const handleConfigChange = (field, value) => {
+        setConfig(prev => ({ ...prev, [field]: value }));
+        
+        if (field === 'symbol') {
+          const maxLeverage = getMaxLeverage();
+          if (config.leverage > maxLeverage) {
+            setConfig(prev => ({ ...prev, leverage: maxLeverage }));
+          }
+        }
+      };
+
+      const runBacktest = async () => {
+        setIsRunning(true);
+        setProgress(0);
+        setError(null);
+        setResult(null);
+
+        try {
+          const response = await fetch('/api/backtest/hamburger/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              symbol: config.symbol,
+              startTime: new Date(config.startDate).getTime(),
+              endTime: new Date(config.endDate).getTime(),
+              config: {
+                totalInvestmentUsd: config.initialCapital,
+                leverage: config.leverage,
+                gridSpacing: config.gridSpacing,
+                aiAggressiveness: config.aggressiveness,
+                aiConfidenceThreshold: config.confidenceThreshold,
+                stopLossPct: 3.0,
+                takeProfitPct: 2.0
+              }
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to run backtest: ${response.statusText}`);
+          }
+
+          // Simulate progress
+          const progressInterval = setInterval(() => {
+            setProgress(prev => {
+              if (prev >= 90) {
+                clearInterval(progressInterval);
+                return 90;
+              }
+              return prev + 10;
+            });
+          }, 200);
+
+          const data = await response.json();
+          
+          clearInterval(progressInterval);
+          setProgress(100);
+          setResult(data.data);
+          
+        } catch (err) {
+          setError(err.message || 'Unknown error');
+        } finally {
+          setIsRunning(false);
+        }
+      };
+
+      const downloadResults = () => {
+        if (!result) return;
+
+        const dataStr = JSON.stringify(result, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        
+        const exportFileDefaultName = `backtest-${config.symbol}-${new Date().toISOString().split('T')[0]}.json`;
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+      };
+
+      const formatCurrency = (value) => {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2
+        }).format(value);
+      };
+
+      const formatPercentage = (value) => {
+        return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+      };
+
+      return React.createElement('div', { className: "container" }, [
+        React.createElement('div', { key: 'header', style: { marginBottom: '24px' } }, [
+          React.createElement('h1', { key: 'title' }, "Hamburger Bot Backtesting"),
+          React.createElement('p', { key: 'subtitle', className: "subtitle" }, "Test your strategy with real Hyperliquid historical data")
+        ]),
+
+        // Configuration Card
+        React.createElement('div', { key: 'config', className: "card" }, [
+          React.createElement('h2', { key: 'config-title', className: "card-title" }, [
+            React.createElement(Settings, { key: 'icon', size: 20 }),
+            "Configuration"
+          ]),
+          
+          React.createElement('div', { key: 'form-grid', className: "form-grid" }, [
+            // Symbol Select
+            React.createElement('div', { key: 'symbol-group', className: "form-group" }, [
+              React.createElement('label', { key: 'label', className: "form-label" }, "Trading Pair"),
+              React.createElement('select', {
+                key: 'select',
+                value: config.symbol,
+                onChange: (e) => handleConfigChange('symbol', e.target.value),
+                className: "form-select",
+                disabled: isRunning
+              }, SYMBOLS.map(symbol => 
+                React.createElement('option', { key: symbol.name, value: symbol.name }, 
+                  `${symbol.name} (Max ${symbol.maxLeverage}x)`
+                )
+              ))
+            ]),
+
+            // Start Date
+            React.createElement('div', { key: 'start-date-group', className: "form-group" }, [
+              React.createElement('label', { key: 'label', className: "form-label" }, "Start Date"),
+              React.createElement('input', {
+                key: 'input',
+                type: "date",
+                value: config.startDate,
+                onChange: (e) => handleConfigChange('startDate', e.target.value),
+                max: config.endDate,
+                className: "form-input",
+                disabled: isRunning
+              })
+            ]),
+
+            // End Date
+            React.createElement('div', { key: 'end-date-group', className: "form-group" }, [
+              React.createElement('label', { key: 'label', className: "form-label" }, "End Date"),
+              React.createElement('input', {
+                key: 'input',
+                type: "date",
+                value: config.endDate,
+                onChange: (e) => handleConfigChange('endDate', e.target.value),
+                min: config.startDate,
+                className: "form-input",
+                disabled: isRunning
+              })
+            ]),
+
+            // Initial Capital
+            React.createElement('div', { key: 'capital-group', className: "form-group" }, [
+              React.createElement('label', { key: 'label', className: "form-label" }, "Initial Capital"),
+              React.createElement('input', {
+                key: 'input',
+                type: "number",
+                value: config.initialCapital,
+                onChange: (e) => handleConfigChange('initialCapital', Number(e.target.value)),
+                min: "100",
+                step: "100",
+                className: "form-input",
+                disabled: isRunning
+              })
+            ]),
+
+            // Leverage
+            React.createElement('div', { key: 'leverage-group', className: "form-group" }, [
+              React.createElement('label', { key: 'label', className: "form-label" }, `Leverage (Max: ${getMaxLeverage()}x)`),
+              React.createElement('input', {
+                key: 'input',
+                type: "number",
+                value: config.leverage,
+                onChange: (e) => handleConfigChange('leverage', Math.min(Number(e.target.value), getMaxLeverage())),
+                min: "1",
+                max: getMaxLeverage(),
+                className: "form-input",
+                disabled: isRunning
+              })
+            ])
+          ]),
+
+          // Run Button
+          React.createElement('div', { key: 'button-container', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }, [
+            React.createElement('button', {
+              key: 'run-btn',
+              onClick: runBacktest,
+              disabled: isRunning,
+              className: "btn btn-primary"
+            }, isRunning ? `${progress}%` : "Run Backtest"),
+            
+            error && React.createElement('div', { key: 'error', className: "error" }, [
+              React.createElement(AlertCircle, { key: 'icon', size: 16 }),
+              error
+            ])
+          ]),
+
+          // Progress Bar
+          isRunning && React.createElement('div', { key: 'progress', className: "progress-bar" }, [
+            React.createElement('div', {
+              key: 'progress-fill',
+              className: "progress-fill",
+              style: { width: `${progress}%` }
+            })
+          ])
+        ]),
+
+        // Results
+        result && React.createElement('div', { key: 'results', className: "card" }, [
+          React.createElement('div', { key: 'results-header', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' } }, [
+            React.createElement('h2', { key: 'title', className: "card-title" }, [
+              React.createElement(TrendingUp, { key: 'icon', size: 20 }),
+              "Backtest Results"
+            ]),
+            React.createElement('button', {
+              key: 'download-btn',
+              onClick: downloadResults,
+              className: "btn btn-secondary"
+            }, [
+              React.createElement(Download, { key: 'icon', size: 16 }),
+              "Download JSON"
+            ])
+          ]),
+
+          // Metrics
+          React.createElement('div', { key: 'metrics', className: "metrics-grid" }, [
+            React.createElement('div', { key: 'return', className: "metric-card" }, [
+              React.createElement('div', { key: 'label', className: "metric-label" }, "Total Return"),
+              React.createElement('div', { 
+                key: 'value', 
+                className: `metric-value ${result.metrics.totalReturnPct >= 0 ? 'positive' : 'negative'}` 
+              }, formatPercentage(result.metrics.totalReturnPct)),
+              React.createElement('div', { key: 'change', className: "metric-change" }, formatCurrency(result.metrics.totalReturn))
+            ]),
+
+            React.createElement('div', { key: 'sharpe', className: "metric-card" }, [
+              React.createElement('div', { key: 'label', className: "metric-label" }, "Sharpe Ratio"),
+              React.createElement('div', { key: 'value', className: "metric-value" }, result.metrics.sharpeRatio.toFixed(2))
+            ]),
+
+            React.createElement('div', { key: 'drawdown', className: "metric-card" }, [
+              React.createElement('div', { key: 'label', className: "metric-label" }, "Max Drawdown"),
+              React.createElement('div', { key: 'value', className: "metric-value negative" }, formatPercentage(result.metrics.maxDrawdown))
+            ]),
+
+            React.createElement('div', { key: 'winrate', className: "metric-card" }, [
+              React.createElement('div', { key: 'label', className: "metric-label" }, "Win Rate"),
+              React.createElement('div', { key: 'value', className: "metric-value" }, `${result.metrics.winRate.toFixed(1)}%`),
+              React.createElement('div', { key: 'trades', className: "metric-change" }, `${result.metrics.totalTrades} trades`)
+            ])
+          ])
+        ])
+      ]);
+    }
+
+    // Use React 18 createRoot
+    const root = React.createElement(BacktestApp);
+    const container = document.getElementById('root');
+    
+    if (container) {
+      const { createRoot } = ReactDOM;
+      const reactRoot = createRoot(container);
+      reactRoot.render(root);
+    }
+  </script>
+</body>
+</html>

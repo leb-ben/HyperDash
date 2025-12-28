@@ -227,7 +227,52 @@ export interface BotConfig {
   logging: {
     level: string;
     file: string;
-    console: boolean;
+  };
+  hamburgerBot?: HamburgerBotConfig;
+}
+
+// Hamburger Bot Configuration
+export interface HamburgerBotConfig {
+  enabled: boolean;
+  defaultLeverage: {
+    '40x': string[];
+    '20x': string[];
+    '10x': string[];
+    '3x': string[];
+  };
+  risk: {
+    maxCapitalUtilization: number; // 95%
+    maxPositionBias: number; // 60%
+    stopLossRange: [number, number]; // 2-5%
+    dailyLossThreshold: number;
+  };
+  grid: {
+    defaultSpacing: number; // 1%
+    rebalanceThreshold: number; // 0.5%
+    minPositions: number; // 2
+    maxPositions: number; // 4
+  };
+  ai: {
+    aggressiveness: 'low' | 'medium' | 'high';
+    confidenceThreshold: number;
+    signals: {
+      parabolicSAR: {
+        acceleration: number;
+        maximum: number;
+      };
+      atr: {
+        period: number;
+        multiplier: number;
+      };
+      volume: {
+        spikeThreshold: number; // 2x average
+        lookback: number;
+      };
+      roc: {
+        period: number;
+        panicThreshold: number;
+      };
+    };
   };
 }
 

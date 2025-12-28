@@ -1,0 +1,218 @@
+[
+  {
+    "symbol": "TON",
+    "returnPct": 3.6810000422653277,
+    "sharpeRatio": 0.2454000028176885,
+    "maxDrawdown": 0.00987971857427965,
+    "winRate": 100,
+    "totalTrades": 2,
+    "fees": 0.36
+  },
+  {
+    "symbol": "DOT",
+    "returnPct": 3.537096970663333,
+    "sharpeRatio": 0.23580646471088887,
+    "maxDrawdown": 0.01172570827504842,
+    "winRate": 100,
+    "totalTrades": 2,
+    "fees": 0.36
+  },
+  {
+    "symbol": "DOGE",
+    "returnPct": 2.62448506379269,
+    "sharpeRatio": 0.17496567091951268,
+    "maxDrawdown": 0.0074254282580000115,
+    "winRate": 100,
+    "totalTrades": 2,
+    "fees": 0.36
+  },
+  {
+    "symbol": "APT",
+    "returnPct": 1.8429442660670248,
+    "sharpeRatio": 0.122862951071135,
+    "maxDrawdown": 0.010938270986264343,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "LINK",
+    "returnPct": 1.838099850490687,
+    "sharpeRatio": 0.12253999003271246,
+    "maxDrawdown": 0.008139373048641119,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "LDO",
+    "returnPct": 1.7817798154957813,
+    "sharpeRatio": 0.11878532103305209,
+    "maxDrawdown": 0.010368292594557715,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "AVAX",
+    "returnPct": 1.7676523436562321,
+    "sharpeRatio": 0.11784348957708214,
+    "maxDrawdown": 0.008776541266729509,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "AAVE",
+    "returnPct": 1.3540343566396358,
+    "sharpeRatio": 0.09026895710930906,
+    "maxDrawdown": 0.0069197735955071945,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "TIA",
+    "returnPct": 0.2847212768696977,
+    "sharpeRatio": 0.01898141845797985,
+    "maxDrawdown": 1.0380035900083613,
+    "winRate": 50,
+    "totalTrades": 2,
+    "fees": 0.36
+  },
+  {
+    "symbol": "SUI",
+    "returnPct": 0.2416206896614085,
+    "sharpeRatio": 0.016108045977427234,
+    "maxDrawdown": 1.0975812864767382,
+    "winRate": 50,
+    "totalTrades": 2,
+    "fees": 0.36
+  },
+  {
+    "symbol": "BTC",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "XRP",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "NEAR",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "JUP",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "UNI",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "HYPE",
+    "returnPct": -0.6620085006359545,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0.6620085006359545,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "WLD",
+    "returnPct": -0.8316390912258385,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0.8316390912258385,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "LTC",
+    "returnPct": -0.946550217742663,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0.946550217742663,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "OP",
+    "returnPct": -1.0390666448567003,
+    "sharpeRatio": 0,
+    "maxDrawdown": 1.0390666448567003,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "BNB",
+    "returnPct": -1.166221660492488,
+    "sharpeRatio": 0,
+    "maxDrawdown": 1.166221660492488,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "ARB",
+    "returnPct": -1.2910769069873027,
+    "sharpeRatio": 0,
+    "maxDrawdown": 1.2910769069873027,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "SEI",
+    "returnPct": -1.3068222501340188,
+    "sharpeRatio": 0,
+    "maxDrawdown": 1.3068222501340188,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "ETH",
+    "returnPct": -1.713810445203319,
+    "sharpeRatio": 0,
+    "maxDrawdown": 1.713810445203319,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  },
+  {
+    "symbol": "SOL",
+    "returnPct": -2.045949717034125,
+    "sharpeRatio": 0,
+    "maxDrawdown": 2.045949717034125,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.18
+  }
+]

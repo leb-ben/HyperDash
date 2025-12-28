@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamburger Bot Backtesting</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #e4e4e7;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      color: #a1a1aa;
+      margin-bottom: 32px;
+      font-size: 1.1rem;
+    }
+    
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #f4f4f5;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #d4d4d8;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+    
+    .form-input, .form-select {
+      padding: 10px 14px;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      background: #27272a;
+      color: #f4f4f5;
+      transition: all 0.15s ease;
+    }
+    
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      background: #2f2f31;
+    }
+    
+    .form-input:hover, .form-select:hover {
+      border-color: #52525b;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-secondary {
+      background: #27272a;
+      color: #f4f4f5;
+      border: 1px solid #3f3f46;
+    }
+    
+    .btn-secondary:hover {
+      background: #2f2f31;
+      border-color: #52525b;
+      transform: translateY(-1px);
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #27272a;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 12px;
+      border: 1px solid #3f3f46;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .metric-card {
+      background: #0f0f0f;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #27272a;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+    
+    .metric-label {
+      font-size: 0.75rem;
+      color: #71717a;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f4f4f5;
+      line-height: 1;
+    }
+    
+    .metric-change {
+      font-size: 0.875rem;
+      margin-top: 8px;
+    }
+    
+    .positive {
+      color: #22c55e !important;
+    }
+    
+    .negative {
+      color: #ef4444 !important;
+    }
+    
+    .error {
+      color: #ef4444;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239, 68, 68, 0.1);
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    .flex {
+      display: flex;
+    }
+    
+    .justify-between {
+      justify-content: space-between;
+    }
+    
+    .items-center {
+      align-items: center;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #0f0f0f;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+    
+    /* Select dropdown styling */
+    .form-select option {
+      background: #27272a;
+      color: #f4f4f5;
+    }
+    
+    /* Animation */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="margin-bottom: 32px;">
+      <h1>Hamburger Bot Backtesting</h1>
+      <p class="subtitle">Test your strategy with real Hyperliquid historical data</p>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">
+        ⚙️ Configuration
+      </h2>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Trading Pair</label>
+          <select id="symbol" class="form-select">
+            <optgroup label="Tier 1 (40x Leverage)">
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="SOL">SOL</option>
+              <option value="XRP">XRP</option>
+            </optgroup>
+            <optgroup label="Tier 2 (20x Leverage)">
+              <option value="DOGE">DOGE</option>
+              <option value="SUI">SUI</option>
+              <option value="WLD">WLD</option>
+              <option value="LTC">LTC</option>
+              <option value="LINK">LINK</option>
+              <option value="AVAX">AVAX</option>
+              <option value="HYPE">HYPE</option>
+              <option value="TIA">TIA</option>
+              <option value="APT">APT</option>
+              <option value="NEAR">NEAR</option>
+              <option value="SEI">SEI</option>
+              <option value="JUP">JUP</option>
+            </optgroup>
+            <optgroup label="Tier 3 (10x Leverage)">
+              <option value="OP">OP</option>
+              <option value="ARB">ARB</option>
+              <option value="LDO">LDO</option>
+              <option value="TON">TON</option>
+              <option value="BNB">BNB</option>
+              <option value="DOT">DOT</option>
+              <option value="MNT">MNT</option>
+              <option value="INJ">INJ</option>
+            </optgroup>
+            <optgroup label="Tier 4 (5x Leverage)">
+              <option value="AAVE">AAVE</option>
+              <option value="UNI">UNI</option>
+              <option value="SNX">SNX</option>
+            </optgroup>
+            <optgroup label="Stablecoins (3x Leverage)">
+              <option value="USDC">USDC</option>
+              <option value="USDT">USDT</option>
+              <option value="PYTH">PYTH</option>
+              <option value="PRIME">PRIME</option>
+              <option value="MON">MON</option>
+              <option value="LIT">LIT</option>
+              <option value="XPL">XPL</option>
+              <option value="MOBILE">MOBILE</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input type="date" id="startDate" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">End Date</label>
+          <input type="date" id="endDate" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Initial Capital</label>
+          <input type="number" id="capital" class="form-input" value="1000" min="100" step="100">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Leverage</label>
+          <input type="number" id="leverage" class="form-input" value="10" min="1" max="40">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Grid Spacing (%)</label>
+          <input type="number" id="gridSpacing" class="form-input" value="1.0" min="0.1" max="5" step="0.1">
+          <small id="feeWarning" style="color: #ef4444; font-size: 0.75rem; margin-top: 4px; display: none;">
+            ⚠️ Grid too tight - fees may exceed profits
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Position Size per Grid</label>
+          <select id="positionType" class="form-select">
+            <option value="percentage">% of Active Capital</option>
+            <option value="fixed">Fixed USD Amount</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Position Size Value</label>
+          <input type="number" id="positionSize" class="form-input" value="25" min="10" step="5">
+          <small style="color: #71717a; font-size: 0.75rem; margin-top: 4px; display: block;">
+            Active Capital: 50% of total (reserve: 50% for emergencies)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">AI Aggressiveness</label>
+          <select id="aggressiveness" class="form-select">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confidence Threshold (%)</label>
+          <input type="number" id="confidence" class="form-input" value="70" min="50" max="100">
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <button id="runBtn" class="btn btn-primary">
+          ▶️ Run Backtest
+        </button>
+        
+        <div id="error" class="error hidden">
+          ⚠️ <span id="errorMsg"></span>
+        </div>
+      </div>
+
+      <div id="progressBar" class="progress-bar hidden">
+        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div id="results" class="card hidden">
+      <h2 class="card-title">
+        📈 Backtest Results
+      </h2>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Return</div>
+          <div id="totalReturn" class="metric-value">-</div>
+          <div id="totalReturnAmt" class="metric-change">-</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Sharpe Ratio</div>
+          <div id="sharpeRatio" class="metric-value">-</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Max Drawdown</div>
+          <div id="maxDrawdown" class="metric-value negative">-</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Win Rate</div>
+          <div id="winRate" class="metric-value">-</div>
+          <div id="totalTrades" class="metric-change">-</div>
+        </div>
+      </div>
+
+      <button id="downloadBtn" class="btn btn-secondary">
+        📥 Download JSON
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Set default dates
+    const today = new Date();
+    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    
+    document.getElementById('endDate').value = today.toISOString().split('T')[0];
+    document.getElementById('startDate').value = yesterday.toISOString().split('T')[0];
+
+    // Update leverage based on symbol
+    document.getElementById('symbol').addEventListener('change', (e) => {
+      const maxLeverage = {
+        'BTC': 40, 'ETH': 40, 'SOL': 40, 'XRP': 40,
+        'DOGE': 20, 'SUI': 20, 'WLD': 20, 'LTC': 20, 'LINK': 20, 'AVAX': 20, 'HYPE': 20, 'TIA': 20, 'APT': 20, 'NEAR': 20, 'SEI': 20, 'JUP': 20,
+        'OP': 10, 'ARB': 10, 'LDO': 10, 'TON': 10, 'BNB': 10, 'DOT': 10, 'MNT': 10, 'INJ': 10,
+        'AAVE': 5, 'UNI': 5, 'SNX': 5,
+        'USDC': 3, 'USDT': 3, 'PYTH': 3, 'PRIME': 3, 'MON': 3, 'LIT': 3, 'XPL': 3, 'MOBILE': 3
+      }[e.target.value] || 10;
+      
+      const leverageInput = document.getElementById('leverage');
+      leverageInput.max = maxLeverage;
+      if (parseInt(leverageInput.value) > maxLeverage) {
+        leverageInput.value = maxLeverage;
+      }
+    });
+
+    // Validate grid spacing for fees
+    function validateGridSpacing() {
+      const gridSpacing = parseFloat(document.getElementById('gridSpacing').value);
+      const leverage = parseInt(document.getElementById('leverage').value);
+      const feeWarning = document.getElementById('feeWarning');
+      
+      // Calculate if fees exceed potential profit
+      // Hyperliquid fee: 0.05% per trade (0.1% round trip)
+      // With leverage, effective fee is fee / leverage
+      const effectiveFeePerTrade = 0.1 / leverage; // Percentage
+      
+      // If grid spacing is less than 3x the effective fee, show warning
+      if (gridSpacing < effectiveFeePerTrade * 3) {
+        feeWarning.style.display = 'block';
+        feeWarning.textContent = `⚠️ Grid too tight - fees (${effectiveFeePerTrade.toFixed(3)}% per trade) may exceed profits`;
+      } else {
+        feeWarning.style.display = 'none';
+      }
+    }
+    
+    document.getElementById('gridSpacing').addEventListener('input', validateGridSpacing);
+    document.getElementById('leverage').addEventListener('input', validateGridSpacing);
+    
+    // Update position size label based on type
+    document.getElementById('positionType').addEventListener('change', (e) => {
+      const input = document.getElementById('positionSize');
+      const small = document.querySelector('small');
+      
+      if (e.target.value === 'fixed') {
+        input.min = '10';
+        input.value = '50';
+        small.textContent = 'Minimum $10 per position (Hyperliquid requirement)';
+      } else {
+        input.min = '10';
+        input.value = '25';
+        small.textContent = 'Active Capital: 50% of total (reserve: 50% for emergencies)';
+      }
+      
+      validatePositionSize();
+    });
+    
+    // Validate position size meets minimum requirements
+    function validatePositionSize() {
+      const positionType = document.getElementById('positionType').value;
+      const positionSize = parseFloat(document.getElementById('positionSize').value);
+      const capital = parseInt(document.getElementById('capital').value);
+      const runBtn = document.getElementById('runBtn');
+      let isValid = true;
+      let errorMessage = '';
+      
+      if (positionType === 'fixed') {
+        if (positionSize < 10) {
+          isValid = false;
+          errorMessage = 'Minimum position size is $10 (Hyperliquid requirement)';
+        }
+      } else {
+        // Calculate actual position size
+        const activeCapital = capital * 0.5;
+        const actualPositionSize = (positionSize / 100) * activeCapital;
+        
+        if (actualPositionSize < 10) {
+          isValid = false;
+          errorMessage = `Position size too small. With ${positionSize}% of $${activeCapital}, each position is $${actualPositionSize.toFixed(2)}. Minimum is $10.`;
+        }
+      }
+      
+      // Show/hide error
+      let errorDiv = document.getElementById('positionSizeError');
+      if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.id = 'positionSizeError';
+        errorDiv.className = 'error';
+        errorDiv.style.marginTop = '8px';
+        document.getElementById('positionSize').parentNode.appendChild(errorDiv);
+      }
+      
+      if (!isValid) {
+        errorDiv.innerHTML = `⚠️ ${errorMessage}`;
+        errorDiv.classList.remove('hidden');
+        runBtn.disabled = true;
+      } else {
+        errorDiv.classList.add('hidden');
+        runBtn.disabled = false;
+      }
+    }
+    
+    document.getElementById('positionSize').addEventListener('input', validatePositionSize);
+    document.getElementById('capital').addEventListener('input', validatePositionSize);
+
+    // Run backtest
+    document.getElementById('runBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('runBtn');
+      const error = document.getElementById('error');
+      const results = document.getElementById('results');
+      const progressBar = document.getElementById('progressBar');
+      const progressFill = document.getElementById('progressFill');
+      
+      // Hide previous results/errors
+      error.classList.add('hidden');
+      results.classList.add('hidden');
+      
+      // Show progress
+      btn.disabled = true;
+      btn.textContent = 'Running... 0%';
+      progressBar.classList.remove('hidden');
+      progressFill.style.width = '0%';
+      
+      try {
+        const config = {
+          symbol: document.getElementById('symbol').value,
+          startTime: new Date(document.getElementById('startDate').value).getTime(),
+          endTime: new Date(document.getElementById('endDate').value).getTime(),
+          config: {
+            totalInvestmentUsd: parseInt(document.getElementById('capital').value),
+            leverage: parseInt(document.getElementById('leverage').value),
+            gridSpacing: parseFloat(document.getElementById('gridSpacing').value),
+            positionType: document.getElementById('positionType').value,
+            positionSize: parseFloat(document.getElementById('positionSize').value),
+            aiAggressiveness: document.getElementById('aggressiveness').value,
+            aiConfidenceThreshold: parseInt(document.getElementById('confidence').value),
+            stopLossPct: 3.0,
+            takeProfitPct: 2.0
+          }
+        };
+        
+        // Simulate progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+          progress += 10;
+          if (progress > 90) {
+            clearInterval(progressInterval);
+          }
+          btn.textContent = `Running... ${progress}%`;
+          progressFill.style.width = `${progress}%`;
+        }, 200);
+        
+        const response = await fetch('/api/backtest/hamburger/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(config)
+        });
+        
+        clearInterval(progressInterval);
+        btn.textContent = 'Running... 100%';
+        progressFill.style.width = '100%';
+        
+        if (!response.ok) {
+          throw new Error(`Failed to run backtest: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        // Show results
+        displayResults(data.data);
+        
+      } catch (err) {
+        document.getElementById('errorMsg').textContent = err.message;
+        error.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '▶️ Run Backtest';
+        setTimeout(() => {
+          progressBar.classList.add('hidden');
+        }, 1000);
+      }
+    });
+
+    function displayResults(result) {
+      const results = document.getElementById('results');
+      
+      // Format functions
+      const formatCurrency = (value) => {
+        if (value === null || value === undefined) return '$0.00';
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2
+        }).format(value);
+      };
+      
+      const formatPercentage = (value) => {
+        if (value === null || value === undefined) return '0.00%';
+        return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+      };
+      
+      // Update metrics with null checks
+      const totalReturnEl = document.getElementById('totalReturn');
+      const totalReturnPct = result.metrics?.totalReturnPct || 0;
+      totalReturnEl.textContent = formatPercentage(totalReturnPct);
+      totalReturnEl.className = `metric-value ${totalReturnPct >= 0 ? 'positive' : 'negative'}`;
+      
+      document.getElementById('totalReturnAmt').textContent = formatCurrency(result.metrics?.totalReturn || 0);
+      document.getElementById('sharpeRatio').textContent = (result.metrics?.sharpeRatio || 0).toFixed(2);
+      document.getElementById('maxDrawdown').textContent = formatPercentage(result.metrics?.maxDrawdown || 0);
+      document.getElementById('winRate').textContent = `${(result.metrics?.winRate || 0).toFixed(1)}%`;
+      document.getElementById('totalTrades').textContent = `${result.metrics?.totalTrades || 0} trades`;
+      
+      // Show results card
+      results.classList.remove('hidden');
+      
+      // Store result for download
+      window.currentResult = result;
+    }
+
+    // Download results
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      if (!window.currentResult) return;
+      
+      const dataStr = JSON.stringify(window.currentResult, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = `backtest-${document.getElementById('symbol').value}-${new Date().toISOString().split('T')[0]}.json`;
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    });
+  </script>
+</body>
+</html>

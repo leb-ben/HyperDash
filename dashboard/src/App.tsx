@@ -133,7 +133,7 @@ function App() {
   const [showSafetySettings, setShowSafetySettings] = useState(false)
   const [showAIConfig, setShowAIConfig] = useState(false)
   const [showPositionControl, setShowPositionControl] = useState(false)
-  const [activeTab, setActiveTab] = useState<'signals' | 'logs' | 'terminal' | 'pnl' | 'bandwidth' | 'risk' | 'analysis' | 'performance' | 'strategies' | 'settings'>('signals')
+  const [activeTab, setActiveTab] = useState<'signals' | 'logs' | 'terminal' | 'pnl' | 'bandwidth' | 'risk' | 'analysis' | 'performance' | 'strategies' | 'backtest' | 'settings'>('signals')
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => {
     const saved = localStorage.getItem('tradingbot_chat_history')
     if (saved) {
@@ -467,6 +467,16 @@ function App() {
                 Strategies
               </button>
               <button
+                onClick={() => setActiveTab('backtest')}
+                className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'backtest'
+                    ? 'bg-slate-700/50 text-indigo-400 border-b-2 border-indigo-400'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                📊 Backtest
+              </button>
+              <button
                 onClick={() => setActiveTab('settings')}
                 className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
                   activeTab === 'settings'
@@ -531,6 +541,15 @@ function App() {
               {activeTab === 'strategies' && (
                 <div className="h-full overflow-auto p-4">
                   <StrategiesPanel />
+                </div>
+              )}
+              {activeTab === 'backtest' && (
+                <div className="h-full overflow-auto">
+                  <iframe 
+                    src="/backtest" 
+                    className="w-full h-full border-0"
+                    title="Hamburger Bot Backtesting"
+                  />
                 </div>
               )}
 

@@ -1,0 +1,14 @@
+{
+  "symbol": "BTC",
+  "startTime": 1704067200000,
+  "endTime": 1704153600000,
+  "config": {
+    "totalInvestmentUsd": 10000,
+    "leverage": 10,
+    "gridSpacing": 1.0,
+    "aiAggressiveness": "medium",
+    "aiConfidenceThreshold": 70,
+    "stopLossPct": 3.0,
+    "takeProfitPct": 2.0
+  }
+}

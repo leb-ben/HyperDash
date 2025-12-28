@@ -97,3 +97,38 @@ logging:
   level: "info"
   file: "data/bot.log"
   console: true
+
+# Hamburger Bot Configuration
+hamburgerBot:
+  enabled: true
+  defaultLeverage:
+    '40x': ['BTC', 'ETH', 'SOL', 'XRP']
+    '20x': ['DOGE', 'SUI', 'WLD', 'LTC', 'LINK', 'AVAX', 'HYPE', 'TIA', 'APT', 'NEAR']
+    '10x': ['OP', 'ARB', 'LDO', 'TON', 'JUP', 'SEI', 'BNB', 'DOT']
+    '3x': ['USDC', 'USDT', 'STABLE', 'MON', 'LIT', 'XPL']
+  risk:
+    maxCapitalUtilization: 95  # 95% max capital utilization
+    maxPositionBias: 60        # 60% max bias without strong trend
+    stopLossRange: [2, 5]      # 2-5% stop loss range
+    dailyLossThreshold: 10     # 10% daily loss threshold
+  grid:
+    defaultSpacing: 1.0        # 1% default grid spacing
+    rebalanceThreshold: 0.5    # 0.5% price movement threshold
+    minPositions: 2            # Never less than 2 positions
+    maxPositions: 4            # Never more than 4 positions
+  ai:
+    aggressiveness: 'medium'   # low, medium, high
+    confidenceThreshold: 0.7   # 70% confidence required
+    signals:
+      parabolicSAR:
+        acceleration: 0.02
+        maximum: 0.2
+      atr:
+        period: 14
+        multiplier: 2
+      volume:
+        spikeThreshold: 2.0    # 2x average volume
+        lookback: 20
+      roc:
+        period: 10
+        panicThreshold: 5.0    # 5% rate of change for panic

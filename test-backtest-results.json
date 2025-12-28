@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "data": {
+    "metrics": {
+      "totalReturn": 0,
+      "totalReturnPct": 0,
+      "sharpeRatio": 0,
+      "maxDrawdown": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "totalTrades": 0,
+      "totalFees": 0
+    },
+    "trades": [],
+    "equityCurve": [],
+    "decisions": []
+  }
+}

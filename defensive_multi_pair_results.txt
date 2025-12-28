@@ -1,0 +1,294 @@
+2025-12-27 19:53:38 INFO  Starting multi-pair backtest for 24 pairs...
+2025-12-27 19:53:38 INFO  Running backtest for BTC (Leverage: 4x)...
+2025-12-27 19:53:38 INFO  Loading data for BTC from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:38 INFO  Fetching data for BTC from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+error: Cannot read file "C:\": EPERM
+2025-12-27 19:53:40 ERROR Failed to fetch historical data for BTC: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:40 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:40 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:40 INFO  Starting fast backtest...
+2025-12-27 19:53:40 INFO  Backtest completed in 111ms
+2025-12-27 19:53:40 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-BTC-2025-12-28.json
+2025-12-27 19:53:40 INFO  BTC completed: 0.00% return
+2025-12-27 19:53:40 INFO  Running backtest for ETH (Leverage: 4x)...
+2025-12-27 19:53:40 INFO  Loading data for ETH from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:40 INFO  Fetching data for ETH from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:41 ERROR Failed to fetch historical data for ETH: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:41 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:41 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:41 INFO  Starting fast backtest...
+2025-12-27 19:53:41 INFO  Backtest completed in 75ms
+2025-12-27 19:53:41 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-ETH-2025-12-28.json
+2025-12-27 19:53:41 INFO  ETH completed: 0.00% return
+2025-12-27 19:53:41 INFO  Running backtest for SOL (Leverage: 4x)...
+2025-12-27 19:53:41 INFO  Loading data for SOL from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:41 INFO  Fetching data for SOL from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:42 ERROR Failed to fetch historical data for SOL: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:42 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:42 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:42 INFO  Starting fast backtest...
+2025-12-27 19:53:42 INFO  Backtest completed in 77ms
+2025-12-27 19:53:42 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-SOL-2025-12-28.json
+2025-12-27 19:53:42 INFO  SOL completed: 0.00% return
+2025-12-27 19:53:42 INFO  Running backtest for XRP (Leverage: 4x)...
+2025-12-27 19:53:42 INFO  Loading data for XRP from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:42 INFO  Fetching data for XRP from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:43 ERROR Failed to fetch historical data for XRP: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:43 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:43 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:43 INFO  Starting fast backtest...
+2025-12-27 19:53:43 INFO  Using dynamic ATR-based SL/TP: SL=42120.48, TP=42503.78
+2025-12-27 19:53:43 INFO  Activated grid level l_2 at 42248.24661151919 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:53:43 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:53:43 INFO  Closed long position at 42277.541975068125 - PnL: $0.10 - Reason: stop_loss
+2025-12-27 19:53:43 INFO  Backtest completed in 81ms
+2025-12-27 19:53:43 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-XRP-2025-12-28.json
+2025-12-27 19:53:43 INFO  XRP completed: 0.01% return
+2025-12-27 19:53:43 INFO  Running backtest for DOGE (Leverage: 4x)...
+2025-12-27 19:53:43 INFO  Loading data for DOGE from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:43 INFO  Fetching data for DOGE from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:44 ERROR Failed to fetch historical data for DOGE: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:44 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:44 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:44 INFO  Starting fast backtest...
+2025-12-27 19:53:44 INFO  Backtest completed in 78ms
+2025-12-27 19:53:44 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-DOGE-2025-12-28.json
+2025-12-27 19:53:44 INFO  DOGE completed: 0.00% return
+2025-12-27 19:53:44 INFO  Running backtest for SUI (Leverage: 4x)...
+2025-12-27 19:53:44 INFO  Loading data for SUI from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:44 INFO  Fetching data for SUI from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:45 ERROR Failed to fetch historical data for SUI: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:45 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:45 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:45 INFO  Starting fast backtest...
+2025-12-27 19:53:45 INFO  Backtest completed in 85ms
+2025-12-27 19:53:45 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-SUI-2025-12-28.json
+2025-12-27 19:53:45 INFO  SUI completed: 0.00% return
+2025-12-27 19:53:45 INFO  Running backtest for WLD (Leverage: 4x)...
+2025-12-27 19:53:45 INFO  Loading data for WLD from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:45 INFO  Fetching data for WLD from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:46 ERROR Failed to fetch historical data for WLD: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:46 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:46 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:46 INFO  Starting fast backtest...
+2025-12-27 19:53:46 INFO  Backtest completed in 81ms
+2025-12-27 19:53:46 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-WLD-2025-12-28.json
+2025-12-27 19:53:46 INFO  WLD completed: 0.00% return
+2025-12-27 19:53:46 INFO  Running backtest for LTC (Leverage: 4x)...
+2025-12-27 19:53:46 INFO  Loading data for LTC from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:46 INFO  Fetching data for LTC from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:47 ERROR Failed to fetch historical data for LTC: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:47 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:47 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:47 INFO  Starting fast backtest...
+2025-12-27 19:53:47 INFO  Backtest completed in 73ms
+2025-12-27 19:53:47 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-LTC-2025-12-28.json
+2025-12-27 19:53:47 INFO  LTC completed: 0.00% return
+2025-12-27 19:53:47 INFO  Running backtest for LINK (Leverage: 4x)...
+2025-12-27 19:53:47 INFO  Loading data for LINK from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:47 INFO  Fetching data for LINK from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:48 ERROR Failed to fetch historical data for LINK: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:48 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:48 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:48 INFO  Starting fast backtest...
+2025-12-27 19:53:48 INFO  Backtest completed in 77ms
+2025-12-27 19:53:48 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-LINK-2025-12-28.json
+2025-12-27 19:53:48 INFO  LINK completed: 0.00% return
+2025-12-27 19:53:48 INFO  Running backtest for AVAX (Leverage: 4x)...
+2025-12-27 19:53:48 INFO  Loading data for AVAX from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:48 INFO  Fetching data for AVAX from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:49 ERROR Failed to fetch historical data for AVAX: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:49 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:49 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:49 INFO  Starting fast backtest...
+2025-12-27 19:53:49 INFO  Backtest completed in 72ms
+2025-12-27 19:53:49 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-AVAX-2025-12-28.json
+2025-12-27 19:53:49 INFO  AVAX completed: 0.00% return
+2025-12-27 19:53:49 INFO  Running backtest for HYPE (Leverage: 4x)...
+2025-12-27 19:53:49 INFO  Loading data for HYPE from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:49 INFO  Fetching data for HYPE from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:50 ERROR Failed to fetch historical data for HYPE: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:50 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:50 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:50 INFO  Starting fast backtest...
+2025-12-27 19:53:50 INFO  Using dynamic ATR-based SL/TP: SL=41934.06, TP=42376.45
+2025-12-27 19:53:50 INFO  Activated grid level l_2 at 42081.52657273954 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:53:50 INFO  Closed long position at 41926.79561919318 - PnL: $-0.88 - Reason: stop_loss
+2025-12-27 19:53:50 INFO  Backtest completed in 84ms
+2025-12-27 19:53:50 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-HYPE-2025-12-28.json
+2025-12-27 19:53:50 INFO  HYPE completed: -0.09% return
+2025-12-27 19:53:50 INFO  Running backtest for TIA (Leverage: 4x)...
+2025-12-27 19:53:50 INFO  Loading data for TIA from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:50 INFO  Fetching data for TIA from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:51 ERROR Failed to fetch historical data for TIA: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:51 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:51 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:51 INFO  Starting fast backtest...
+2025-12-27 19:53:51 INFO  Backtest completed in 92ms
+2025-12-27 19:53:51 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-TIA-2025-12-28.json
+2025-12-27 19:53:51 INFO  TIA completed: 0.00% return
+2025-12-27 19:53:51 INFO  Running backtest for APT (Leverage: 4x)...
+2025-12-27 19:53:51 INFO  Loading data for APT from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:51 INFO  Fetching data for APT from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:52 ERROR Failed to fetch historical data for APT: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:52 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:52 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:52 INFO  Starting fast backtest...
+2025-12-27 19:53:52 INFO  Backtest completed in 71ms
+2025-12-27 19:53:52 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-APT-2025-12-28.json
+2025-12-27 19:53:52 INFO  APT completed: 0.00% return
+2025-12-27 19:53:52 INFO  Running backtest for NEAR (Leverage: 4x)...
+2025-12-27 19:53:52 INFO  Loading data for NEAR from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:52 INFO  Fetching data for NEAR from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:53 ERROR Failed to fetch historical data for NEAR: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:53 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:53 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:53 INFO  Starting fast backtest...
+2025-12-27 19:53:53 INFO  Backtest completed in 73ms
+2025-12-27 19:53:53 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-NEAR-2025-12-28.json
+2025-12-27 19:53:53 INFO  NEAR completed: 0.00% return
+2025-12-27 19:53:53 INFO  Running backtest for OP (Leverage: 4x)...
+2025-12-27 19:53:53 INFO  Loading data for OP from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:53 INFO  Fetching data for OP from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:54 ERROR Failed to fetch historical data for OP: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:54 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:54 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:54 INFO  Starting fast backtest...
+2025-12-27 19:53:54 INFO  Backtest completed in 73ms
+2025-12-27 19:53:54 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-OP-2025-12-28.json
+2025-12-27 19:53:54 INFO  OP completed: 0.00% return
+2025-12-27 19:53:54 INFO  Running backtest for ARB (Leverage: 4x)...
+2025-12-27 19:53:54 INFO  Loading data for ARB from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:54 INFO  Fetching data for ARB from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:55 ERROR Failed to fetch historical data for ARB: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:55 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:55 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:55 INFO  Starting fast backtest...
+2025-12-27 19:53:55 INFO  Backtest completed in 74ms
+2025-12-27 19:53:55 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-ARB-2025-12-28.json
+2025-12-27 19:53:55 INFO  ARB completed: 0.00% return
+2025-12-27 19:53:55 INFO  Running backtest for LDO (Leverage: 4x)...
+2025-12-27 19:53:55 INFO  Loading data for LDO from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:55 INFO  Fetching data for LDO from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:56 ERROR Failed to fetch historical data for LDO: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:56 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:56 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:56 INFO  Starting fast backtest...
+2025-12-27 19:53:56 INFO  Using dynamic ATR-based SL/TP: SL=41899.36, TP=42250.17
+2025-12-27 19:53:56 INFO  Activated grid level l_2 at 42016.29827505848 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:53:56 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:53:56 INFO  Closed long position at 42036.19788224882 - PnL: $0.09 - Reason: stop_loss
+2025-12-27 19:53:56 INFO  Backtest completed in 72ms
+2025-12-27 19:53:56 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-LDO-2025-12-28.json
+2025-12-27 19:53:56 INFO  LDO completed: 0.01% return
+2025-12-27 19:53:56 INFO  Running backtest for TON (Leverage: 4x)...
+2025-12-27 19:53:56 INFO  Loading data for TON from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:56 INFO  Fetching data for TON from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:57 ERROR Failed to fetch historical data for TON: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:57 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:57 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:57 INFO  Starting fast backtest...
+2025-12-27 19:53:57 INFO  Backtest completed in 102ms
+2025-12-27 19:53:57 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-TON-2025-12-28.json
+2025-12-27 19:53:57 INFO  TON completed: 0.00% return
+2025-12-27 19:53:57 INFO  Running backtest for JUP (Leverage: 4x)...
+2025-12-27 19:53:57 INFO  Loading data for JUP from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:57 INFO  Fetching data for JUP from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:58 ERROR Failed to fetch historical data for JUP: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:58 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:58 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:58 INFO  Starting fast backtest...
+2025-12-27 19:53:58 INFO  Backtest completed in 67ms
+2025-12-27 19:53:58 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-JUP-2025-12-28.json
+2025-12-27 19:53:58 INFO  JUP completed: 0.00% return
+2025-12-27 19:53:58 INFO  Running backtest for SEI (Leverage: 4x)...
+2025-12-27 19:53:58 INFO  Loading data for SEI from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:58 INFO  Fetching data for SEI from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:58 ERROR Failed to fetch historical data for SEI: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:58 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:58 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:58 INFO  Starting fast backtest...
+2025-12-27 19:53:59 INFO  Using dynamic ATR-based SL/TP: SL=42104.58, TP=42479.83
+2025-12-27 19:53:59 INFO  Activated grid level l_2 at 42229.6625425639 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:53:59 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:53:59 INFO  Closed long position at 42248.82541368089 - PnL: $0.08 - Reason: stop_loss
+2025-12-27 19:53:59 INFO  Backtest completed in 70ms
+2025-12-27 19:53:59 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-SEI-2025-12-28.json
+2025-12-27 19:53:59 INFO  SEI completed: 0.01% return
+2025-12-27 19:53:59 INFO  Running backtest for BNB (Leverage: 4x)...
+2025-12-27 19:53:59 INFO  Loading data for BNB from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:53:59 INFO  Fetching data for BNB from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:53:59 ERROR Failed to fetch historical data for BNB: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:59 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:53:59 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:53:59 INFO  Starting fast backtest...
+2025-12-27 19:54:00 INFO  Backtest completed in 110ms
+2025-12-27 19:54:00 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-BNB-2025-12-28.json
+2025-12-27 19:54:00 INFO  BNB completed: 0.00% return
+2025-12-27 19:54:00 INFO  Running backtest for DOT (Leverage: 4x)...
+2025-12-27 19:54:00 INFO  Loading data for DOT from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:54:00 INFO  Fetching data for DOT from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:54:00 ERROR Failed to fetch historical data for DOT: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:54:00 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:54:00 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:54:00 INFO  Starting fast backtest...
+2025-12-27 19:54:01 INFO  Using dynamic ATR-based SL/TP: SL=42064.17, TP=42410.61
+2025-12-27 19:54:01 INFO  Activated grid level l_2 at 42179.6540195064 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:54:01 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:54:01 INFO  Closed long position at 42232.445949884335 - PnL: $0.32 - Reason: stop_loss
+2025-12-27 19:54:01 INFO  Backtest completed in 82ms
+2025-12-27 19:54:01 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-DOT-2025-12-28.json
+2025-12-27 19:54:01 INFO  DOT completed: 0.03% return
+2025-12-27 19:54:01 INFO  Running backtest for AAVE (Leverage: 3x)...
+2025-12-27 19:54:01 INFO  Loading data for AAVE from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:54:01 INFO  Fetching data for AAVE from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:54:01 ERROR Failed to fetch historical data for AAVE: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:54:01 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:54:01 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:54:01 INFO  Starting fast backtest...
+2025-12-27 19:54:01 INFO  Backtest completed in 79ms
+2025-12-27 19:54:01 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-AAVE-2025-12-28.json
+2025-12-27 19:54:01 INFO  AAVE completed: 0.00% return
+2025-12-27 19:54:01 INFO  Running backtest for UNI (Leverage: 3x)...
+2025-12-27 19:54:01 INFO  Loading data for UNI from 2025-12-21T00:53:38.914Z to 2025-12-28T00:53:38.914Z
+2025-12-27 19:54:01 INFO  Fetching data for UNI from 2025-12-21T00:53:38.914Z to 2025-12-21T12:53:38.914Z
+2025-12-27 19:54:02 ERROR Failed to fetch historical data for UNI: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:54:02 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:165:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:114:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:54:02 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:54:02 INFO  Starting fast backtest...
+2025-12-27 19:54:02 INFO  Backtest completed in 72ms
+2025-12-27 19:54:02 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-UNI-2025-12-28.json
+2025-12-27 19:54:02 INFO  UNI completed: 0.00% return
+2025-12-27 19:54:02 INFO  
+=== MULTI-PAIR BACKTEST SUMMARY ===
+2025-12-27 19:54:02 INFO           |   Return | Sharpe |     DD |   Win% | Trades
+2025-12-27 19:54:02 INFO  -------------------------------------------------------
+2025-12-27 19:54:02 INFO  DOT      |    0.03% |   0.00 |  0.00% | 100.0% |      1
+2025-12-27 19:54:02 INFO  XRP      |    0.01% |   0.00 |  0.00% | 100.0% |      1
+2025-12-27 19:54:02 INFO  LDO      |    0.01% |   0.00 |  0.00% | 100.0% |      1
+2025-12-27 19:54:02 INFO  SEI      |    0.01% |   0.00 |  0.00% | 100.0% |      1
+2025-12-27 19:54:02 INFO  BTC      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  ETH      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  SOL      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  DOGE     |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  SUI      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  WLD      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  LTC      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  LINK     |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  AVAX     |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  TIA      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  APT      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  NEAR     |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  OP       |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  ARB      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  TON      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  JUP      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  BNB      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  AAVE     |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  UNI      |    0.00% |   0.00 |  0.00% |   0.0% |      0
+2025-12-27 19:54:02 INFO  HYPE     |   -0.09% |   0.00 |  0.09% |   0.0% |      1
+2025-12-27 19:54:02 INFO  -------------------------------------------------------
+2025-12-27 19:54:02 INFO  Overall Average Return: -0.00%
+2025-12-27 19:54:02 INFO  Profitable Pairs: 4/24 (16.7%)
+2025-12-27 19:54:02 INFO  
+Detailed results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\multi-pair-results-2025-12-28T00-54-02-872Z.json

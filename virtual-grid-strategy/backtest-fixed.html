@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamburger Bot Backtesting</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 24px;
+      font-size: 1rem;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #1e293b;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+    
+    .form-input, .form-select {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      background: white;
+      transition: all 0.15s;
+    }
+    
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: #2563eb;
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: #3b82f6;
+      transition: width 0.3s ease;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .metric-card {
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .metric-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    
+    .metric-change {
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+    
+    .positive {
+      color: #059669 !important;
+    }
+    
+    .negative {
+      color: #dc2626 !important;
+    }
+    
+    .error {
+      color: #dc2626;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .flex {
+      display: flex;
+    }
+    
+    .justify-between {
+      justify-content: space-between;
+    }
+    
+    .items-center {
+      align-items: center;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="margin-bottom: 24px;">
+      <h1>Hamburger Bot Backtesting</h1>
+      <p class="subtitle">Test your strategy with real Hyperliquid historical data</p>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">
+        ⚙️ Configuration
+      </h2>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Trading Pair</label>
+          <select id="symbol" class="form-select">
+            <optgroup label="Tier 1 (40x Leverage)">
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="SOL">SOL</option>
+              <option value="XRP">XRP</option>
+            </optgroup>
+            <optgroup label="Tier 2 (20x Leverage)">
+              <option value="DOGE">DOGE</option>
+              <option value="SUI">SUI</option>
+              <option value="WLD">WLD</option>
+              <option value="LTC">LTC</option>
+              <option value="LINK">LINK</option>
+              <option value="AVAX">AVAX</option>
+              <option value="HYPE">HYPE</option>
+              <option value="TIA">TIA</option>
+              <option value="APT">APT</option>
+              <option value="NEAR">NEAR</option>
+              <option value="SEI">SEI</option>
+              <option value="JUP">JUP</option>
+            </optgroup>
+            <optgroup label="Tier 3 (10x Leverage)">
+              <option value="OP">OP</option>
+              <option value="ARB">ARB</option>
+              <option value="LDO">LDO</option>
+              <option value="TON">TON</option>
+              <option value="BNB">BNB</option>
+              <option value="DOT">DOT</option>
+              <option value="MNT">MNT</option>
+              <option value="INJ">INJ</option>
+            </optgroup>
+            <optgroup label="Tier 4 (5x Leverage)">
+              <option value="AAVE">AAVE</option>
+              <option value="UNI">UNI</option>
+              <option value="SNX">SNX</option>
+            </optgroup>
+            <optgroup label="Stablecoins (3x Leverage)">
+              <option value="USDC">USDC</option>
+              <option value="USDT">USDT</option>
+              <option value="PYTH">PYTH</option>
+              <option value="PRIME">PRIME</option>
+              <option value="MON">MON</option>
+              <option value="LIT">LIT</option>
+              <option value="XPL">XPL</option>
+              <option value="MOBILE">MOBILE</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input type="date" id="startDate" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">End Date</label>
+          <input type="date" id="endDate" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Initial Capital</label>
+          <input type="number" id="capital" class="form-input" value="10000" min="100" step="100">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Leverage</label>
+          <input type="number" id="leverage" class="form-input" value="10" min="1" max="40">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Grid Spacing (%)</label>
+          <input type="number" id="gridSpacing" class="form-input" value="1.0" min="0.1" max="5" step="0.1">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">AI Aggressiveness</label>
+          <select id="aggressiveness" class="form-select">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confidence Threshold (%)</label>
+          <input type="number" id="confidence" class="form-input" value="70" min="50" max="100">
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <button id="runBtn" class="btn btn-primary">
+          ▶️ Run Backtest
+        </button>
+        
+        <div id="error" class="error hidden">
+          ⚠️ <span id="errorMsg"></span>
+        </div>
+      </div>
+
+      <div id="progressBar" class="progress-bar hidden">
+        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div id="results" class="card hidden">
+      <h2 class="card-title">
+        📈 Backtest Results
+      </h2>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Return</div>
+          <div id="totalReturn" class="metric-value">-</div>
+          <div id="totalReturnAmt" class="metric-change">-</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Sharpe Ratio</div>
+          <div id="sharpeRatio" class="metric-value">-</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Max Drawdown</div>
+          <div id="maxDrawdown" class="metric-value negative">-</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Win Rate</div>
+          <div id="winRate" class="metric-value">-</div>
+          <div id="totalTrades" class="metric-change">-</div>
+        </div>
+      </div>
+
+      <button id="downloadBtn" class="btn btn-secondary">
+        📥 Download JSON
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Set default dates
+    const today = new Date();
+    const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    document.getElementById('endDate').value = today.toISOString().split('T')[0];
+    document.getElementById('startDate').value = lastWeek.toISOString().split('T')[0];
+
+    // Update leverage based on symbol
+    document.getElementById('symbol').addEventListener('change', (e) => {
+      const maxLeverage = {
+        'BTC': 40, 'ETH': 40, 'SOL': 40,
+        'DOGE': 20, 'USDC': 3
+      }[e.target.value] || 10;
+      
+      const leverageInput = document.getElementById('leverage');
+      leverageInput.max = maxLeverage;
+      if (parseInt(leverageInput.value) > maxLeverage) {
+        leverageInput.value = maxLeverage;
+      }
+    });
+
+    // Run backtest
+    document.getElementById('runBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('runBtn');
+      const error = document.getElementById('error');
+      const results = document.getElementById('results');
+      const progressBar = document.getElementById('progressBar');
+      const progressFill = document.getElementById('progressFill');
+      
+      // Hide previous results/errors
+      error.classList.add('hidden');
+      results.classList.add('hidden');
+      
+      // Show progress
+      btn.disabled = true;
+      btn.textContent = 'Running... 0%';
+      progressBar.classList.remove('hidden');
+      progressFill.style.width = '0%';
+      
+      try {
+        const config = {
+          symbol: document.getElementById('symbol').value,
+          startTime: new Date(document.getElementById('startDate').value).getTime(),
+          endTime: new Date(document.getElementById('endDate').value).getTime(),
+          config: {
+            totalInvestmentUsd: parseInt(document.getElementById('capital').value),
+            leverage: parseInt(document.getElementById('leverage').value),
+            gridSpacing: parseFloat(document.getElementById('gridSpacing').value),
+            aiAggressiveness: document.getElementById('aggressiveness').value,
+            aiConfidenceThreshold: parseInt(document.getElementById('confidence').value),
+            stopLossPct: 3.0,
+            takeProfitPct: 2.0
+          }
+        };
+        
+        // Simulate progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+          progress += 10;
+          if (progress > 90) {
+            clearInterval(progressInterval);
+          }
+          btn.textContent = `Running... ${progress}%`;
+          progressFill.style.width = `${progress}%`;
+        }, 200);
+        
+        const response = await fetch('/api/backtest/hamburger/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(config)
+        });
+        
+        clearInterval(progressInterval);
+        btn.textContent = 'Running... 100%';
+        progressFill.style.width = '100%';
+        
+        if (!response.ok) {
+          throw new Error(`Failed to run backtest: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        // Show results
+        displayResults(data.data);
+        
+      } catch (err) {
+        document.getElementById('errorMsg').textContent = err.message;
+        error.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '▶️ Run Backtest';
+        setTimeout(() => {
+          progressBar.classList.add('hidden');
+        }, 1000);
+      }
+    });
+
+    function displayResults(result) {
+      const results = document.getElementById('results');
+      
+      // Format functions
+      const formatCurrency = (value) => {
+        if (value === null || value === undefined) return '$0.00';
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2
+        }).format(value);
+      };
+      
+      const formatPercentage = (value) => {
+        if (value === null || value === undefined) return '0.00%';
+        return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+      };
+      
+      // Update metrics with null checks
+      const totalReturnEl = document.getElementById('totalReturn');
+      const totalReturnPct = result.metrics?.totalReturnPct || 0;
+      totalReturnEl.textContent = formatPercentage(totalReturnPct);
+      totalReturnEl.className = `metric-value ${totalReturnPct >= 0 ? 'positive' : 'negative'}`;
+      
+      document.getElementById('totalReturnAmt').textContent = formatCurrency(result.metrics?.totalReturn || 0);
+      document.getElementById('sharpeRatio').textContent = (result.metrics?.sharpeRatio || 0).toFixed(2);
+      document.getElementById('maxDrawdown').textContent = formatPercentage(result.metrics?.maxDrawdown || 0);
+      document.getElementById('winRate').textContent = `${(result.metrics?.winRate || 0).toFixed(1)}%`;
+      document.getElementById('totalTrades').textContent = `${result.metrics?.totalTrades || 0} trades`;
+      
+      // Show results card
+      results.classList.remove('hidden');
+      
+      // Store result for download
+      window.currentResult = result;
+    }
+
+    // Download results
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      if (!window.currentResult) return;
+      
+      const dataStr = JSON.stringify(window.currentResult, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = `backtest-${document.getElementById('symbol').value}-${new Date().toISOString().split('T')[0]}.json`;
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    });
+  </script>
+</body>
+</html>

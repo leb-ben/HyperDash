@@ -38,6 +38,8 @@ import { bandwidthTracker } from '../core/bandwidthTracker.js';
 import { dynamicRiskManager } from '../core/dynamicRiskManager.js';
 import { analysisTracker } from '../core/analysisTracker.js';
 import { alertManager } from '../core/alertManager.js';
+import type { HamburgerBotConfig, GridState, GridAction } from '../types/grid.js';
+import { HamburgerBot } from '../strategies/hamburgerBot.js';
 
 // AI Provider Clients - Initialize at module level
 const cerebras = new OpenAI({
@@ -92,6 +94,9 @@ interface BotController {
 
 let botController: BotController | null = null;
 
+// Hamburger Bot instances storage
+const hamburgerBots: Map<string, HamburgerBot> = new Map();
+
 // Store API keys securely in memory (loaded from env or user input)
 const apiKeys: Map<string, string> = new Map();
 
@@ -143,6 +148,7 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
   const url = new URL(req.url || '/', `http://${req.headers.host}`);
   const path = url.pathname;
   const method = req.method || 'GET';
+  const pathParts = path.split('/');
 
   // Handle CORS preflight
   if (method === 'OPTIONS') {
@@ -156,6 +162,21 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
     if (path === '/' || path === '/dashboard') {
       res.writeHead(200, { ...corsHeaders(), 'Content-Type': 'text/html; charset=utf-8' });
       res.end(getDashboardHTML());
+      return;
+    }
+
+    // Serve backtest GUI
+    if (path === '/backtest' || path === '/backtest.html') {
+      const { getBacktestHTML } = await import('./backtestHTML.js');
+      const html = getBacktestHTML();
+      res.writeHead(200, { 
+        ...corsHeaders(), 
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+      res.end(html);
       return;
     }
 
@@ -230,6 +251,18 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
       }
       await botController.stop();
       sendJson(res, { success: true, message: 'Bot stopped' });
+      return;
+    }
+
+    // Hamburger Bot Grid Management
+    if (path.startsWith('/api/grid/hamburger')) {
+      await handleHamburgerGridRequest(path, method, req, res);
+      return;
+    }
+
+    // Handle Backtest API
+    if (pathParts[2] === 'backtest') {
+      await handleBacktestAPI(req, res, method, pathParts);
       return;
     }
 
@@ -1396,6 +1429,266 @@ Type 'help' for available commands`;
   } catch (error) {
     logger.error('API error:', error);
     sendError(res, 'Internal server error', 500);
+  }
+}
+
+// Hamburger Bot Grid Request Handler
+async function handleHamburgerGridRequest(
+  path: string,
+  method: string,
+  req: http.IncomingMessage,
+  res: http.ServerResponse
+): Promise<void> {
+  try {
+    const pathParts = path.split('/').filter(Boolean);
+    
+    // POST /api/grid/hamburger/create
+    if (pathParts[3] === 'create' && method === 'POST') {
+      const body = await parseBody(req);
+      const gridConfig: HamburgerBotConfig = body.config;
+      
+      if (!gridConfig || !gridConfig.symbol) {
+        sendError(res, 'Invalid grid configuration', 400);
+        return;
+      }
+
+      // Check if hamburger bot is enabled in config
+      if (!config.hamburgerBot?.enabled) {
+        sendError(res, 'Hamburger Bot is not enabled', 403);
+        return;
+      }
+
+      // Create new hamburger bot instance
+      const botId = `grid_${gridConfig.symbol}_${Date.now()}`;
+      const bot = new HamburgerBot(gridConfig);
+      
+      // Store the bot
+      hamburgerBots.set(botId, bot);
+      
+      // Get current price
+      const ticker = await exchange.getTicker(gridConfig.symbol);
+      const currentPrice = ticker.price;
+      if (!currentPrice) {
+        sendError(res, `Failed to get current price for ${gridConfig.symbol}`, 500);
+        return;
+      }
+
+      // Initialize the bot
+      await bot.initialize(currentPrice);
+      
+      logActivity('info', 'HamburgerBot', `Created grid bot for ${gridConfig.symbol}`, { botId, config: gridConfig });
+      
+      sendJson(res, {
+        success: true,
+        botId,
+        config: gridConfig,
+        currentPrice,
+        state: bot.getState()
+      });
+      return;
+    }
+
+    // POST /api/grid/hamburger/{botId}/start
+    if (pathParts[4] === 'start' && method === 'POST') {
+      const botId = pathParts[3];
+      if (!botId) {
+        sendError(res, 'Bot ID required', 400);
+        return;
+      }
+      const bot = hamburgerBots.get(botId);
+      
+      if (!bot) {
+        sendError(res, 'Grid bot not found', 404);
+        return;
+      }
+
+      await bot.start();
+      
+      logActivity('info', 'HamburgerBot', `Started grid bot`, { botId });
+      
+      sendJson(res, {
+        success: true,
+        botId,
+        state: bot.getState()
+      });
+      return;
+    }
+
+    // POST /api/grid/hamburger/{botId}/stop
+    if (pathParts[4] === 'stop' && method === 'POST') {
+      const botId = pathParts[3];
+      if (!botId) {
+        sendError(res, 'Bot ID required', 400);
+        return;
+      }
+      const bot = hamburgerBots.get(botId);
+      
+      if (!bot) {
+        sendError(res, 'Grid bot not found', 404);
+        return;
+      }
+
+      await bot.stop();
+      
+      logActivity('info', 'HamburgerBot', `Stopped grid bot`, { botId });
+      
+      sendJson(res, {
+        success: true,
+        botId,
+        state: bot.getState()
+      });
+      return;
+    }
+
+    // GET /api/grid/hamburger/{botId}/status
+    if (pathParts[4] === 'status' && method === 'GET') {
+      const botId = pathParts[3];
+      if (!botId) {
+        sendError(res, 'Bot ID required', 400);
+        return;
+      }
+      const bot = hamburgerBots.get(botId);
+      
+      if (!bot) {
+        sendError(res, 'Grid bot not found', 404);
+        return;
+      }
+
+      sendJson(res, {
+        botId,
+        state: bot.getState(),
+        positions: bot.getPositions(),
+        performance: bot.getPerformance()
+      });
+      return;
+    }
+
+    // POST /api/grid/hamburger/{botId}/rebalance
+    if (pathParts[4] === 'rebalance' && method === 'POST') {
+      const botId = pathParts[3];
+      if (!botId) {
+        sendError(res, 'Bot ID required', 400);
+        return;
+      }
+      const bot = hamburgerBots.get(botId);
+      
+      if (!bot) {
+        sendError(res, 'Grid bot not found', 404);
+        return;
+      }
+
+      // Get current price and signals
+      const ticker = await exchange.getTicker(bot.getState().config.symbol);
+      const currentPrice = ticker.price;
+      if (!currentPrice) {
+        sendError(res, 'Failed to get current price', 500);
+        return;
+      }
+
+      // Trigger rebalance
+      const state = bot.getState();
+      const signals = bot['aiEngine'].calculateSignals([]); // Would need real candle data
+      
+      await bot['onPriceUpdate'](currentPrice, signals);
+      
+      logActivity('info', 'HamburgerBot', `Manual rebalance triggered`, { botId, currentPrice });
+      
+      sendJson(res, {
+        success: true,
+        botId,
+        state: bot.getState()
+      });
+      return;
+    }
+
+    // DELETE /api/grid/hamburger/{botId}
+    if (method === 'DELETE' && pathParts.length === 4) {
+      const botId = pathParts[3];
+      if (!botId) {
+        sendError(res, 'Bot ID required', 400);
+        return;
+      }
+      const bot = hamburgerBots.get(botId);
+      
+      if (!bot) {
+        sendError(res, 'Grid bot not found', 404);
+        return;
+      }
+
+      // Stop and remove bot
+      await bot.stop();
+      hamburgerBots.delete(botId);
+      
+      logActivity('info', 'HamburgerBot', `Deleted grid bot`, { botId });
+      
+      sendJson(res, {
+        success: true,
+        message: 'Grid bot deleted'
+      });
+      return;
+    }
+
+    // GET /api/grid/hamburger/list
+    if (pathParts[3] === 'list' && method === 'GET') {
+      const bots = Array.from(hamburgerBots.entries()).map(([id, bot]) => ({
+        id,
+        symbol: bot.getState().config.symbol,
+        isRunning: bot.getState().isRunning,
+        positionCount: bot.getPositions().length,
+        performance: bot.getPerformance()
+      }));
+      
+      sendJson(res, { bots });
+      return;
+    }
+
+    sendError(res, 'Endpoint not found', 404);
+  } catch (error) {
+    logger.error('Hamburger Bot API error:', error);
+    sendError(res, `Internal server error: ${error}`, 500);
+  }
+}
+
+// Handle Backtest API
+async function handleBacktestAPI(
+  req: http.IncomingMessage, 
+  res: http.ServerResponse, 
+  method: string | undefined, 
+  pathParts: string[]
+): Promise<void> {
+  try {
+    // POST /api/backtest/hamburger/run
+    if (pathParts[3] === 'hamburger' && pathParts[4] === 'run' && method === 'POST') {
+      const { runHamburgerBacktest } = await import('./backtestEndpoints.js');
+      await runHamburgerBacktest(req, res);
+      return;
+    }
+
+    // GET /api/backtest/symbols
+    if (pathParts[3] === 'symbols' && method === 'GET') {
+      const { getBacktestSymbols } = await import('./backtestEndpoints.js');
+      await getBacktestSymbols(req, res);
+      return;
+    }
+
+    // GET /api/backtest/history
+    if (pathParts[3] === 'history' && method === 'GET') {
+      const { getBacktestHistory } = await import('./backtestEndpoints.js');
+      await getBacktestHistory(req, res);
+      return;
+    }
+
+    // GET /api/backtest/optimal-strategies
+    if (pathParts[3] === 'optimal-strategies' && method === 'GET') {
+      const { getOptimalStrategies } = await import('./getOptimalStrategies.js');
+      await getOptimalStrategies(req, res);
+      return;
+    }
+
+    sendError(res, 'Backtest endpoint not found', 404);
+  } catch (error) {
+    logger.error('Backtest API error:', error);
+    sendError(res, `Internal server error: ${error}`, 500);
   }
 }
 

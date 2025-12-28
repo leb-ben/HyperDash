@@ -1,0 +1,1307 @@
+2025-12-27 19:56:54 INFO  Starting multi-pair backtest for 24 pairs...
+2025-12-27 19:56:54 INFO  Running backtest for BTC (Leverage: 4x)...
+2025-12-27 19:56:54 INFO  Loading data for BTC from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:56:54 INFO  Fetching data for BTC from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+error: Cannot read file "C:\": EPERM
+2025-12-27 19:56:54 ERROR Failed to fetch historical data for BTC: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:54 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:54 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:56:54 INFO  Starting fast backtest...
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=55496.55, TP=54560.20
+2025-12-27 19:56:54 INFO  Activated grid level s_25 at 55184.43205277808 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 55121.470464857506 - PnL: $0.29 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=51786.48, TP=50841.60
+2025-12-27 19:56:54 INFO  Activated grid level s_18 at 51471.51611438525 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 51468.077832397685 - PnL: $-0.03 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=47817.89, TP=46963.45
+2025-12-27 19:56:54 INFO  Activated grid level s_10 at 47533.08156736275 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 47468.13474380024 - PnL: $0.36 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=47347.36, TP=46492.65
+2025-12-27 19:56:54 INFO  Activated grid level s_9 at 47062.456997388865 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 46991.71592516826 - PnL: $0.40 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=45934.98, TP=45165.12
+2025-12-27 19:56:54 INFO  Activated grid level s_6 at 45678.35709893406 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 45633.62698760373 - PnL: $0.24 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=41627.96, TP=42003.11
+2025-12-27 19:56:54 INFO  Activated grid level l_3 at 41753.01259203139 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:56:54 INFO  Closed long position at 41796.40107698002 - PnL: $0.26 - Reason: stop_loss
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=53852.06, TP=52980.28
+2025-12-27 19:56:54 INFO  Activated grid level s_22 at 53561.46606940891 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 53445.29276148963 - PnL: $0.60 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=52802.81, TP=51912.66
+2025-12-27 19:56:54 INFO  Activated grid level s_20 at 52506.09358828439 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 52476.530869251765 - PnL: $0.12 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=50764.98, TP=49842.01
+2025-12-27 19:56:54 INFO  Activated grid level s_16 at 50457.32390391653 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 50354.462389099055 - PnL: $0.56 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=50270.51, TP=49332.23
+2025-12-27 19:56:54 INFO  Activated grid level s_15 at 49957.746439521296 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 49845.576909044714 - PnL: $0.62 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=49769.09, TP=48851.16
+2025-12-27 19:56:54 INFO  Activated grid level s_14 at 49463.11528665476 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 49416.64405500092 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=48293.90, TP=47437.43
+2025-12-27 19:56:54 INFO  Activated grid level s_11 at 48008.41238303637 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 48007.77441800215 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=44571.35, TP=43862.20
+2025-12-27 19:56:54 INFO  Activated grid level s_3 at 44334.96337374616 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 44278.83719917296 - PnL: $0.33 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Using dynamic ATR-based SL/TP: SL=43687.07, TP=43010.03
+2025-12-27 19:56:54 INFO  Activated grid level s_1 at 43461.389445883906 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:54 INFO  Closed short position at 43460.48747948154 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:56:54 INFO  Backtest completed in 117ms
+2025-12-27 19:56:54 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-BTC-2025-12-28.json
+2025-12-27 19:56:54 INFO  BTC completed: 0.33% return
+2025-12-27 19:56:54 INFO  Running backtest for ETH (Leverage: 4x)...
+2025-12-27 19:56:54 INFO  Loading data for ETH from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:56:54 INFO  Fetching data for ETH from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:56:56 ERROR Failed to fetch historical data for ETH: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:56 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:56 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:56:56 INFO  Starting fast backtest...
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=53283.62, TP=52291.31
+2025-12-27 19:56:56 INFO  Activated grid level s_21 at 52952.84980406357 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 52883.94119434502 - PnL: $0.34 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=52226.32, TP=51275.77
+2025-12-27 19:56:56 INFO  Activated grid level s_19 at 51909.46946776156 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 51806.42460142465 - PnL: $0.54 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=51197.92, TP=50264.11
+2025-12-27 19:56:56 INFO  Activated grid level s_17 at 50886.64784605585 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 50801.835799406355 - PnL: $0.45 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=47271.51, TP=46435.87
+2025-12-27 19:56:56 INFO  Activated grid level s_9 at 46992.965534198265 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 46932.41932072404 - PnL: $0.33 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=44956.16, TP=44224.26
+2025-12-27 19:56:56 INFO  Activated grid level s_4 at 44712.19426467619 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 44701.89441327279 - PnL: $0.02 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=44054.70, TP=43384.17
+2025-12-27 19:56:56 INFO  Activated grid level s_2 at 43831.18739797686 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 43791.57457508719 - PnL: $0.22 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=55413.85, TP=54481.14
+2025-12-27 19:56:56 INFO  Activated grid level s_25 at 55102.94784703629 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 55022.435859141915 - PnL: $0.39 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=54859.49, TP=53953.15
+2025-12-27 19:56:56 INFO  Activated grid level s_24 at 54557.374105976516 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 54461.62474999762 - PnL: $0.47 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=51705.06, TP=50776.41
+2025-12-27 19:56:56 INFO  Activated grid level s_18 at 51395.51432451641 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 51283.64566063982 - PnL: $0.60 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=48713.39, TP=47823.92
+2025-12-27 19:56:56 INFO  Activated grid level s_12 at 48416.89938285 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 48301.26923772636 - PnL: $0.66 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=46335.52, TP=45530.01
+2025-12-27 19:56:56 INFO  Activated grid level s_7 at 46067.018463090135 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 46046.426809190496 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=45424.01, TP=44629.93
+2025-12-27 19:56:56 INFO  Activated grid level s_5 at 45159.31620732295 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 45106.48481379306 - PnL: $0.30 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Using dynamic ATR-based SL/TP: SL=44502.52, TP=43803.46
+2025-12-27 19:56:56 INFO  Activated grid level s_3 at 44269.49927195662 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:56 INFO  Closed short position at 44253.999072309285 - PnL: $0.05 - Reason: trend_flip
+2025-12-27 19:56:56 INFO  Backtest completed in 94ms
+2025-12-27 19:56:56 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-ETH-2025-12-28.json
+2025-12-27 19:56:56 INFO  ETH completed: 0.40% return
+2025-12-27 19:56:56 INFO  Running backtest for SOL (Leverage: 4x)...
+2025-12-27 19:56:56 INFO  Loading data for SOL from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:56:56 INFO  Fetching data for SOL from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:56:57 ERROR Failed to fetch historical data for SOL: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:57 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:57 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:56:57 INFO  Starting fast backtest...
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=55582.81, TP=54669.26
+2025-12-27 19:56:57 INFO  Activated grid level s_25 at 55278.29246486551 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 55253.068641119455 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=52912.79, TP=51960.62
+2025-12-27 19:56:57 INFO  Activated grid level s_20 at 52595.398549810205 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 52542.54734379914 - PnL: $0.25 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=52401.59, TP=51420.77
+2025-12-27 19:56:57 INFO  Activated grid level s_19 at 52074.65202951505 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 51984.41551337236 - PnL: $0.47 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=49350.93, TP=48468.17
+2025-12-27 19:56:57 INFO  Activated grid level s_13 at 49056.677821925456 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 49013.291257477824 - PnL: $0.21 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=47909.35, TP=47023.08
+2025-12-27 19:56:57 INFO  Activated grid level s_10 at 47613.92818402143 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 47533.32293111877 - PnL: $0.46 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=46948.73, TP=46129.77
+2025-12-27 19:56:57 INFO  Activated grid level s_8 at 46675.74569554105 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 46626.98754327963 - PnL: $0.26 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=46485.23, TP=45670.37
+2025-12-27 19:56:57 INFO  Activated grid level s_7 at 46213.60959954558 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 46138.601032150655 - PnL: $0.43 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=53438.13, TP=52487.81
+2025-12-27 19:56:57 INFO  Activated grid level s_21 at 53121.3525353083 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 53059.66430121428 - PnL: $0.30 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=51364.35, TP=50417.03
+2025-12-27 19:56:57 INFO  Activated grid level s_17 at 51048.575658773705 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 51010.65207955123 - PnL: $0.17 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=48874.56, TP=47963.78
+2025-12-27 19:56:57 INFO  Activated grid level s_12 at 48570.96814052025 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 48512.86534809852 - PnL: $0.31 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=47431.28, TP=46564.96
+2025-12-27 19:56:57 INFO  Activated grid level s_9 at 47142.503152496465 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 47099.672839032435 - PnL: $0.22 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=46031.40, TP=45205.35
+2025-12-27 19:56:57 INFO  Activated grid level s_6 at 45756.04910846098 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 45668.79720951443 - PnL: $0.52 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=45575.88, TP=44757.29
+2025-12-27 19:56:57 INFO  Activated grid level s_5 at 45303.018919268296 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 45248.48460166897 - PnL: $0.31 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=44190.33, TP=43531.33
+2025-12-27 19:56:57 INFO  Activated grid level s_2 at 43970.66383442149 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Closed short position at 43937.03609622264 - PnL: $0.18 - Reason: trend_flip
+2025-12-27 19:56:57 INFO  Using dynamic ATR-based SL/TP: SL=41711.81, TP=42048.47
+2025-12-27 19:56:57 INFO  Activated grid level l_3 at 41824.02818142862 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:57 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:56:57 INFO  Closed long position at 41870.433859668956 - PnL: $0.28 - Reason: stop_loss
+2025-12-27 19:56:57 INFO  Backtest completed in 81ms
+2025-12-27 19:56:57 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-SOL-2025-12-28.json
+2025-12-27 19:56:57 INFO  SOL completed: 0.39% return
+2025-12-27 19:56:57 INFO  Running backtest for XRP (Leverage: 4x)...
+2025-12-27 19:56:57 INFO  Loading data for XRP from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:56:57 INFO  Fetching data for XRP from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:56:58 ERROR Failed to fetch historical data for XRP: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:58 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:58 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:56:58 INFO  Starting fast backtest...
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=54510.25, TP=53587.30
+2025-12-27 19:56:58 INFO  Activated grid level s_23 at 54202.5991278543 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 54162.092554718976 - PnL: $0.12 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=50871.47, TP=49924.28
+2025-12-27 19:56:58 INFO  Activated grid level s_16 at 50555.742818602936 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 50536.427398368505 - PnL: $0.03 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=49359.64, TP=48487.44
+2025-12-27 19:56:58 INFO  Activated grid level s_13 at 49068.905900899765 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 49065.14627499835 - PnL: $-0.04 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=48389.47, TP=47527.21
+2025-12-27 19:56:58 INFO  Activated grid level s_11 at 48102.05460337199 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 48068.20461245203 - PnL: $0.11 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=45540.71, TP=44861.51
+2025-12-27 19:56:58 INFO  Activated grid level s_5 at 45314.311345044254 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 45258.04823983909 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=42569.72, TP=42912.15
+2025-12-27 19:56:58 INFO  Activated grid level l_1 at 42683.86227831544 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:56:58 INFO  Closed long position at 42720.80639367225 - PnL: $0.14 - Reason: stop_loss
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=55628.26, TP=54619.70
+2025-12-27 19:56:58 INFO  Activated grid level s_25 at 55292.07137032419 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 55248.46008479348 - PnL: $0.12 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=51887.34, TP=50941.06
+2025-12-27 19:56:58 INFO  Activated grid level s_18 at 51571.91324925686 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 51432.03220294597 - PnL: $0.56 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=50363.47, TP=49438.63
+2025-12-27 19:56:58 INFO  Activated grid level s_15 at 50055.190909507844 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 50050.75981779206 - PnL: $-0.03 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=48865.32, TP=48018.58
+2025-12-27 19:56:58 INFO  Activated grid level s_12 at 48583.075149405704 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 48580.65479411781 - PnL: $-0.04 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Using dynamic ATR-based SL/TP: SL=46477.82, TP=45719.75
+2025-12-27 19:56:58 INFO  Activated grid level s_7 at 46225.129003079644 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:58 INFO  Closed short position at 46214.335111788816 - PnL: $0.00 - Reason: trend_flip
+2025-12-27 19:56:58 INFO  Backtest completed in 76ms
+2025-12-27 19:56:58 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-XRP-2025-12-28.json
+2025-12-27 19:56:58 INFO  XRP completed: 0.08% return
+2025-12-27 19:56:58 INFO  Running backtest for DOGE (Leverage: 4x)...
+2025-12-27 19:56:58 INFO  Loading data for DOGE from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:56:58 INFO  Fetching data for DOGE from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:56:59 ERROR Failed to fetch historical data for DOGE: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:59 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:56:59 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:56:59 INFO  Starting fast backtest...
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=54410.86, TP=53438.66
+2025-12-27 19:56:59 INFO  Activated grid level s_23 at 54086.796051100275 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 54011.753289652086 - PnL: $0.26 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=52816.13, TP=51856.08
+2025-12-27 19:56:59 INFO  Activated grid level s_20 at 52496.11138016976 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 52436.83936688269 - PnL: $0.20 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=50256.93, TP=49330.89
+2025-12-27 19:56:59 INFO  Activated grid level s_15 at 49948.24871101367 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 49893.16690411079 - PnL: $0.20 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=49259.21, TP=48373.80
+2025-12-27 19:56:59 INFO  Activated grid level s_13 at 48964.07088620104 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 48919.579370377665 - PnL: $0.15 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=48772.99, TP=47891.84
+2025-12-27 19:56:59 INFO  Activated grid level s_12 at 48479.27810514954 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 48434.885311161335 - PnL: $0.15 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=48297.45, TP=47402.96
+2025-12-27 19:56:59 INFO  Activated grid level s_11 at 47999.28525262331 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 47977.80813438312 - PnL: $0.05 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=46868.18, TP=46026.55
+2025-12-27 19:56:59 INFO  Activated grid level s_8 at 46587.63337376487 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 46515.69434522576 - PnL: $0.29 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=45012.30, TP=44284.80
+2025-12-27 19:56:59 INFO  Activated grid level s_4 at 44769.79996815971 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 44665.04309257365 - PnL: $0.47 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=42054.07, TP=42392.09
+2025-12-27 19:56:59 INFO  Activated grid level l_2 at 42166.74212969189 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:56:59 INFO  Closed long position at 42411.924944465594 - PnL: $1.26 - Reason: take_profit
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=55469.00, TP=54583.83
+2025-12-27 19:56:59 INFO  Activated grid level s_25 at 55173.94065172741 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 55159.42194916295 - PnL: $0.01 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=49759.88, TP=48841.37
+2025-12-27 19:56:59 INFO  Activated grid level s_14 at 49453.711595063054 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 49413.66600164757 - PnL: $0.13 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=46392.82, TP=45593.48
+2025-12-27 19:56:59 INFO  Activated grid level s_7 at 46126.3696769949 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Closed short position at 46038.881999216384 - PnL: $0.37 - Reason: trend_flip
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=41638.64, TP=41957.95
+2025-12-27 19:56:59 INFO  Activated grid level l_3 at 41745.07470839497 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:56:59 INFO  Closed long position at 41820.88206891034 - PnL: $0.36 - Reason: stop_loss
+2025-12-27 19:56:59 INFO  Using dynamic ATR-based SL/TP: SL=42447.76, TP=42882.49
+2025-12-27 19:56:59 INFO  Activated grid level l_1 at 42592.6688178706 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:56:59 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:56:59 INFO  Closed long position at 42691.54889142907 - PnL: $0.47 - Reason: stop_loss
+2025-12-27 19:56:59 INFO  Backtest completed in 83ms
+2025-12-27 19:56:59 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-DOGE-2025-12-28.json
+2025-12-27 19:56:59 INFO  DOGE completed: 0.38% return
+2025-12-27 19:56:59 INFO  Running backtest for SUI (Leverage: 4x)...
+2025-12-27 19:56:59 INFO  Loading data for SUI from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:56:59 INFO  Fetching data for SUI from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:00 ERROR Failed to fetch historical data for SUI: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:00 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:00 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:00 INFO  Starting fast backtest...
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=51215.59, TP=50264.25
+2025-12-27 19:57:00 INFO  Activated grid level s_17 at 50898.47611187916 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 50795.602374875 - PnL: $0.40 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=48239.87, TP=47366.27
+2025-12-27 19:57:00 INFO  Activated grid level s_11 at 47948.666902895806 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 47869.548164394444 - PnL: $0.32 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=44948.52, TP=44270.73
+2025-12-27 19:57:00 INFO  Activated grid level s_4 at 44722.587319469385 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 44701.26005823876 - PnL: $0.05 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=44508.23, TP=43822.91
+2025-12-27 19:57:00 INFO  Activated grid level s_3 at 44279.789425217205 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 44262.96777705136 - PnL: $0.03 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=42003.15, TP=42360.53
+2025-12-27 19:57:00 INFO  Activated grid level l_2 at 42122.27457379483 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:00 INFO  Closed long position at 42187.628744417976 - PnL: $0.30 - Reason: stop_loss
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=55428.99, TP=54489.29
+2025-12-27 19:57:00 INFO  Activated grid level s_25 at 55115.75616399901 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 55043.81372167166 - PnL: $0.24 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=54875.78, TP=53958.60
+2025-12-27 19:57:00 INFO  Activated grid level s_24 at 54570.05560791981 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 54483.21741858804 - PnL: $0.31 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=51725.23, TP=50771.93
+2025-12-27 19:57:00 INFO  Activated grid level s_18 at 51407.46087299795 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 51310.19743851444 - PnL: $0.37 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=50708.57, TP=49766.45
+2025-12-27 19:57:00 INFO  Activated grid level s_16 at 50394.530803840746 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 50328.110014307356 - PnL: $0.24 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=45905.90, TP=45052.74
+2025-12-27 19:57:00 INFO  Activated grid level s_6 at 45621.51132459073 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Closed short position at 45612.04767062039 - PnL: $-0.01 - Reason: trend_flip
+2025-12-27 19:57:00 INFO  Using dynamic ATR-based SL/TP: SL=42400.01, TP=42843.24
+2025-12-27 19:57:00 INFO  Activated grid level l_1 at 42547.75209474225 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:00 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:00 INFO  Closed long position at 42623.72717055149 - PnL: $0.35 - Reason: stop_loss
+2025-12-27 19:57:00 INFO  Backtest completed in 110ms
+2025-12-27 19:57:00 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-SUI-2025-12-28.json
+2025-12-27 19:57:00 INFO  SUI completed: 0.22% return
+2025-12-27 19:57:00 INFO  Running backtest for WLD (Leverage: 4x)...
+2025-12-27 19:57:00 INFO  Loading data for WLD from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:00 INFO  Fetching data for WLD from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:01 ERROR Failed to fetch historical data for WLD: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:01 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:01 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:01 INFO  Starting fast backtest...
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=55609.80, TP=54660.30
+2025-12-27 19:57:01 INFO  Activated grid level s_25 at 55293.299948959124 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 55175.47402729734 - PnL: $0.43 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=54506.58, TP=53598.24
+2025-12-27 19:57:01 INFO  Activated grid level s_23 at 54203.80349863651 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 54169.06915211466 - PnL: $0.09 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=51363.52, TP=50460.26
+2025-12-27 19:57:01 INFO  Activated grid level s_17 at 51062.43481854583 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 50971.10007708503 - PnL: $0.35 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=50871.18, TP=49928.24
+2025-12-27 19:57:01 INFO  Activated grid level s_16 at 50556.866156976066 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 50467.62386207197 - PnL: $0.34 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=49858.18, TP=48965.72
+2025-12-27 19:57:01 INFO  Activated grid level s_14 at 49560.696164078094 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 49507.53566262191 - PnL: $0.19 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=48888.33, TP=47975.80
+2025-12-27 19:57:01 INFO  Activated grid level s_12 at 48584.15465550249 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 48500.02036627807 - PnL: $0.34 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=48407.25, TP=47494.88
+2025-12-27 19:57:01 INFO  Activated grid level s_11 at 48103.123421289594 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 47977.09242038709 - PnL: $0.54 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=46970.12, TP=46125.02
+2025-12-27 19:57:01 INFO  Activated grid level s_8 at 46688.41767725121 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 46640.174554764824 - PnL: $0.18 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=46504.71, TP=45669.05
+2025-12-27 19:57:01 INFO  Activated grid level s_7 at 46226.15611609029 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 46221.96572853842 - PnL: $-0.03 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=46029.72, TP=45245.98
+2025-12-27 19:57:01 INFO  Activated grid level s_6 at 45768.47140206961 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 45728.515273968595 - PnL: $0.14 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=44628.23, TP=44010.83
+2025-12-27 19:57:01 INFO  Activated grid level s_3 at 44422.4274285569 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 44362.904239581956 - PnL: $0.25 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=53458.74, TP=52489.85
+2025-12-27 19:57:01 INFO  Activated grid level s_21 at 53135.77443254241 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 53093.25525425059 - PnL: $0.13 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=51882.38, TP=50954.41
+2025-12-27 19:57:01 INFO  Activated grid level s_18 at 51573.05916673129 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 51499.09543191663 - PnL: $0.27 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=50370.89, TP=49427.13
+2025-12-27 19:57:01 INFO  Activated grid level s_15 at 50056.30312571886 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 49984.86379417219 - PnL: $0.27 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=45569.79, TP=44806.38
+2025-12-27 19:57:01 INFO  Activated grid level s_5 at 45315.31821987089 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 45209.10453767389 - PnL: $0.47 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=45128.76, TP=44342.43
+2025-12-27 19:57:01 INFO  Activated grid level s_4 at 44866.65170284247 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Closed short position at 44865.49589455137 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:57:01 INFO  Using dynamic ATR-based SL/TP: SL=42143.03, TP=42487.83
+2025-12-27 19:57:01 INFO  Activated grid level l_2 at 42257.96259804525 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:01 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:01 INFO  Closed long position at 42310.23499907742 - PnL: $0.23 - Reason: stop_loss
+2025-12-27 19:57:01 INFO  Backtest completed in 86ms
+2025-12-27 19:57:01 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-WLD-2025-12-28.json
+2025-12-27 19:57:01 INFO  WLD completed: 0.35% return
+2025-12-27 19:57:01 INFO  Running backtest for LTC (Leverage: 4x)...
+2025-12-27 19:57:01 INFO  Loading data for LTC from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:01 INFO  Fetching data for LTC from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:02 ERROR Failed to fetch historical data for LTC: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:02 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:02 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:02 INFO  Starting fast backtest...
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=54468.20, TP=53495.90
+2025-12-27 19:57:02 INFO  Activated grid level s_23 at 54144.102730098995 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 54068.00922085545 - PnL: $0.26 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=53407.48, TP=52416.79
+2025-12-27 19:57:02 INFO  Activated grid level s_21 at 53077.25000499852 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 53017.04073654893 - PnL: $0.20 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=49806.75, TP=48904.82
+2025-12-27 19:57:02 INFO  Activated grid level s_14 at 49506.109373866515 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 49443.750365320084 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=44601.06, TP=43918.38
+2025-12-27 19:57:02 INFO  Activated grid level s_3 at 44373.49999382709 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 44348.84128504299 - PnL: $0.07 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=43718.43, TP=43060.64
+2025-12-27 19:57:02 INFO  Activated grid level s_1 at 43499.16674230673 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 43425.36988075888 - PnL: $0.33 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=54973.70, TP=54109.24
+2025-12-27 19:57:02 INFO  Activated grid level s_24 at 54685.543757399995 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 54640.630887026986 - PnL: $0.13 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=53904.08, TP=53015.90
+2025-12-27 19:57:02 INFO  Activated grid level s_22 at 53608.02250504852 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 53523.923902980285 - PnL: $0.30 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=52849.27, TP=51956.66
+2025-12-27 19:57:02 INFO  Activated grid level s_20 at 52551.73267821636 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 52452.99201327829 - PnL: $0.37 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=52332.19, TP=51429.87
+2025-12-27 19:57:02 INFO  Activated grid level s_19 at 52031.41849328352 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 51932.660824181556 - PnL: $0.37 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=49322.19, TP=48403.47
+2025-12-27 19:57:02 INFO  Activated grid level s_13 at 49015.94987511536 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 49015.059277161854 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=45033.51, TP=44384.68
+2025-12-27 19:57:02 INFO  Activated grid level s_4 at 44817.23499376536 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Closed short position at 44759.43599116752 - PnL: $0.24 - Reason: trend_flip
+2025-12-27 19:57:02 INFO  Using dynamic ATR-based SL/TP: SL=41670.50, TP=42026.92
+2025-12-27 19:57:02 INFO  Activated grid level l_3 at 41789.30494147869 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:02 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:57:02 INFO  Closed long position at 41837.1307535067 - PnL: $0.21 - Reason: stop_loss
+2025-12-27 19:57:02 INFO  Backtest completed in 74ms
+2025-12-27 19:57:02 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-LTC-2025-12-28.json
+2025-12-27 19:57:02 INFO  LTC completed: 0.22% return
+2025-12-27 19:57:02 INFO  Running backtest for LINK (Leverage: 4x)...
+2025-12-27 19:57:02 INFO  Loading data for LINK from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:02 INFO  Fetching data for LINK from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:03 ERROR Failed to fetch historical data for LINK: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (unknown)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (unknown)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:03 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (unknown)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (unknown)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:03 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:03 INFO  Starting fast backtest...
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=55015.69, TP=54087.08
+2025-12-27 19:57:03 INFO  Activated grid level s_24 at 54706.151603505765 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 54696.679452761986 - PnL: $-0.00 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=53938.47, TP=53007.74
+2025-12-27 19:57:03 INFO  Activated grid level s_22 at 53628.22429517279 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 53587.44509677686 - PnL: $0.18 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=50317.96, TP=49424.11
+2025-12-27 19:57:03 INFO  Activated grid level s_15 at 50020.01304199148 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 49989.95281862777 - PnL: $0.13 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=48851.71, TP=47943.39
+2025-12-27 19:57:03 INFO  Activated grid level s_12 at 48548.931857769225 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 48541.400652602046 - PnL: $-0.01 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=47407.21, TP=46548.92
+2025-12-27 19:57:03 INFO  Activated grid level s_9 at 47121.114953561366 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 47093.69358402265 - PnL: $0.12 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=45058.25, TP=44385.88
+2025-12-27 19:57:03 INFO  Activated grid level s_4 at 44834.124040086914 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 44789.08079389491 - PnL: $0.25 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=42523.80, TP=42914.00
+2025-12-27 19:57:03 INFO  Activated grid level l_1 at 42653.864844981756 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:03 INFO  Closed long position at 42904.327696868415 - PnL: $1.71 - Reason: take_profit
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=53419.81, TP=52452.14
+2025-12-27 19:57:03 INFO  Activated grid level s_21 at 53097.25177739879 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 53079.943873341035 - PnL: $0.05 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=52899.82, TP=51914.97
+2025-12-27 19:57:03 INFO  Activated grid level s_20 at 52571.536413266134 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 52470.90775621071 - PnL: $0.52 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=52365.83, TP=51421.42
+2025-12-27 19:57:03 INFO  Activated grid level s_19 at 52051.02615174864 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 51953.32072417032 - PnL: $0.51 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=50821.83, TP=49916.99
+2025-12-27 19:57:03 INFO  Activated grid level s_16 at 50520.213172411415 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 50478.178171018226 - PnL: $0.20 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=49330.59, TP=48442.09
+2025-12-27 19:57:03 INFO  Activated grid level s_13 at 49034.421176346914 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 48981.31682558358 - PnL: $0.27 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=48350.67, TP=47503.41
+2025-12-27 19:57:03 INFO  Activated grid level s_11 at 48068.24936412794 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 48017.43326935884 - PnL: $0.26 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=46452.28, TP=45673.36
+2025-12-27 19:57:03 INFO  Activated grid level s_7 at 46192.64283262558 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 46172.94830371204 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Using dynamic ATR-based SL/TP: SL=45985.94, TP=45233.99
+2025-12-27 19:57:03 INFO  Activated grid level s_6 at 45735.28993329266 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:03 INFO  Closed short position at 45690.130122582006 - PnL: $0.24 - Reason: trend_flip
+2025-12-27 19:57:03 INFO  Backtest completed in 86ms
+2025-12-27 19:57:03 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-LINK-2025-12-28.json
+2025-12-27 19:57:03 INFO  LINK completed: 0.40% return
+2025-12-27 19:57:03 INFO  Running backtest for AVAX (Leverage: 4x)...
+2025-12-27 19:57:03 INFO  Loading data for AVAX from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:03 INFO  Fetching data for AVAX from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:04 ERROR Failed to fetch historical data for AVAX: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:04 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:04 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:04 INFO  Starting fast backtest...
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=55174.51, TP=54220.81
+2025-12-27 19:57:04 INFO  Activated grid level s_24 at 54856.61173340177 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 54805.287019324394 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=52004.08, TP=51024.06
+2025-12-27 19:57:04 INFO  Activated grid level s_18 at 51677.40970564114 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 51668.69963207716 - PnL: $-0.00 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=50980.32, TP=50016.83
+2025-12-27 19:57:04 INFO  Activated grid level s_16 at 50659.16057802288 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 50575.143478974 - PnL: $0.45 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=49972.46, TP=49038.01
+2025-12-27 19:57:04 INFO  Activated grid level s_14 at 49660.974980906656 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 49579.44069907801 - PnL: $0.44 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=47533.74, TP=46684.67
+2025-12-27 19:57:04 INFO  Activated grid level s_9 at 47250.713707429895 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 47168.096305875755 - PnL: $0.47 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=47063.14, TP=46222.37
+2025-12-27 19:57:04 INFO  Activated grid level s_8 at 46782.88485884148 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 46755.75841382712 - PnL: $0.12 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=45204.58, TP=44463.14
+2025-12-27 19:57:04 INFO  Activated grid level s_4 at 44957.43280754941 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 44956.63043226097 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=42638.90, TP=43035.74
+2025-12-27 19:57:04 INFO  Activated grid level l_1 at 42771.17717379728 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:04 INFO  Closed long position at 42851.566257801336 - PnL: $0.51 - Reason: stop_loss
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=54097.86, TP=53131.44
+2025-12-27 19:57:04 INFO  Activated grid level s_22 at 53775.719766103095 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 53757.97949907735 - PnL: $0.05 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=50462.22, TP=49548.32
+2025-12-27 19:57:04 INFO  Activated grid level s_15 at 50157.58473071571 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 50122.16171812918 - PnL: $0.16 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=48970.85, TP=48105.67
+2025-12-27 19:57:04 INFO  Activated grid level s_12 at 48682.457583478725 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 48599.461463449705 - PnL: $0.46 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Using dynamic ATR-based SL/TP: SL=45662.08, TP=44896.85
+2025-12-27 19:57:04 INFO  Activated grid level s_5 at 45407.0071356249 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:04 INFO  Closed short position at 45295.578687213536 - PnL: $0.68 - Reason: trend_flip
+2025-12-27 19:57:04 INFO  Backtest completed in 76ms
+2025-12-27 19:57:04 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-AVAX-2025-12-28.json
+2025-12-27 19:57:04 INFO  AVAX completed: 0.31% return
+2025-12-27 19:57:04 INFO  Running backtest for HYPE (Leverage: 4x)...
+2025-12-27 19:57:04 INFO  Loading data for HYPE from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:04 INFO  Fetching data for HYPE from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:05 ERROR Failed to fetch historical data for HYPE: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:05 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:05 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:05 INFO  Starting fast backtest...
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=55493.93, TP=54562.85
+2025-12-27 19:57:05 INFO  Activated grid level s_25 at 55183.57079939848 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 55094.325073815635 - PnL: $0.31 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=54402.52, TP=53483.67
+2025-12-27 19:57:05 INFO  Activated grid level s_23 at 54096.236446817435 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 53994.84434087186 - PnL: $0.37 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=52801.19, TP=51913.44
+2025-12-27 19:57:05 INFO  Activated grid level s_20 at 52505.27413524537 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 52484.67328665008 - PnL: $0.04 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=51789.36, TP=50833.41
+2025-12-27 19:57:05 INFO  Activated grid level s_18 at 51470.71280780842 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 51348.489521423326 - PnL: $0.48 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=48780.53, TP=47902.16
+2025-12-27 19:57:05 INFO  Activated grid level s_12 at 48487.73975573358 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 48486.16158413539 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=45911.11, TP=45210.71
+2025-12-27 19:57:05 INFO  Activated grid level s_6 at 45677.6442051348 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 45609.32149727452 - PnL: $0.28 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=53885.75, TP=52910.39
+2025-12-27 19:57:05 INFO  Activated grid level s_22 at 53560.6301453638 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 53475.89707446128 - PnL: $0.30 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=53358.60, TP=52373.78
+2025-12-27 19:57:05 INFO  Activated grid level s_21 at 53030.326876597814 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 53013.3106673819 - PnL: $0.02 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=51280.25, TP=50322.81
+2025-12-27 19:57:05 INFO  Activated grid level s_17 at 50961.10178990933 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 50944.781823818754 - PnL: $0.02 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=50763.72, TP=49842.17
+2025-12-27 19:57:05 INFO  Activated grid level s_16 at 50456.5364256528 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 50345.25182911288 - PnL: $0.44 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=46874.65, TP=46038.00
+2025-12-27 19:57:05 INFO  Activated grid level s_8 at 46595.76485365801 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 46572.05238690748 - PnL: $0.06 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Using dynamic ATR-based SL/TP: SL=44557.56, TP=43887.69
+2025-12-27 19:57:05 INFO  Activated grid level s_3 at 44334.271446048086 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:05 INFO  Closed short position at 44294.85831729123 - PnL: $0.15 - Reason: trend_flip
+2025-12-27 19:57:05 INFO  Backtest completed in 74ms
+2025-12-27 19:57:05 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-HYPE-2025-12-28.json
+2025-12-27 19:57:05 INFO  HYPE completed: 0.20% return
+2025-12-27 19:57:05 INFO  Running backtest for TIA (Leverage: 4x)...
+2025-12-27 19:57:05 INFO  Loading data for TIA from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:05 INFO  Fetching data for TIA from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:06 ERROR Failed to fetch historical data for TIA: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:06 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:06 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:06 INFO  Starting fast backtest...
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=54403.62, TP=53452.10
+2025-12-27 19:57:06 INFO  Activated grid level s_23 at 54086.445990373824 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 53954.31499452771 - PnL: $0.50 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=53867.67, TP=52917.47
+2025-12-27 19:57:06 INFO  Activated grid level s_22 at 53550.936624132504 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 53534.2730380995 - PnL: $0.02 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=53341.47, TP=52379.25
+2025-12-27 19:57:06 INFO  Activated grid level s_21 at 53020.72933082425 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 52959.69635239457 - PnL: $0.21 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=52796.36, TP=51894.60
+2025-12-27 19:57:06 INFO  Activated grid level s_20 at 52495.771614677484 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 52343.179690673416 - PnL: $0.60 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=51256.69, TP=50342.25
+2025-12-27 19:57:06 INFO  Activated grid level s_17 at 50951.87873706566 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 50950.26686147143 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=47806.56, TP=46958.09
+2025-12-27 19:57:06 INFO  Activated grid level s_10 at 47523.73721930973 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 47464.28325319466 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=46396.67, TP=45584.87
+2025-12-27 19:57:06 INFO  Activated grid level s_7 at 46126.07113776432 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 46098.7933594501 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=44112.64, TP=43436.84
+2025-12-27 19:57:06 INFO  Activated grid level s_2 at 43887.37399169074 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 43801.20509837443 - PnL: $0.39 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=42440.76, TP=42895.66
+2025-12-27 19:57:06 INFO  Activated grid level l_1 at 42592.3931494695 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:06 INFO  Closed long position at 42901.97689364679 - PnL: $1.58 - Reason: take_profit
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=54931.68, TP=54018.57
+2025-12-27 19:57:06 INFO  Activated grid level s_24 at 54627.310450277575 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 54560.77115668015 - PnL: $0.22 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=52285.95, TP=51356.14
+2025-12-27 19:57:06 INFO  Activated grid level s_19 at 51976.01149968067 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 51938.358688413166 - PnL: $0.11 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=51780.43, TP=50823.32
+2025-12-27 19:57:06 INFO  Activated grid level s_18 at 51461.39752443632 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 51407.17058735886 - PnL: $0.18 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=48768.92, TP=47899.05
+2025-12-27 19:57:06 INFO  Activated grid level s_12 at 48478.96433741785 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 48374.012425354915 - PnL: $0.43 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=46861.67, TP=46038.65
+2025-12-27 19:57:06 INFO  Activated grid level s_8 at 46587.33184914198 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 46459.96934898191 - PnL: $0.56 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=45909.71, TP=45188.72
+2025-12-27 19:57:06 INFO  Activated grid level s_6 at 45669.3773641231 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 45639.50644057832 - PnL: $0.09 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=44994.25, TP=44320.04
+2025-12-27 19:57:06 INFO  Activated grid level s_4 at 44769.510208923726 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 44704.285945249205 - PnL: $0.28 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Using dynamic ATR-based SL/TP: SL=43646.61, TP=43065.32
+2025-12-27 19:57:06 INFO  Activated grid level s_1 at 43452.84553632747 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:06 INFO  Closed short position at 43405.05607506183 - PnL: $0.19 - Reason: trend_flip
+2025-12-27 19:57:06 INFO  Backtest completed in 81ms
+2025-12-27 19:57:06 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-TIA-2025-12-28.json
+2025-12-27 19:57:06 INFO  TIA completed: 0.50% return
+2025-12-27 19:57:06 INFO  Running backtest for APT (Leverage: 4x)...
+2025-12-27 19:57:06 INFO  Loading data for APT from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:06 INFO  Fetching data for APT from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:07 ERROR Failed to fetch historical data for APT: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:07 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:07 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:07 INFO  Starting fast backtest...
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=52722.17, TP=51832.26
+2025-12-27 19:57:07 INFO  Activated grid level s_20 at 52425.53590472645 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 52375.61647204619 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=50673.59, TP=49792.55
+2025-12-27 19:57:07 INFO  Activated grid level s_16 at 50379.90955342028 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 50286.362077739825 - PnL: $0.50 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=49199.60, TP=48295.53
+2025-12-27 19:57:07 INFO  Activated grid level s_13 at 48898.24386603553 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 48845.57040818738 - PnL: $0.27 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=47265.70, TP=46439.36
+2025-12-27 19:57:07 INFO  Activated grid level s_9 at 46990.25123498759 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 46966.85048964232 - PnL: $0.10 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=45861.73, TP=45101.36
+2025-12-27 19:57:07 INFO  Activated grid level s_6 at 45608.274897323776 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 45564.78072591674 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=45393.14, TP=44683.84
+2025-12-27 19:57:07 INFO  Activated grid level s_5 at 45156.70781913244 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 45156.27637579211 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=44496.84, TP=43807.14
+2025-12-27 19:57:07 INFO  Activated grid level s_3 at 44266.94227931815 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 44235.878525932785 - PnL: $0.16 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=42399.52, TP=42807.17
+2025-12-27 19:57:07 INFO  Activated grid level l_1 at 42535.40747463602 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:07 INFO  Closed long position at 42577.072987468135 - PnL: $0.24 - Reason: stop_loss
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=51697.70, TP=50782.23
+2025-12-27 19:57:07 INFO  Activated grid level s_18 at 51392.54573544403 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 51274.09650222705 - PnL: $0.64 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=51200.89, TP=50249.34
+2025-12-27 19:57:07 INFO  Activated grid level s_17 at 50883.70864895449 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 50816.541052330715 - PnL: $0.34 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=50194.46, TP=49254.38
+2025-12-27 19:57:07 INFO  Activated grid level s_15 at 49881.09856774284 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 49825.07502943816 - PnL: $0.28 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=49682.50, TP=48796.69
+2025-12-27 19:57:07 INFO  Activated grid level s_14 at 49387.22630469589 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 49337.59076907783 - PnL: $0.25 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=48236.61, TP=47331.05
+2025-12-27 19:57:07 INFO  Activated grid level s_11 at 47934.75528481083 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 47860.28519758797 - PnL: $0.41 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=46344.19, TP=45504.69
+2025-12-27 19:57:07 INFO  Activated grid level s_7 at 46064.357646297 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Closed short position at 45992.513783590904 - PnL: $0.42 - Reason: trend_flip
+2025-12-27 19:57:07 INFO  Using dynamic ATR-based SL/TP: SL=41981.52, TP=42367.11
+2025-12-27 19:57:07 INFO  Activated grid level l_2 at 42110.053399889664 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:07 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:07 INFO  Closed long position at 42381.33921661101 - PnL: $1.88 - Reason: take_profit
+2025-12-27 19:57:07 INFO  Backtest completed in 80ms
+2025-12-27 19:57:07 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-APT-2025-12-28.json
+2025-12-27 19:57:07 INFO  APT completed: 0.54% return
+2025-12-27 19:57:07 INFO  Running backtest for NEAR (Leverage: 4x)...
+2025-12-27 19:57:07 INFO  Loading data for NEAR from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:07 INFO  Fetching data for NEAR from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:07 ERROR Failed to fetch historical data for NEAR: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:07 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:07 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:07 INFO  Starting fast backtest...
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=52706.30, TP=51779.00
+2025-12-27 19:57:08 INFO  Activated grid level s_20 at 52397.19909785477 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 52339.97280401203 - PnL: $0.28 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=51673.08, TP=50748.15
+2025-12-27 19:57:08 INFO  Activated grid level s_18 at 51364.76727561492 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 51342.16335613662 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=49167.46, TP=48280.52
+2025-12-27 19:57:08 INFO  Activated grid level s_13 at 48871.81361465356 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 48861.99357794614 - PnL: $0.01 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=48183.99, TP=47358.56
+2025-12-27 19:57:08 INFO  Activated grid level s_11 at 47908.84581379626 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 47848.47649966759 - PnL: $0.33 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=46771.61, TP=45956.35
+2025-12-27 19:57:08 INFO  Activated grid level s_8 at 46499.85374545522 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 46493.84859713218 - PnL: $-0.01 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=45361.13, TP=44674.63
+2025-12-27 19:57:08 INFO  Activated grid level s_5 at 45132.29992541521 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 45066.484144228794 - PnL: $0.38 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=44916.85, TP=44222.63
+2025-12-27 19:57:08 INFO  Activated grid level s_4 at 44685.44547070813 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 44614.93041880675 - PnL: $0.42 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=43598.69, TP=42916.38
+2025-12-27 19:57:08 INFO  Activated grid level s_1 at 43371.253129627294 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 43332.56632128637 - PnL: $0.22 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=42375.97, TP=42785.31
+2025-12-27 19:57:08 INFO  Activated grid level l_1 at 42512.41643399111 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:08 INFO  Closed long position at 42564.5291372359 - PnL: $0.32 - Reason: stop_loss
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=51177.07, TP=50214.48
+2025-12-27 19:57:08 INFO  Activated grid level s_17 at 50856.205223381105 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 50739.81083120655 - PnL: $0.63 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=41971.70, TP=42318.48
+2025-12-27 19:57:08 INFO  Activated grid level l_2 at 42087.292269651196 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:08 INFO  Closed long position at 42115.02607793972 - PnL: $0.15 - Reason: stop_loss
+2025-12-27 19:57:08 INFO  Backtest completed in 73ms
+2025-12-27 19:57:08 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-NEAR-2025-12-28.json
+2025-12-27 19:57:08 INFO  NEAR completed: 0.24% return
+2025-12-27 19:57:08 INFO  Running backtest for OP (Leverage: 4x)...
+2025-12-27 19:57:08 INFO  Loading data for OP from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:08 INFO  Fetching data for OP from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:08 ERROR Failed to fetch historical data for OP: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:08 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:08 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:08 INFO  Starting fast backtest...
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=55528.42, TP=54559.33
+2025-12-27 19:57:08 INFO  Activated grid level s_25 at 55205.39349750227 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 55107.614100537685 - PnL: $0.48 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=53362.79, TP=52428.32
+2025-12-27 19:57:08 INFO  Activated grid level s_21 at 53051.298060539135 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 53009.41575688684 - PnL: $0.18 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=52838.33, TP=51901.45
+2025-12-27 19:57:08 INFO  Activated grid level s_20 at 52526.03768370212 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 52505.14439378147 - PnL: $0.07 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=50789.81, TP=49849.85
+2025-12-27 19:57:08 INFO  Activated grid level s_16 at 50476.48978760146 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 50401.94094590083 - PnL: $0.39 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=49293.78, TP=48388.40
+2025-12-27 19:57:08 INFO  Activated grid level s_13 at 48991.98368981633 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 48896.593062336135 - PnL: $0.53 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=48323.83, TP=47432.29
+2025-12-27 19:57:08 INFO  Activated grid level s_11 at 48026.64806373524 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 47942.51381907551 - PnL: $0.47 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=43694.28, TP=43045.14
+2025-12-27 19:57:08 INFO  Activated grid level s_1 at 43477.89796973054 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Closed short position at 43448.84832288735 - PnL: $0.15 - Reason: trend_flip
+2025-12-27 19:57:08 INFO  Using dynamic ATR-based SL/TP: SL=42078.25, TP=42415.84
+2025-12-27 19:57:08 INFO  Activated grid level l_2 at 42190.780000131585 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:08 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:08 INFO  Closed long position at 42246.02117174738 - PnL: $0.34 - Reason: stop_loss
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=46408.94, TP=45640.12
+2025-12-27 19:57:09 INFO  Activated grid level s_7 at 46152.664800643266 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 46145.00976774509 - PnL: $-0.00 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=45952.77, TP=45181.59
+2025-12-27 19:57:09 INFO  Activated grid level s_6 at 45695.707723409185 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 45680.1728575386 - PnL: $0.05 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=44132.45, TP=43473.14
+2025-12-27 19:57:09 INFO  Activated grid level s_2 at 43912.67694942784 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 43909.02248416694 - PnL: $-0.03 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=42500.53, TP=42849.79
+2025-12-27 19:57:09 INFO  Activated grid level l_1 at 42616.94949508241 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:09 INFO  Closed long position at 42818.572698818636 - PnL: $1.37 - Reason: take_profit
+2025-12-27 19:57:09 INFO  Backtest completed in 79ms
+2025-12-27 19:57:09 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-OP-2025-12-28.json
+2025-12-27 19:57:09 INFO  OP completed: 0.35% return
+2025-12-27 19:57:09 INFO  Running backtest for ARB (Leverage: 4x)...
+2025-12-27 19:57:09 INFO  Loading data for ARB from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:09 INFO  Fetching data for ARB from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:09 ERROR Failed to fetch historical data for ARB: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:09 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:09 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:09 INFO  Starting fast backtest...
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=55467.69, TP=54519.96
+2025-12-27 19:57:09 INFO  Activated grid level s_25 at 55151.776208205105 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 55046.7699989139 - PnL: $0.52 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=52795.27, TP=51834.52
+2025-12-27 19:57:09 INFO  Activated grid level s_20 at 52475.02267267338 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 52379.565337164684 - PnL: $0.49 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=52277.02, TP=51312.36
+2025-12-27 19:57:09 INFO  Activated grid level s_19 at 51955.467992745915 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 51917.201104795146 - PnL: $0.17 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=51751.33, TP=50820.52
+2025-12-27 19:57:09 INFO  Activated grid level s_18 at 51441.057418560325 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 51424.56338564385 - PnL: $0.04 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=51232.46, TP=50330.29
+2025-12-27 19:57:09 INFO  Activated grid level s_17 at 50931.74001837656 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 50840.2021343546 - PnL: $0.49 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=48257.47, TP=47425.06
+2025-12-27 19:57:09 INFO  Activated grid level s_11 at 47980.003007517626 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 47921.70559372527 - PnL: $0.31 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=47298.29, TP=46507.24
+2025-12-27 19:57:09 INFO  Activated grid level s_9 at 47034.607398801716 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 46996.28678410653 - PnL: $0.19 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=49738.76, TP=48824.02
+2025-12-27 19:57:09 INFO  Activated grid level s_14 at 49433.845078648425 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 49348.3334025764 - PnL: $0.47 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=46361.25, TP=45601.01
+2025-12-27 19:57:09 INFO  Activated grid level s_7 at 46107.83981845084 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 46067.662751461416 - PnL: $0.21 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=45884.94, TP=45184.10
+2025-12-27 19:57:09 INFO  Activated grid level s_6 at 45651.32655292164 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 45634.4327073889 - PnL: $0.06 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=44948.52, TP=44358.40
+2025-12-27 19:57:09 INFO  Activated grid level s_4 at 44751.815070014345 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 44695.0250181999 - PnL: $0.33 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=44491.69, TP=43942.80
+2025-12-27 19:57:09 INFO  Activated grid level s_3 at 44308.72779209341 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 44281.515310812785 - PnL: $0.13 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Using dynamic ATR-based SL/TP: SL=43598.24, TP=43110.53
+2025-12-27 19:57:09 INFO  Activated grid level s_1 at 43435.670808835814 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:09 INFO  Closed short position at 43392.34275033327 - PnL: $0.25 - Reason: trend_flip
+2025-12-27 19:57:09 INFO  Backtest completed in 77ms
+2025-12-27 19:57:09 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-ARB-2025-12-28.json
+2025-12-27 19:57:09 INFO  ARB completed: 0.32% return
+2025-12-27 19:57:09 INFO  Running backtest for LDO (Leverage: 4x)...
+2025-12-27 19:57:09 INFO  Loading data for LDO from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:09 INFO  Fetching data for LDO from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:10 ERROR Failed to fetch historical data for LDO: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:10 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:10 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:10 INFO  Starting fast backtest...
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=53532.06, TP=52593.98
+2025-12-27 19:57:10 INFO  Activated grid level s_21 at 53219.367801802175 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 53197.631763586716 - PnL: $0.07 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=53004.96, TP=52067.42
+2025-12-27 19:57:10 INFO  Activated grid level s_20 at 52692.44336812097 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 52529.72848922512 - PnL: $0.87 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=50945.91, TP=50017.39
+2025-12-27 19:57:10 INFO  Activated grid level s_16 at 50636.40237953818 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 50480.057938015554 - PnL: $0.87 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=48959.30, TP=48063.17
+2025-12-27 19:57:10 INFO  Activated grid level s_12 at 48660.587402059085 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 48640.80175413397 - PnL: $0.07 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=47525.47, TP=46637.51
+2025-12-27 19:57:10 INFO  Activated grid level s_9 at 47229.48672481061 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 47184.18105098886 - PnL: $0.24 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=45195.03, TP=44421.64
+2025-12-27 19:57:10 INFO  Activated grid level s_4 at 44937.236061935735 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 44932.22415184934 - PnL: $-0.02 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=41790.70, TP=42122.19
+2025-12-27 19:57:10 INFO  Activated grid level l_3 at 41901.198529554174 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:57:10 INFO  Closed long position at 41939.002440780496 - PnL: $0.22 - Reason: stop_loss
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=42208.29, TP=42556.75
+2025-12-27 19:57:10 INFO  Activated grid level l_2 at 42324.44295914563 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:10 INFO  Closed long position at 42376.19718262196 - PnL: $0.31 - Reason: stop_loss
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=54609.18, TP=53648.86
+2025-12-27 19:57:10 INFO  Activated grid level s_23 at 54289.0770946184 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 54195.99901806471 - PnL: $0.46 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=54066.42, TP=53121.85
+2025-12-27 19:57:10 INFO  Activated grid level s_22 at 53751.56147982021 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 53666.12757551825 - PnL: $0.42 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=47046.88, TP=46191.84
+2025-12-27 19:57:10 INFO  Activated grid level s_8 at 46761.86804436694 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 46709.61073760237 - PnL: $0.28 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=46112.45, TP=45296.52
+2025-12-27 19:57:10 INFO  Activated grid level s_6 at 45840.47450678064 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 45811.70369022547 - PnL: $0.14 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=43824.79, TP=43197.33
+2025-12-27 19:57:10 INFO  Activated grid level s_1 at 43615.63859681368 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Closed short position at 43575.61099585017 - PnL: $0.22 - Reason: trend_flip
+2025-12-27 19:57:10 INFO  Using dynamic ATR-based SL/TP: SL=42580.73, TP=43094.43
+2025-12-27 19:57:10 INFO  Activated grid level l_1 at 42751.962584995585 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:10 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:10 INFO  Closed long position at 42797.58873934492 - PnL: $0.27 - Reason: stop_loss
+2025-12-27 19:57:10 INFO  Backtest completed in 77ms
+2025-12-27 19:57:10 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-LDO-2025-12-28.json
+2025-12-27 19:57:10 INFO  LDO completed: 0.39% return
+2025-12-27 19:57:10 INFO  Running backtest for TON (Leverage: 4x)...
+2025-12-27 19:57:10 INFO  Loading data for TON from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:10 INFO  Fetching data for TON from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:11 ERROR Failed to fetch historical data for TON: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:11 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:11 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:11 INFO  Starting fast backtest...
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=55413.94, TP=54486.49
+2025-12-27 19:57:11 INFO  Activated grid level s_25 at 55104.790109885405 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 55078.11283432166 - PnL: $0.09 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=54877.16, TP=53923.28
+2025-12-27 19:57:11 INFO  Activated grid level s_24 at 54559.19812859941 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 54522.137507339954 - PnL: $0.15 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=51708.02, TP=50775.66
+2025-12-27 19:57:11 INFO  Activated grid level s_18 at 51397.2326363373 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 51273.22401710252 - PnL: $0.67 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=50697.19, TP=49759.14
+2025-12-27 19:57:11 INFO  Activated grid level s_16 at 50384.50410384991 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 50306.50902525021 - PnL: $0.41 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=50189.04, TP=49278.86
+2025-12-27 19:57:11 INFO  Activated grid level s_15 at 49885.64762757416 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 49828.952542936495 - PnL: $0.29 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=46342.48, TP=45520.72
+2025-12-27 19:57:11 INFO  Activated grid level s_7 at 46068.5586267293 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 46066.544225032885 - PnL: $-0.04 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=53810.07, TP=52832.35
+2025-12-27 19:57:11 INFO  Activated grid level s_22 at 53484.16638427547 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 53445.996506582 - PnL: $0.16 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=53276.19, TP=52311.48
+2025-12-27 19:57:11 INFO  Activated grid level s_21 at 52954.62018245095 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 52897.92669634991 - PnL: $0.27 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=49689.78, TP=48795.64
+2025-12-27 19:57:11 INFO  Activated grid level s_14 at 49391.73032433086 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 49314.213033968445 - PnL: $0.42 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=49196.63, TP=48314.84
+2025-12-27 19:57:11 INFO  Activated grid level s_13 at 48902.70329141669 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 48809.5394728192 - PnL: $0.52 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=48719.73, TP=47816.09
+2025-12-27 19:57:11 INFO  Activated grid level s_12 at 48418.518110313555 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 48408.98069263825 - PnL: $0.01 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=47281.03, TP=46421.55
+2025-12-27 19:57:11 INFO  Activated grid level s_9 at 46994.53665512657 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 46882.85963049544 - PnL: $0.66 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=44966.41, TP=44208.24
+2025-12-27 19:57:11 INFO  Activated grid level s_4 at 44713.68913233055 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 44701.061858463174 - PnL: $0.03 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=44509.79, TP=43793.35
+2025-12-27 19:57:11 INFO  Activated grid level s_3 at 44270.979338941135 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Closed short position at 44172.794284179996 - PnL: $0.61 - Reason: trend_flip
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=41150.35, TP=41526.78
+2025-12-27 19:57:11 INFO  Activated grid level l_4 at 41275.8272696807 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Moved stop loss to break-even for l_4
+2025-12-27 19:57:11 INFO  Closed long position at 41320.68495314167 - PnL: $0.27 - Reason: stop_loss
+2025-12-27 19:57:11 INFO  Using dynamic ATR-based SL/TP: SL=41564.23, TP=41949.81
+2025-12-27 19:57:11 INFO  Activated grid level l_3 at 41692.75481785929 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:11 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:57:11 INFO  Closed long position at 41743.684280633635 - PnL: $0.31 - Reason: stop_loss
+2025-12-27 19:57:11 INFO  Backtest completed in 152ms
+2025-12-27 19:57:11 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-TON-2025-12-28.json
+2025-12-27 19:57:11 INFO  TON completed: 0.42% return
+2025-12-27 19:57:11 INFO  Running backtest for JUP (Leverage: 4x)...
+2025-12-27 19:57:11 INFO  Loading data for JUP from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:11 INFO  Fetching data for JUP from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:12 ERROR Failed to fetch historical data for JUP: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:12 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:12 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:12 INFO  Starting fast backtest...
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=54586.59, TP=53650.59
+2025-12-27 19:57:12 INFO  Activated grid level s_23 at 54274.587628573034 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 54204.88175061105 - PnL: $0.33 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=52468.19, TP=51534.05
+2025-12-27 19:57:12 INFO  Activated grid level s_19 at 52156.81191596891 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 52030.70183931958 - PnL: $0.67 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=51451.11, TP=50485.14
+2025-12-27 19:57:12 INFO  Activated grid level s_17 at 51129.11667088415 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 51061.69876882543 - PnL: $0.34 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=50433.33, TP=49498.35
+2025-12-27 19:57:12 INFO  Activated grid level s_15 at 50121.67108213325 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 50096.16787684458 - PnL: $0.10 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=48942.25, TP=48058.31
+2025-12-27 19:57:12 INFO  Activated grid level s_12 at 48647.60014998846 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 48597.778244337154 - PnL: $0.25 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=46577.95, TP=45703.67
+2025-12-27 19:57:12 INFO  Activated grid level s_7 at 46286.522327126935 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 46265.91594594628 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=44724.66, TP=43991.99
+2025-12-27 19:57:12 INFO  Activated grid level s_3 at 44480.43817083401 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 44409.29107060806 - PnL: $0.43 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=42201.39, TP=42536.65
+2025-12-27 19:57:12 INFO  Activated grid level l_2 at 42313.14679034031 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:12 INFO  Closed long position at 42353.381764548285 - PnL: $0.23 - Reason: stop_loss
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=42597.17, TP=43027.31
+2025-12-27 19:57:12 INFO  Activated grid level l_1 at 42740.55231347506 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:12 INFO  Closed long position at 43076.704044647 - PnL: $2.31 - Reason: take_profit
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=55657.65, TP=54781.22
+2025-12-27 19:57:12 INFO  Activated grid level s_25 at 55365.50683990737 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 55310.80535226366 - PnL: $0.24 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=50945.52, TP=49977.62
+2025-12-27 19:57:12 INFO  Activated grid level s_16 at 50622.8877929546 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 50596.93840649778 - PnL: $0.10 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=49941.21, TP=48993.83
+2025-12-27 19:57:12 INFO  Activated grid level s_14 at 49625.41691300323 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 49547.59267000152 - PnL: $0.42 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=49430.24, TP=48541.75
+2025-12-27 19:57:12 INFO  Activated grid level s_13 at 49134.07615148834 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 49120.52772932689 - PnL: $0.03 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=46091.54, TP=45301.64
+2025-12-27 19:57:12 INFO  Activated grid level s_6 at 45828.23992784846 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 45817.17462144186 - PnL: $0.02 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Using dynamic ATR-based SL/TP: SL=45163.53, TP=44448.67
+2025-12-27 19:57:12 INFO  Activated grid level s_4 at 44925.24255254235 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:12 INFO  Closed short position at 44877.27589359554 - PnL: $0.27 - Reason: trend_flip
+2025-12-27 19:57:12 INFO  Backtest completed in 84ms
+2025-12-27 19:57:12 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-JUP-2025-12-28.json
+2025-12-27 19:57:12 INFO  JUP completed: 0.53% return
+2025-12-27 19:57:12 INFO  Running backtest for SEI (Leverage: 4x)...
+2025-12-27 19:57:12 INFO  Loading data for SEI from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:12 INFO  Fetching data for SEI from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:13 ERROR Failed to fetch historical data for SEI: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:13 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:13 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:13 INFO  Starting fast backtest...
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=55663.02, TP=54752.90
+2025-12-27 19:57:13 INFO  Activated grid level s_25 at 55359.64389331551 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 55287.816513877144 - PnL: $0.34 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=55120.43, TP=54193.73
+2025-12-27 19:57:13 INFO  Activated grid level s_24 at 54811.52860724307 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 54761.48189944285 - PnL: $0.22 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=54035.53, TP=53123.52
+2025-12-27 19:57:13 INFO  Activated grid level s_22 at 53731.524955634806 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 53662.44501141961 - PnL: $0.33 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=51947.31, TP=51010.21
+2025-12-27 19:57:13 INFO  Activated grid level s_18 at 51634.939361452976 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 51575.15016205923 - PnL: $0.29 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=50926.07, TP=50000.45
+2025-12-27 19:57:13 INFO  Activated grid level s_16 at 50617.52706739827 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 50536.88469959252 - PnL: $0.43 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=48923.98, TP=48079.38
+2025-12-27 19:57:13 INFO  Activated grid level s_12 at 48642.44859809666 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 48521.86649627248 - PnL: $0.69 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=48431.73, TP=47619.06
+2025-12-27 19:57:13 INFO  Activated grid level s_11 at 48160.8401961353 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 48112.8292125928 - PnL: $0.25 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=47943.54, TP=47164.93
+2025-12-27 19:57:13 INFO  Activated grid level s_10 at 47684.00019419337 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 47659.8979430372 - PnL: $0.10 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=44252.38, TP=43601.35
+2025-12-27 19:57:13 INFO  Activated grid level s_2 at 44035.374160180894 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 44035.20578031253 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=42595.52, TP=43017.04
+2025-12-27 19:57:13 INFO  Activated grid level l_1 at 42736.02629014712 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:13 INFO  Closed long position at 42797.022212710544 - PnL: $0.38 - Reason: stop_loss
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=53513.53, TP=52571.53
+2025-12-27 19:57:13 INFO  Activated grid level s_21 at 53199.52965904435 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 53109.54852550838 - PnL: $0.45 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=50441.56, TP=49465.96
+2025-12-27 19:57:13 INFO  Activated grid level s_15 at 50116.36343306757 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 50111.541533849966 - PnL: $-0.02 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=49435.91, TP=48514.80
+2025-12-27 19:57:13 INFO  Activated grid level s_13 at 49128.87308407762 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 49073.478012777305 - PnL: $0.29 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=47500.39, TP=46634.86
+2025-12-27 19:57:13 INFO  Activated grid level s_9 at 47211.88138038948 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 47099.61245609493 - PnL: $0.66 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Using dynamic ATR-based SL/TP: SL=46088.33, TP=45293.49
+2025-12-27 19:57:13 INFO  Activated grid level s_6 at 45823.38693293462 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:13 INFO  Closed short position at 45743.64206576695 - PnL: $0.47 - Reason: trend_flip
+2025-12-27 19:57:13 INFO  Backtest completed in 85ms
+2025-12-27 19:57:13 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-SEI-2025-12-28.json
+2025-12-27 19:57:13 INFO  SEI completed: 0.43% return
+2025-12-27 19:57:13 INFO  Running backtest for BNB (Leverage: 4x)...
+2025-12-27 19:57:13 INFO  Loading data for BNB from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:13 INFO  Fetching data for BNB from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:14 ERROR Failed to fetch historical data for BNB: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:14 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:14 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:14 INFO  Starting fast backtest...
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=55620.09, TP=54697.21
+2025-12-27 19:57:14 INFO  Activated grid level s_25 at 55312.46269787441 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 55311.194452527794 - PnL: $-0.05 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=54532.20, TP=53603.37
+2025-12-27 19:57:14 INFO  Activated grid level s_23 at 54222.58866569395 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 54135.73840576645 - PnL: $0.43 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=53461.47, TP=52539.64
+2025-12-27 19:57:14 INFO  Activated grid level s_21 at 53154.18945759626 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 53123.075464842856 - PnL: $0.12 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=52418.52, TP=51483.48
+2025-12-27 19:57:14 INFO  Activated grid level s_19 at 52106.84193470862 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 52036.7771206742 - PnL: $0.35 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=51903.14, TP=50966.53
+2025-12-27 19:57:14 INFO  Activated grid level s_18 at 51590.9326086224 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 51542.19434127819 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=50890.59, TP=49941.99
+2025-12-27 19:57:14 INFO  Activated grid level s_16 at 50574.387421451225 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 50547.66263098364 - PnL: $0.11 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=48417.51, TP=47524.36
+2025-12-27 19:57:14 INFO  Activated grid level s_11 at 48119.794303241186 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 48092.79666116917 - PnL: $0.12 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=47929.92, TP=47070.25
+2025-12-27 19:57:14 INFO  Activated grid level s_10 at 47643.36069627841 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 47631.97788110323 - PnL: $0.02 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=46041.67, TP=45269.67
+2025-12-27 19:57:14 INFO  Activated grid level s_6 at 45784.3331742287 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 45773.346270679576 - PnL: $0.02 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=41740.77, TP=42068.10
+2025-12-27 19:57:14 INFO  Activated grid level l_3 at 41849.881671552954 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:57:14 INFO  Closed long position at 41890.691260566564 - PnL: $0.24 - Reason: stop_loss
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=49872.82, TP=48987.98
+2025-12-27 19:57:14 INFO  Activated grid level s_14 at 49577.87219042371 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 49449.603036807945 - PnL: $0.72 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=49379.27, TP=48502.46
+2025-12-27 19:57:14 INFO  Activated grid level s_13 at 49087.00216873634 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 48969.17198799813 - PnL: $0.67 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=48894.60, TP=48013.77
+2025-12-27 19:57:14 INFO  Activated grid level s_12 at 48600.9922462736 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 48581.54644142678 - PnL: $0.07 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=46990.54, TP=46132.72
+2025-12-27 19:57:14 INFO  Activated grid level s_8 at 46704.59827103069 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 46675.90654520269 - PnL: $0.13 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Using dynamic ATR-based SL/TP: SL=44238.45, TP=43516.64
+2025-12-27 19:57:14 INFO  Activated grid level s_2 at 43997.84426568632 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:14 INFO  Closed short position at 43946.77066637275 - PnL: $0.30 - Reason: trend_flip
+2025-12-27 19:57:14 INFO  Backtest completed in 75ms
+2025-12-27 19:57:14 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-BNB-2025-12-28.json
+2025-12-27 19:57:14 INFO  BNB completed: 0.29% return
+2025-12-27 19:57:14 INFO  Running backtest for DOT (Leverage: 4x)...
+2025-12-27 19:57:14 INFO  Loading data for DOT from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:14 INFO  Fetching data for DOT from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:15 ERROR Failed to fetch historical data for DOT: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:15 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:15 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:15 INFO  Starting fast backtest...
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=55357.14, TP=54375.51
+2025-12-27 19:57:15 INFO  Activated grid level s_25 at 55029.93068539359 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 54907.845418397555 - PnL: $0.61 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=54273.72, TP=53289.43
+2025-12-27 19:57:15 INFO  Activated grid level s_23 at 53945.623650028014 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 53934.479450622806 - PnL: $0.01 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=53206.30, TP=52235.44
+2025-12-27 19:57:15 INFO  Activated grid level s_21 at 52882.68174691502 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 52806.58753739804 - PnL: $0.38 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=51660.27, TP=50661.70
+2025-12-27 19:57:15 INFO  Activated grid level s_18 at 51327.4098995488 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 51300.76654537985 - PnL: $0.10 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=49141.89, TP=48225.03
+2025-12-27 19:57:15 INFO  Activated grid level s_13 at 48836.26935314763 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 48762.99290444719 - PnL: $0.40 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=48164.53, TP=47292.95
+2025-12-27 19:57:15 INFO  Activated grid level s_11 at 47874.001914662906 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 47843.753001477126 - PnL: $0.14 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=46722.22, TP=45953.67
+2025-12-27 19:57:15 INFO  Activated grid level s_8 at 46466.03460024101 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 46435.46293157527 - PnL: $0.14 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=46255.03, TP=45507.86
+2025-12-27 19:57:15 INFO  Activated grid level s_7 at 46005.97485172376 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 45910.53689703593 - PnL: $0.57 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=43525.06, TP=42969.00
+2025-12-27 19:57:15 INFO  Activated grid level s_1 at 43339.709402291235 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 43319.65455835416 - PnL: $0.09 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=42355.00, TP=42734.48
+2025-12-27 19:57:15 INFO  Activated grid level l_1 at 42481.49733491913 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:15 INFO  Closed long position at 42511.209824990496 - PnL: $0.16 - Reason: stop_loss
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=53724.16, TP=52786.21
+2025-12-27 19:57:15 INFO  Activated grid level s_22 at 53411.50856438418 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 53392.35224851899 - PnL: $0.06 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=47210.15, TP=46371.78
+2025-12-27 19:57:15 INFO  Activated grid level s_9 at 46930.69494624342 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 46862.90099320086 - PnL: $0.38 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=44902.36, TP=44154.11
+2025-12-27 19:57:15 INFO  Activated grid level s_4 at 44652.945936890064 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 44622.229235016166 - PnL: $0.15 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Using dynamic ATR-based SL/TP: SL=44016.97, TP=43285.38
+2025-12-27 19:57:15 INFO  Activated grid level s_2 at 43773.10649631415 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:15 INFO  Closed short position at 43764.496024704255 - PnL: $0.01 - Reason: trend_flip
+2025-12-27 19:57:15 INFO  Backtest completed in 82ms
+2025-12-27 19:57:15 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-DOT-2025-12-28.json
+2025-12-27 19:57:15 INFO  DOT completed: 0.27% return
+2025-12-27 19:57:15 INFO  Running backtest for AAVE (Leverage: 3x)...
+2025-12-27 19:57:15 INFO  Loading data for AAVE from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:15 INFO  Fetching data for AAVE from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:16 ERROR Failed to fetch historical data for AAVE: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:16 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:16 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:16 INFO  Starting fast backtest...
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=52883.72, TP=51984.24
+2025-12-27 19:57:16 INFO  Activated grid level s_20 at 52583.89631724015 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 52465.99452893362 - PnL: $0.45 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=51857.10, TP=50929.17
+2025-12-27 19:57:16 INFO  Activated grid level s_18 at 51547.785822213664 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 51466.32221601861 - PnL: $0.30 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=48869.89, TP=47941.25
+2025-12-27 19:57:16 INFO  Activated grid level s_12 at 48560.34602172072 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 48528.286475553905 - PnL: $0.10 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=47416.23, TP=46564.12
+2025-12-27 19:57:16 INFO  Activated grid level s_9 at 47132.19342863952 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 47125.76786960613 - PnL: $-0.02 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=41699.17, TP=42046.30
+2025-12-27 19:57:16 INFO  Activated grid level l_3 at 41814.88156951154 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:57:16 INFO  Closed long position at 41858.40284616739 - PnL: $0.18 - Reason: stop_loss
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=42107.41, TP=42496.94
+2025-12-27 19:57:16 INFO  Activated grid level l_2 at 42237.254110617716 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:16 INFO  Closed long position at 42526.993147822315 - PnL: $1.49 - Reason: take_profit
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=42514.88, TP=42961.92
+2025-12-27 19:57:16 INFO  Activated grid level l_1 at 42663.893041028 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:16 INFO  Closed long position at 42733.12102148524 - PnL: $0.31 - Reason: stop_loss
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=54482.20, TP=53567.33
+2025-12-27 19:57:16 INFO  Activated grid level s_23 at 54177.24095954884 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 54084.16657714526 - PnL: $0.33 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=49846.00, TP=48917.22
+2025-12-27 19:57:16 INFO  Activated grid level s_14 at 49536.40897675732 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 49507.24571343785 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=48374.41, TP=47489.84
+2025-12-27 19:57:16 INFO  Activated grid level s_11 at 48079.550516555166 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 48039.458867670815 - PnL: $0.14 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=46477.80, TP=45654.90
+2025-12-27 19:57:16 INFO  Activated grid level s_7 at 46203.503017978146 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 46122.17152060967 - PnL: $0.34 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=45553.35, TP=44772.63
+2025-12-27 19:57:16 INFO  Activated grid level s_5 at 45293.11147728472 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 45242.17870867723 - PnL: $0.20 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=45097.01, TP=44339.98
+2025-12-27 19:57:16 INFO  Activated grid level s_4 at 44844.664828994784 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 44817.79217759656 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=44183.56, TP=43516.02
+2025-12-27 19:57:16 INFO  Activated grid level s_2 at 43961.047768841076 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Closed short position at 43905.85285322401 - PnL: $0.23 - Reason: trend_flip
+2025-12-27 19:57:16 INFO  Using dynamic ATR-based SL/TP: SL=41279.67, TP=41630.86
+2025-12-27 19:57:16 INFO  Activated grid level l_4 at 41396.732753816425 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:16 INFO  Moved stop loss to break-even for l_4
+2025-12-27 19:57:16 INFO  Closed long position at 41440.438620275636 - PnL: $0.19 - Reason: stop_loss
+2025-12-27 19:57:16 INFO  Backtest completed in 77ms
+2025-12-27 19:57:16 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-AAVE-2025-12-28.json
+2025-12-27 19:57:16 INFO  AAVE completed: 0.38% return
+2025-12-27 19:57:16 INFO  Running backtest for UNI (Leverage: 3x)...
+2025-12-27 19:57:16 INFO  Loading data for UNI from 2025-12-21T00:56:54.025Z to 2025-12-28T00:56:54.025Z
+2025-12-27 19:57:16 INFO  Fetching data for UNI from 2025-12-21T00:56:54.025Z to 2025-12-21T12:56:54.025Z
+2025-12-27 19:57:17 ERROR Failed to fetch historical data for UNI: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:17 ERROR Failed to load data, using mock data for testing: Failed to parse JSON {"stack":"SyntaxError: Failed to parse JSON\n    at <parse> (:0)\n    at json (unknown)\n    at json (node-fetch:55:39)\n    at json (node-fetch:54:16)\n    at fetchHistoricalData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:111:33)\n    at async fetchHistoricalDataChunked (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\hyperliquidDataFetcher.ts:222:25)\n    at async loadData (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\fastBacktestEngine.ts:170:25)\n    at async runAllPairs (C:\\Coding\\LocalTools\\Trade_bot\\src\\backtesting\\multiPairBacktest.ts:120:22)\n    at processTicksAndRejections (native:7:39)"}
+2025-12-27 19:57:17 INFO  Generated 1440 mock candles for testing
+2025-12-27 19:57:17 INFO  Starting fast backtest...
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=54401.96, TP=53452.80
+2025-12-27 19:57:17 INFO  Activated grid level s_23 at 54085.57047200033 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 54035.93011417004 - PnL: $0.15 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=51263.34, TP=50326.49
+2025-12-27 19:57:17 INFO  Activated grid level s_17 at 50951.053959153534 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 50883.6466109939 - PnL: $0.25 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=48762.28, TP=47909.98
+2025-12-27 19:57:17 INFO  Activated grid level s_12 at 48478.179589534564 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 48403.90458934859 - PnL: $0.29 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=47814.84, TP=46939.23
+2025-12-27 19:57:17 INFO  Activated grid level s_10 at 47522.96793405997 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 47437.71326428449 - PnL: $0.35 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=45946.86, TP=45112.20
+2025-12-27 19:57:17 INFO  Activated grid level s_6 at 45668.638096118775 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 45584.096887773696 - PnL: $0.36 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=44122.90, TP=43414.18
+2025-12-27 19:57:17 INFO  Activated grid level s_2 at 43886.66356966928 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 43860.36646846864 - PnL: $0.08 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=43672.67, TP=43011.08
+2025-12-27 19:57:17 INFO  Activated grid level s_1 at 43452.14214818741 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 43394.84225419565 - PnL: $0.24 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=42013.80, TP=42469.77
+2025-12-27 19:57:17 INFO  Activated grid level l_2 at 42165.78665290939 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Moved stop loss to break-even for l_2
+2025-12-27 19:57:17 INFO  Closed long position at 42264.301270789234 - PnL: $0.47 - Reason: stop_loss
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=42434.77, TP=42905.58
+2025-12-27 19:57:17 INFO  Activated grid level l_1 at 42591.70368980746 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Moved stop loss to break-even for l_1
+2025-12-27 19:57:17 INFO  Closed long position at 42646.45090336803 - PnL: $0.24 - Reason: stop_loss
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=53322.36, TP=52414.90
+2025-12-27 19:57:17 INFO  Activated grid level s_21 at 53019.87106362153 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 52864.30905376773 - PnL: $0.61 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=49751.53, TP=48854.72
+2025-12-27 19:57:17 INFO  Activated grid level s_14 at 49452.59099928422 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 49363.77477615208 - PnL: $0.35 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=45024.05, TP=44258.25
+2025-12-27 19:57:17 INFO  Activated grid level s_4 at 44768.78550741964 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 44722.42174239518 - PnL: $0.18 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=44573.38, TP=43829.84
+2025-12-27 19:57:17 INFO  Activated grid level s_3 at 44325.530205365976 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Closed short position at 44215.769429998836 - PnL: $0.50 - Reason: trend_flip
+2025-12-27 19:57:17 INFO  Using dynamic ATR-based SL/TP: SL=41635.54, TP=41961.30
+2025-12-27 19:57:17 INFO  Activated grid level l_3 at 41744.128786380286 - Size: $75.00 - Fee: $0.04 - Active positions: 1/1
+2025-12-27 19:57:17 INFO  Moved stop loss to break-even for l_3
+2025-12-27 19:57:17 INFO  Closed long position at 41815.61462706589 - PnL: $0.33 - Reason: stop_loss
+2025-12-27 19:57:17 INFO  Backtest completed in 78ms
+2025-12-27 19:57:17 INFO  Results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\backtest-UNI-2025-12-28.json
+2025-12-27 19:57:17 INFO  UNI completed: 0.39% return
+2025-12-27 19:57:17 INFO  
+=== MULTI-PAIR BACKTEST SUMMARY ===
+2025-12-27 19:57:17 INFO           |   Return | Sharpe |     DD |   Win% | Trades
+2025-12-27 19:57:17 INFO  -------------------------------------------------------
+2025-12-27 19:57:17 INFO  APT      |    0.54% |   0.04 |  0.01% |  93.3% |     15
+2025-12-27 19:57:17 INFO  JUP      |    0.53% |   0.04 |  0.00% | 100.0% |     15
+2025-12-27 19:57:17 INFO  TIA      |    0.50% |   0.03 |  0.01% |  94.1% |     17
+2025-12-27 19:57:17 INFO  SEI      |    0.43% |   0.03 |  0.01% |  86.7% |     15
+2025-12-27 19:57:17 INFO  TON      |    0.42% |   0.03 |  0.01% |  93.8% |     16
+2025-12-27 19:57:17 INFO  ETH      |    0.40% |   0.03 |  0.00% | 100.0% |     13
+2025-12-27 19:57:17 INFO  LINK     |    0.40% |   0.03 |  0.00% |  86.7% |     15
+2025-12-27 19:57:17 INFO  LDO      |    0.39% |   0.03 |  0.01% |  92.9% |     14
+2025-12-27 19:57:17 INFO  UNI      |    0.39% |   0.03 |  0.00% | 100.0% |     14
+2025-12-27 19:57:17 INFO  SOL      |    0.39% |   0.03 |  0.00% | 100.0% |     15
+2025-12-27 19:57:17 INFO  DOGE     |    0.38% |   0.03 |  0.00% | 100.0% |     14
+2025-12-27 19:57:17 INFO  AAVE     |    0.38% |   0.03 |  0.01% |  93.3% |     15
+2025-12-27 19:57:17 INFO  OP       |    0.35% |   0.02 |  0.01% |  83.3% |     12
+2025-12-27 19:57:17 INFO  WLD      |    0.35% |   0.02 |  0.01% |  88.2% |     17
+2025-12-27 19:57:17 INFO  BTC      |    0.33% |   0.02 |  0.01% |  78.6% |     14
+2025-12-27 19:57:17 INFO  ARB      |    0.32% |   0.02 |  0.00% | 100.0% |     13
+2025-12-27 19:57:17 INFO  AVAX     |    0.31% |   0.02 |  0.01% |  83.3% |     12
+2025-12-27 19:57:17 INFO  BNB      |    0.29% |   0.02 |  0.01% |  93.3% |     15
+2025-12-27 19:57:17 INFO  DOT      |    0.27% |   0.02 |  0.00% | 100.0% |     14
+2025-12-27 19:57:17 INFO  NEAR     |    0.24% |   0.02 |  0.01% |  90.9% |     11
+2025-12-27 19:57:17 INFO  LTC      |    0.22% |   0.01 |  0.01% |  91.7% |     12
+2025-12-27 19:57:17 INFO  SUI      |    0.22% |   0.01 |  0.00% |  90.9% |     11
+2025-12-27 19:57:17 INFO  HYPE     |    0.20% |   0.01 |  0.01% |  91.7% |     12
+2025-12-27 19:57:17 INFO  XRP      |    0.08% |   0.01 |  0.02% |  72.7% |     11
+2025-12-27 19:57:17 INFO  -------------------------------------------------------
+2025-12-27 19:57:17 INFO  Overall Average Return: 0.35%
+2025-12-27 19:57:17 INFO  Profitable Pairs: 24/24 (100.0%)
+2025-12-27 19:57:17 INFO  
+Detailed results saved to: C:\Coding\LocalTools\Trade_bot\backtest_Results\multi-pair-results-2025-12-28T00-57-17-489Z.json

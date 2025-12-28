@@ -8,6 +8,27 @@ import {
 } from 'technicalindicators';
 import type { OHLCV, Indicators } from '../types/index.js';
 
+// Hamburger Bot indicators
+import { ParabolicSAR } from './parabolicSAR.js';
+import { ATR as CustomATR } from './atr.js';
+import { VolumeSpike } from './volumeSpike.js';
+import { ROC } from './roc.js';
+
+export type {
+  ParabolicSARResult
+} from './parabolicSAR.js';
+export type {
+  ATRResult
+} from './atr.js';
+export type {
+  VolumeSpikeResult
+} from './volumeSpike.js';
+export type {
+  ROCResult
+} from './roc.js';
+
+export { ParabolicSAR, CustomATR, VolumeSpike, ROC };
+
 export function calculateIndicators(candles: OHLCV[], indicatorConfig: any): Indicators {
   if (candles.length < 50) {
     return getEmptyIndicators();

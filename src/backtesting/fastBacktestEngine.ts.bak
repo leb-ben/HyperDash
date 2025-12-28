@@ -1,0 +1,1897 @@
+/**
+ * Fast Backtesting Engine for Hamburger Bot
+ * Optimized for speed - can run 24-hour backtest in seconds
+ */
+
+import type { 
+  GridPosition, 
+  VirtualLevel, 
+  GridSignals, 
+  AIDecision
+} from '../types/grid.js'
+import { GridAction } from '../types/grid.js'
+import type { OHLCV } from '../types/index.js'
+import { ParabolicSAR } from '../indicators/parabolicSAR.js'
+import { ATR } from '../indicators/atr.js'
+import { VolumeSpike } from '../indicators/volumeSpike.js'
+import { ROC } from '../indicators/roc.js'
+import { RSI } from '../indicators/rsi.js'
+import { MACD } from '../indicators/macd.js'
+import { logger } from '../utils/logger.js'
+import { fetchHistoricalDataChunked, fetchFundingRates, getSymbolInfo, type HyperliquidCandle } from './hyperliquidDataFetcher.js'
+
+// Fast interfaces for performance
+interface FastPosition {
+  id: string
+  side: 'long' | 'short'
+  size: number
+  sizeUsd: number
+  entryPrice: number
+  entryTime: number
+  leverage: number
+  stopLoss: number
+  takeProfit: number
+  highestPrice?: number // For trailing stops
+  lowestPrice?: number // For trailing stops
+}
+
+interface FastTrade {
+  entryTime: number
+  exitTime: number
+  entryPrice: number
+  exitPrice: number
+  size: number
+  sizeUsd: number
+  side: 'long' | 'short'
+  leverage: number
+  pnl: number
+  fees: number
+  exitReason: string
+}
+
+interface FastMetrics {
+  totalReturn: number
+  totalReturnPct: number
+  totalReturnUsd: number
+  adjustedReturn: number // After realism discount
+  adjustedReturnPct: number // After realism discount
+  sharpeRatio: number
+  maxDrawdown: number
+  winRate: number
+  profitFactor: number
+  totalTrades: number
+  positiveTrades: number
+  negativeTrades: number
+  avgWin: number
+  avgLoss: number
+  largestWin: number
+  largestLoss: number
+  confidenceScore: number // 0-100 reliability score
+  totalFees?: number
+}
+
+interface DailyReport {
+  date: string
+  performance: {
+    returnPct: number
+    sharpeRatio: number
+    maxDrawdown: number
+    winRate: number
+    totalTrades: number
+  }
+  analysis: {
+    whatWorked: string[]
+    whatFailed: string[]
+    suggestions: ParameterSuggestion[]
+  }
+  baseline: {
+    rolling7Day: FastMetrics
+    yesterday: FastMetrics
+  }
+}
+
+interface ParameterSuggestion {
+  parameter: string
+  currentValue: number
+  suggestedValue: number
+  reason: string
+  expectedImpact: 'high' | 'medium' | 'low'
+  confidence: number
+  priority: number
+}
+
+interface OptimizationTest {
+  id: string
+  parameter: string
+  oldValue: number
+  newValue: number
+  startDate: string
+  endDate?: string
+  revertThreshold?: number
+  status: 'testing' | 'adopted' | 'rejected' | 'reverted'
+}
+
+interface HamburgerBotConfig {
+  id: string
+  symbol: string
+  enabled: boolean
+  totalInvestmentUsd: number
+  leverage: number
+  positionType: 'fixed' | 'percentage'
+  positionSize: number // DEPRECATED - Now calculated dynamically
+  gridSpacing: number
+  gridSpacingType: 'percentage' | 'fixed'
+  minPositions: number
+  maxPositions: number
+  maxActivePositions: number
+  stopLossPct: number
+  takeProfitPct: number
+  rebalanceThresholdPct: number
+  maxCapitalUtilization: number
+  maxPositionBiasPct: number
+  activeCapitalPct: number
+  useTrendFilter: boolean
+  useReversalConfirmation: boolean
+  useTrailingStop: boolean
+  minVolumeMultiplier: number
+  useAdaptiveGrid: boolean
+  atrMultiplier: number
+  useDynamicSLTP: boolean
+  tpAtrMultiplier: number
+  slAtrMultiplier: number
+  useBreakEvenStop: boolean
+  breakEvenThresholdPct: number
+  exitOnTrendFlip: boolean
+  useRSIFilter: boolean
+  rsiUpperThreshold: number
+  rsiLowerThreshold: number
+  useMACDFilter: boolean
+  useReactiveMode: boolean
+  reactionLookback: number
+  reactionThreshold: number
+  aiAggressiveness?: string // DEPRECATED - Being removed
+  aiConfidenceThreshold: number
+  ai: {
+    aggressiveness?: string // DEPRECATED
+    confidenceThreshold: number
+    signals: {
+      parabolicSAR: { acceleration: number; maximum: number }
+      atr: { period: number; multiplier: number }
+      volume: { spikeThreshold: number; lookback: number }
+      roc: { period: number; panicThreshold: number }
+    }
+  }
+  grid: { defaultSpacing: number }
+  targetMarginUtilization?: number // NEW: Target margin % (default 50)
+}
+
+/**
+ * Fast backtesting engine optimized for speed
+ */
+export class FastBacktestEngine {
+  private config: HamburgerBotConfig
+  private data: HyperliquidCandle[] = []
+  private positions: FastPosition[] = []
+  private trades: FastTrade[] = []
+  private equity: number
+  private peakEquity: number = 0
+  private maxDrawdown: number = 0
+  private reserveCapital: number // 50% reserve for AI emergencies
+  private activeCapital: number // 50% for grid trading
+  
+  // Pre-allocated arrays for performance
+  private ohlcvBuffer: OHLCV[] = new Array(200) // Max lookback
+  private signals: GridSignals = {
+    parabolicSAR: { value: 0, isUptrend: false },
+    atr: { value: 0, multiplier: 0 },
+    volume: { current: 0, average: 0, spikeMultiplier: 0, isSpike: false },
+    roc: { value: 0, panicThreshold: 5, isPanic: false },
+    rsi: 50,
+    macd: { macd: 0, signal: 0, histogram: 0, isCrossover: false, isCrossunder: false },
+    isDivergence: false
+  }
+  private signalPerformance: {
+    parabolicSAR: { correct: number; total: number }
+    volume: { correct: number; total: number }
+    roc: { correct: number; total: number }
+    atr: { correct: number; total: number }
+  } | null = null
+  
+  private reactiveBias: 'long' | 'short' | 'neutral' = 'neutral'
+  
+  // Optimized indicators
+  private indicators: {
+    parabolicSAR: ParabolicSAR
+    atr: ATR
+    volumeSpike: VolumeSpike
+    roc: ROC
+    rsi: RSI
+    macd: MACD
+  }
+  
+  // Virtual grid
+  private virtualGrid: VirtualLevel[] = []
+  
+  // Self-improvement system
+  private dailyReports: DailyReport[] = []
+  private activeTests: OptimizationTest[] = []
+  private blacklistedParameters: Map<string, number> = new Map() // Parameter -> blacklist expiry
+  
+  constructor(config: HamburgerBotConfig) {
+    this.config = {
+      ...config,
+      positionType: config.positionType || 'percentage',
+      positionSize: config.positionSize || 25,
+      maxActivePositions: config.maxActivePositions || 1, // Default to 1 based on bulk backtest results
+      useTrendFilter: config.useTrendFilter !== undefined ? config.useTrendFilter : true, // Default to true based on smart grid results
+      useReversalConfirmation: config.useReversalConfirmation !== undefined ? config.useReversalConfirmation : true, // Default to true
+      useTrailingStop: config.useTrailingStop !== undefined ? config.useTrailingStop : true,
+      minVolumeMultiplier: config.minVolumeMultiplier !== undefined ? config.minVolumeMultiplier : 1.2,
+      useAdaptiveGrid: config.useAdaptiveGrid !== undefined ? config.useAdaptiveGrid : true,
+      atrMultiplier: config.atrMultiplier || 2.5,
+      useDynamicSLTP: config.useDynamicSLTP !== undefined ? config.useDynamicSLTP : true,
+      tpAtrMultiplier: config.tpAtrMultiplier || 4.0,
+      slAtrMultiplier: config.slAtrMultiplier || 2.0,
+      useBreakEvenStop: config.useBreakEvenStop !== undefined ? config.useBreakEvenStop : true,
+      breakEvenThresholdPct: config.breakEvenThresholdPct || 25,
+      exitOnTrendFlip: config.exitOnTrendFlip !== undefined ? config.exitOnTrendFlip : true,
+      useRSIFilter: config.useRSIFilter !== undefined ? config.useRSIFilter : false,
+      rsiUpperThreshold: config.rsiUpperThreshold || 70,
+      rsiLowerThreshold: config.rsiLowerThreshold || 30,
+      useMACDFilter: config.useMACDFilter !== undefined ? config.useMACDFilter : false,
+      useReactiveMode: config.useReactiveMode !== undefined ? config.useReactiveMode : true,
+      reactionLookback: config.reactionLookback || 12,
+      reactionThreshold: config.reactionThreshold || 0.15,
+      aiConfidenceThreshold: config.aiConfidenceThreshold || 70,
+      ai: config.ai || {
+        // aggressiveness deprecated
+        confidenceThreshold: config.aiConfidenceThreshold || 70,
+        signals: {
+          parabolicSAR: { acceleration: 0.02, maximum: 0.2 },
+          atr: { period: 14, multiplier: 2 },
+          volume: { spikeThreshold: 2.0, lookback: 20 },
+          roc: { period: 10, panicThreshold: 5.0 }
+        }
+      },
+      grid: config.grid || { defaultSpacing: config.gridSpacing || 1.0 },
+      targetMarginUtilization: config.targetMarginUtilization || 50
+    }
+    this.equity = config.totalInvestmentUsd
+    // Split capital based on activeCapitalPct configuration
+    this.activeCapital = config.totalInvestmentUsd * (config.activeCapitalPct / 100)
+    this.reserveCapital = config.totalInvestmentUsd * ((100 - config.activeCapitalPct) / 100)
+    
+    logger.info(`Capital allocation: Active=${config.activeCapitalPct}% ($${this.activeCapital}), Reserve=${100 - config.activeCapitalPct}% ($${this.reserveCapital})`)
+    
+    // Initialize indicators once
+    this.indicators = {
+      parabolicSAR: new ParabolicSAR(
+        this.config.ai?.signals?.parabolicSAR?.acceleration || 0.02,
+        this.config.ai?.signals?.parabolicSAR?.maximum || 0.2
+      ),
+      atr: new ATR(this.config.ai?.signals?.atr?.period || 14),
+      volumeSpike: new VolumeSpike(
+        this.config.ai?.signals?.volume?.lookback || 20,
+        this.config.ai?.signals?.volume?.spikeThreshold || 2.0
+      ),
+      roc: new ROC(
+        this.config.ai?.signals?.roc?.period || 10,
+        this.config.ai?.signals?.roc?.panicThreshold || 5.0
+      ),
+      rsi: new RSI(14),
+      macd: new MACD(12, 26, 9)
+    }
+  }
+  
+  /**
+   * Load data from Hyperliquid with retry mechanism
+   */
+  async loadData(symbol: string, startTime: number, endTime: number): Promise<void> {
+    const maxRetries = 3
+    const baseDelay = 1000 // 1 second base delay
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        logger.info(`Loading data for ${symbol} from ${new Date(startTime).toISOString()} to ${new Date(endTime).toISOString()} (Attempt ${attempt}/${maxRetries})`)
+        
+        // Fetch historical candles and funding rates
+        this.data = await fetchHistoricalDataChunked(symbol, startTime, endTime)
+        const fundingRates = await fetchFundingRates(symbol, startTime, endTime)
+        
+        // Merge funding rates
+        this.mergeFundingRates(fundingRates)
+        
+        logger.info(`Successfully loaded ${this.data.length} candles for ${symbol}`)
+        return // Success, exit the retry loop
+        
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        logger.error(`Attempt ${attempt} failed to load data for ${symbol}:`, errorMessage)
+        
+        if (attempt === maxRetries) {
+          // Final attempt failed - this is a real problem
+          logger.error('CRITICAL: Failed to load real data from Hyperliquid API after multiple attempts!')
+          logger.error('DO NOT TRUST ANY RESULTS FROM THIS BACKTEST!')
+          logger.error('This indicates a serious issue with the data fetching or API connectivity.')
+          logger.error('Please check:')
+          logger.error('1. Internet connection')
+          logger.error('2. Hyperliquid API status (https://status.hyperliquid.xyz/)')
+          logger.error('3. Symbol validity')
+          logger.error('4. Date range (not too far in the past/future)')
+          
+          throw new Error(`Failed to load real market data for ${symbol} after ${maxRetries} attempts. Last error: ${errorMessage}`)
+        }
+        
+        // Calculate delay with exponential backoff
+        const delay = baseDelay * Math.pow(2, attempt - 1)
+        logger.warn(`Retrying in ${delay/1000} seconds...`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+      }
+    }
+  }
+  
+  /**
+   * Merge funding rates into candle data
+   * Note: Hyperliquid pays funding every hour at 1/8 of the 8-hour rate
+   */
+  private mergeFundingRates(fundingRates: { timestamp: number; rate: number }[]): void {
+    if (fundingRates.length === 0) return
+    
+    // Funding is applied hourly, so we need to track the last applied funding
+    let lastFundingTime = 0
+    let currentFundingRate = 0
+    
+    for (const candle of this.data) {
+      // Check if this candle timestamp is at a funding interval (every hour)
+      const candleHour = Math.floor(candle.timestamp / (60 * 60 * 1000))
+      
+      // Find the funding rate for this hour
+      const fundingEntry = fundingRates.find(fr => {
+        const frHour = Math.floor(fr.timestamp / (60 * 60 * 1000))
+        return frHour === candleHour
+      })
+      
+      if (fundingEntry) {
+        currentFundingRate = fundingEntry.rate / 8 // Hourly rate (1/8 of 8-hour rate)
+        lastFundingTime = candle.timestamp
+      }
+      
+      // Only apply funding at the exact hour mark
+      const isFundingTime = (candle.timestamp % (60 * 60 * 1000)) === 0
+      
+      candle.fundingRate = isFundingTime ? currentFundingRate : 0
+    }
+    
+    logger.info(`Applied hourly funding rates (1/8 of 8-hour rates)`)
+  }
+  
+  /**
+   * Generate daily performance report and optimization suggestions
+   */
+  private generateDailyReport(metrics: FastMetrics): DailyReport {
+    // Ensure today is always a string
+    const today = new Date().toISOString().split('T')[0] ?? ''
+    
+    // Analyze what worked and what failed
+    const whatWorked: string[] = []
+    const whatFailed: string[] = []
+    const suggestions: ParameterSuggestion[] = []
+    
+    // Analyze performance metrics
+    if (metrics.winRate > 60) {
+      whatWorked.push(`High win rate (${metrics.winRate.toFixed(1)}%) indicates good entry timing`)
+    } else if (metrics.winRate < 40) {
+      whatFailed.push(`Low win rate (${metrics.winRate.toFixed(1)}%) suggests poor entry conditions`)
+      suggestions.push({
+        parameter: 'reactionThreshold',
+        currentValue: this.config.reactionThreshold,
+        suggestedValue: Math.min(0.2, this.config.reactionThreshold * 1.2),
+        reason: 'Increase reaction threshold to avoid false signals',
+        expectedImpact: 'medium',
+        confidence: 75,
+        priority: 2
+      })
+    }
+    
+    if (metrics.maxDrawdown > 15) {
+      whatFailed.push(`High drawdown (${metrics.maxDrawdown.toFixed(1)}%) indicates excessive risk`)
+      suggestions.push({
+        parameter: 'stopLossPct',
+        currentValue: this.config.stopLossPct,
+        suggestedValue: Math.max(1, this.config.stopLossPct * 0.8),
+        reason: 'Tighter stops to reduce drawdown',
+        expectedImpact: 'high',
+        confidence: 85,
+        priority: 1
+      })
+    }
+    
+    if (metrics.sharpeRatio < 1.0) {
+      whatFailed.push(`Low Sharpe ratio (${metrics.sharpeRatio.toFixed(2)}) indicates poor risk-adjusted returns`)
+      suggestions.push({
+        parameter: 'minVolumeMultiplier',
+        currentValue: this.config.minVolumeMultiplier,
+        suggestedValue: Math.min(2.0, this.config.minVolumeMultiplier * 1.1),
+        reason: 'Higher volume requirement for better trade quality',
+        expectedImpact: 'medium',
+        confidence: 70,
+        priority: 3
+      })
+    }
+    
+    if (metrics.totalTrades < 10) {
+      whatFailed.push(`Low trade frequency (${metrics.totalTrades} trades) may miss opportunities`)
+      suggestions.push({
+        parameter: 'gridSpacing',
+        currentValue: this.config.gridSpacing,
+        suggestedValue: Math.max(0.5, this.config.gridSpacing * 0.9),
+        reason: 'Tighter grid spacing for more trade opportunities',
+        expectedImpact: 'medium',
+        confidence: 65,
+        priority: 4
+      })
+    }
+    
+    // Sort suggestions by priority
+    suggestions.sort((a, b) => a.priority - b.priority)
+    
+    return {
+      date: today,
+      performance: {
+        returnPct: metrics.totalReturnPct,
+        sharpeRatio: metrics.sharpeRatio,
+        maxDrawdown: metrics.maxDrawdown,
+        winRate: metrics.winRate,
+        totalTrades: metrics.totalTrades
+      },
+      analysis: {
+        whatWorked,
+        whatFailed,
+        suggestions
+      },
+      baseline: {
+        rolling7Day: metrics, // In production, this would be actual 7-day rolling
+        yesterday: metrics // In production, this would be yesterday's metrics
+      }
+    }
+  }
+  
+  /**
+   * Apply top optimization suggestion (if any)
+   */
+  private applyTopSuggestion(report: DailyReport): OptimizationTest | null {
+    if (report.analysis.suggestions.length === 0) return null
+    
+    const topSuggestion = report.analysis.suggestions[0]
+    if (!topSuggestion) return null  // Early return with null check
+    
+    // Check if parameter is blacklisted
+    const blacklistExpiry = this.blacklistedParameters.get(topSuggestion.parameter)
+    if (blacklistExpiry && Date.now() < blacklistExpiry) {
+      logger.info(`Parameter ${topSuggestion.parameter} is blacklisted, skipping optimization`)
+      return null
+    }
+    
+    // Limit change to ±10%
+    const maxChange = topSuggestion.currentValue * 0.1
+    const actualNewValue = Math.max(
+      topSuggestion.currentValue - maxChange,
+      Math.min(topSuggestion.currentValue + maxChange, topSuggestion.suggestedValue)
+    )
+    
+    // Apply the change
+    const oldValue = this.config[topSuggestion.parameter as keyof HamburgerBotConfig] as number
+    ;(this.config as any)[topSuggestion.parameter] = actualNewValue
+    
+    const test: OptimizationTest = {
+      id: `test-${Date.now()}`,
+      parameter: topSuggestion.parameter,
+      oldValue,
+      newValue: actualNewValue,
+      startDate: new Date().toISOString(),
+      revertThreshold: 3, // Revert if performance drops >3%
+      status: 'testing'
+    }
+    
+    this.activeTests.push(test)
+    
+    logger.info(`Applied optimization: ${topSuggestion.parameter} ${oldValue} → ${actualNewValue} (${topSuggestion.reason})`)
+    
+    return test
+  }
+  
+  /**
+   * Check if active tests should be reverted or adopted
+   */
+  private evaluateOptimizationTests(metrics: FastMetrics): void {
+    for (const test of this.activeTests) {
+      if (test.status !== 'testing') continue
+      
+      // In production, compare with baseline performance
+      // For now, use simple heuristics
+      if (metrics.maxDrawdown > 20) {
+        // Revert on high drawdown
+        this.revertTest(test, 'High drawdown detected')
+      } else if (metrics.totalReturnPct < -5) {
+        // Revert on losses
+        this.revertTest(test, 'Negative returns')
+      }
+      // In production, adopt after 24 hours if improvement >5%
+    }
+  }
+  
+  /**
+   * Revert an optimization test
+   */
+  private revertTest(test: OptimizationTest, reason: string): void {
+    // Restore old value
+    ;(this.config as any)[test.parameter] = test.oldValue
+    test.status = 'reverted'
+    test.endDate = new Date().toISOString()
+    
+    // Blacklist this parameter direction for 7 days
+    this.blacklistedParameters.set(test.parameter, Date.now() + (7 * 24 * 60 * 60 * 1000))
+    
+    logger.warn(`Reverted optimization: ${test.parameter} due to ${reason}. Blacklisted for 7 days.`)
+  }
+  
+  /**
+   * Run fast backtest
+   */
+  async runBacktest(): Promise<{
+    metrics: FastMetrics
+    trades: FastTrade[]
+    equityCurve: { timestamp: number; equity: number }[]
+    decisions: AIDecision[]
+    dailyReport?: DailyReport
+  }> {
+    if (this.data.length === 0) {
+      throw new Error('No data loaded')
+    }
+    
+    // Validate position sizes meet Hyperliquid requirements
+    this.validatePositionSizes()
+    
+    const startTime = Date.now()
+    logger.info('Starting fast backtest...')
+    
+    // Initialize
+    this.initialize()
+    
+    // Fast processing loop
+    const equityCurve: { timestamp: number; equity: number }[] = []
+    const decisions: AIDecision[] = []
+    
+    // Process candles in batches for better performance
+    const batchSize = 100
+    for (let i = 50; i < this.data.length; i += batchSize) {
+      const endIndex = Math.min(i + batchSize, this.data.length)
+      
+      for (let j = i; j < endIndex; j++) {
+        const candle = this.data[j]
+        if (!candle) continue
+        
+        // Update signals (optimized)
+        this.updateSignals(j)
+        
+        // Make decision for logging only (AI doesn't open positions)
+        const decision = this.makeDecision()
+        decisions.push(decision)
+        
+        // Update positions (automatic grid triggers + AI risk management)
+        this.updatePositions(candle)
+        
+        // Simulate execution latency for position changes
+        const lastTrade = this.trades[this.trades.length - 1]
+        if (lastTrade && lastTrade.exitTime === candle.timestamp) {
+          await this.simulateExecutionDelay()
+        }
+        
+        // Record equity every 10 candles
+        if (j % 10 === 0) {
+          this.recordEquity(candle.timestamp, equityCurve)
+        }
+      }
+    // Close all positions
+    this.closeAllPositions()
+    
+    // Calculate final metrics
+    const metrics = this.calculateMetrics()
+    
+    // Generate daily report and optimization suggestions
+    const dailyReport = this.generateDailyReport(metrics)
+    this.dailyReports.push(dailyReport)
+    
+    // Evaluate any active optimization tests
+    this.evaluateOptimizationTests(metrics)
+    
+    // Apply top suggestion for next day (in production, this would be scheduled)
+    const nextOptimization = this.applyTopSuggestion(dailyReport)
+    
+    logger.info('=== DAILY PERFORMANCE REPORT ===')
+    logger.info(`Return: ${metrics.totalReturnPct.toFixed(2)}% | Sharpe: ${metrics.sharpeRatio.toFixed(2)} | Win Rate: ${metrics.winRate.toFixed(1)}%`)
+    logger.info(`What worked: ${dailyReport.analysis.whatWorked.join(', ') || 'None identified'}`)
+    logger.info(`What failed: ${dailyReport.analysis.whatFailed.join(', ') || 'None identified'}`)
+    if (dailyReport.analysis.suggestions.length > 0) {
+      const topSuggestion = dailyReport.analysis.suggestions[0]
+      if (topSuggestion) {
+        logger.info(`Top suggestion: ${topSuggestion.parameter} ${topSuggestion.currentValue} → ${topSuggestion.suggestedValue}`)
+      }
+    }
+    logger.info('================================')
+    
+    const endTime = Date.now()
+    logger.info(`Fast backtest completed in ${(endTime - startTime) / 1000}s`)
+    
+    return {
+      metrics,
+      trades: this.trades,
+      equityCurve,
+      decisions,
+      dailyReport
+    }
+  }
+  
+  /**
+   * Save backtest results to local file
+   */
+  private async saveResults(results: {
+    metrics: FastMetrics
+    trades: FastTrade[]
+    equityCurve: { timestamp: number; equity: number }[]
+    decisions: AIDecision[]
+    dailyReport?: DailyReport
+  }): Promise<void> {
+    try {
+      const fs = await import('fs/promises')
+      const path = await import('path')
+      
+      // Create results directory if it doesn't exist
+      const resultsDir = path.join(process.cwd(), 'backtest_Results')
+      await fs.mkdir(resultsDir, { recursive: true })
+      
+      // Generate filename with timestamp
+      const timestamp = new Date().toISOString().split('T')[0]
+      const filename = `backtest-${this.config.symbol}-${timestamp}.json`
+      const filepath = path.join(resultsDir, filename)
+      
+      // Save results
+      await fs.writeFile(filepath, JSON.stringify(results, null, 2))
+      logger.info(`Results saved to: ${filepath}`)
+    } catch (error) {
+      logger.error('Failed to save results:', error)
+    }
+  }
+  
+  /**
+   * Validate position sizes meet Hyperliquid requirements
+   */
+  private validatePositionSizes(): void {
+    let positionSizeUsd: number
+    
+    if (this.config.positionType === 'fixed') {
+      positionSizeUsd = this.config.positionSize
+    } else {
+      positionSizeUsd = (this.config.positionSize / 100) * this.activeCapital
+    }
+    
+    if (positionSizeUsd < 10) {
+      throw new Error(`Position size $${positionSizeUsd.toFixed(2)} is below Hyperliquid's minimum of $10. Please increase position size or capital.`)
+    }
+  }
+  
+  /**
+   * Initialize backtest
+   */
+  private initialize(): void {
+    // First validate candle data quality
+    this.validateCandleData()
+    
+    const firstCandle = this.data[50]
+    if (!firstCandle) throw new Error('Insufficient data')
+    
+    // Generate virtual grid
+    this.generateVirtualGrid(firstCandle.close)
+    
+    // Grid starts empty - positions will be created when price triggers levels
+    
+    this.peakEquity = this.equity
+  }
+  
+  /**
+   * Validate candle data continuity and quality
+   */
+  private validateCandleData(): void {
+    if (this.data.length < 2) {
+      throw new Error('Insufficient data for backtesting')
+    }
+    
+    const expectedInterval = 60000 // 1 minute in milliseconds
+    let gaps = 0
+    let totalExpected = 0
+    
+    for (let i = 1; i < this.data.length; i++) {
+      const prevCandle = this.data[i-1]
+      const currCandle = this.data[i]
+      
+      if (!prevCandle || !currCandle) continue
+      
+      const actualGap = currCandle.timestamp - prevCandle.timestamp
+      totalExpected++
+      
+      if (actualGap > expectedInterval * 1.5) {
+        gaps++
+        logger.warn(`Data gap detected: ${actualGap/60000} minutes missing between candles ${i-1} and ${i}`)
+      }
+    }
+    
+    const dataQuality = ((totalExpected - gaps) / totalExpected) * 100
+    logger.info(`Data quality: ${dataQuality.toFixed(1)}% (${gaps} gaps out of ${totalExpected} candles)`)
+    
+    if (dataQuality < 95) {
+      logger.warn(`Data quality below 95% (${dataQuality.toFixed(1)}%). Results may be unreliable.`)
+    }
+  }
+  
+  /**
+   * Generate virtual grid
+   */
+  private generateVirtualGrid(centerPrice: number): void {
+    this.virtualGrid = []
+    let spacing = this.config.gridSpacing / 100
+
+    // 1. Adaptive Grid Spacing (ATR-based)
+    if (this.config.useAdaptiveGrid) {
+      const atrValue = this.signals.atr.value
+      if (atrValue > 0) {
+        // Spacing = (ATR * multiplier) / price
+        spacing = (atrValue * this.config.atrMultiplier) / centerPrice
+        // Clamp spacing to reasonable bounds (0.2% to 5%)
+        spacing = Math.max(0.002, Math.min(0.05, spacing))
+        logger.info(`Using adaptive grid spacing: ${(spacing * 100).toFixed(2)}% based on ATR ${atrValue.toFixed(2)}`)
+      }
+    }
+    
+    // Use configured grid levels
+    const gridLevels = this.config.maxPositions || 25
+    
+    // Generate grid levels
+    for (let i = 1; i <= gridLevels; i++) {
+      this.virtualGrid.push({
+        id: `s_${i}`,
+        price: centerPrice * Math.pow(1 + spacing, i),
+        side: 'short',
+        distanceFromCenter: i,
+        isReal: false,
+        status: 'pending',
+        createdAt: Date.now()
+      })
+      
+      this.virtualGrid.push({
+        id: `l_${i}`,
+        price: centerPrice * Math.pow(1 - spacing, i),
+        side: 'long',
+        distanceFromCenter: i,
+        isReal: false,
+        status: 'pending',
+        createdAt: Date.now()
+      })
+    }
+    
+    logger.info(`Generated ${this.virtualGrid.length} grid levels (${gridLevels} each side) with ${(spacing * 100).toFixed(2)}% spacing`)
+  }
+  
+  /**
+   * Update signals efficiently
+   */
+  private updateSignals(index: number): void {
+    // 1. Fill buffer
+    const start = Math.max(0, index - 200)
+    let bufferIndex = 0
+    
+    for (let i = start; i < index; i++) {
+      const candle = this.data[i]
+      if (!candle) continue
+      
+      this.ohlcvBuffer[bufferIndex++] = {
+        timestamp: candle.timestamp,
+        open: candle.open,
+        high: candle.high,
+        low: candle.low,
+        close: candle.close,
+        volume: candle.volume
+      }
+    }
+
+    // 2. Reactive Bias Update (If enabled, bypass indicator complexity for bias)
+    if (this.config.useReactiveMode) {
+      this.updateReactiveBias(index)
+    }
+    
+    // 3. Update indicators (keep them for metrics/analysis even if reactive)
+    const sarResult = this.indicators.parabolicSAR.getLatest(this.ohlcvBuffer.slice(0, bufferIndex))
+    const atrResult = this.indicators.atr.getLatest(this.ohlcvBuffer.slice(0, bufferIndex))
+    const volumeResult = this.indicators.volumeSpike.getLatest(this.ohlcvBuffer.slice(0, bufferIndex))
+    const rocResult = this.indicators.roc.getLatest(this.ohlcvBuffer.slice(0, bufferIndex))
+    const rsiResult = this.indicators.rsi.getLatest(this.ohlcvBuffer.slice(0, bufferIndex))
+    const macdResult = this.indicators.macd.getLatest(this.ohlcvBuffer.slice(0, bufferIndex))
+    
+    // Update signals object
+    this.signals.parabolicSAR = {
+      value: sarResult?.value || 0,
+      isUptrend: sarResult?.isUptrend || false
+    }
+    
+    this.signals.atr = {
+      value: atrResult || 0,
+      multiplier: atrResult && this.data[index] ? (atrResult / this.data[index].close) * 100 : 0
+    }
+    
+    this.signals.volume = {
+      current: volumeResult?.current || 0,
+      average: volumeResult?.average || 0,
+      spikeMultiplier: volumeResult?.spikeMultiplier || 0,
+      isSpike: volumeResult?.isSpike || false
+    }
+    
+    this.signals.roc = {
+      value: rocResult?.percentage || 0,
+      panicThreshold: this.config.ai?.signals?.roc?.panicThreshold || 5,
+      isPanic: rocResult?.isPanic || false
+    }
+
+    // Add RSI and MACD to signals if they don't exist in type
+    // Note: GridSignals type might need update
+    this.signals.rsi = rsiResult || 50
+    this.signals.macd = macdResult || { macd: 0, signal: 0, histogram: 0, isCrossover: false, isCrossunder: false }
+    
+    // Simple divergence check (Price higher, RSI lower or vice versa)
+    if (bufferIndex > 1) {
+      // Divergence logic...
+      this.signals.isDivergence = false 
+    }
+  }
+
+  /**
+   * Update reactive bias based on raw price action
+   */
+  private updateReactiveBias(index: number): void {
+    const lookback = this.config.reactionLookback || 10
+    const threshold = this.config.reactionThreshold || 0.1
+    
+    if (index < lookback) return
+
+    const currentPrice = this.data[index]?.close || 0
+    const prevPrice = this.data[index - lookback]?.close || 0
+    
+    if (prevPrice === 0) return
+
+    const priceChange = ((currentPrice - prevPrice) / prevPrice) * 100
+
+    if (priceChange >= threshold) {
+      this.reactiveBias = 'long'
+    } else if (priceChange <= -threshold) {
+      this.reactiveBias = 'short'
+    } else {
+      // In neutral zones, we could either hold previous bias or go neutral
+      // For grid bots, keeping previous bias is often better to avoid rapid flipping
+    }
+  }
+  
+  /**
+   * AI Market Analysis and Signal Intelligence
+   */
+  private makeDecision(): AIDecision {
+    const signals = this.signals
+    
+    // Use the configured confidence threshold directly
+    const confidenceReq = this.config.aiConfidenceThreshold || 70
+
+    let confidence = 0
+    let action: GridAction = GridAction.HOLD
+    let reasoning: string[] = []
+    
+    // Analyze current market conditions
+    const marketState = this.analyzeMarketState(signals)
+    reasoning.push(marketState.description)
+    
+    // Evaluate each signal's effectiveness
+    const signalAnalysis = this.analyzeSignalEffectiveness(signals)
+    reasoning.push(...signalAnalysis.insights)
+    
+    // Check for signal conflicts
+    const conflicts = this.detectSignalConflicts(signals)
+    if (conflicts.length > 0) {
+      reasoning.push(`⚠️ Signal conflicts: ${conflicts.join(', ')}`)
+      confidence += 20
+    }
+    
+    // Track signal performance (simple version for now)
+    this.updateSignalPerformance(signals)
+    
+    // Recommend actions based on comprehensive analysis
+    const recommendation = this.generateRecommendation(signals, marketState, signalAnalysis)
+    action = recommendation.action
+    // Base confidence from recommendation
+    confidence = Math.min(100, recommendation.confidence)
+    reasoning.push(recommendation.reasoning)
+    
+    return {
+      action,
+      confidence,
+      reasoning: reasoning.join(' | '),
+      signals: signals,
+      timestamp: Date.now(),
+      expectedOutcome: recommendation.expectedOutcome
+    }
+  }
+  
+  /**
+   * Analyze overall market state
+   */
+  private analyzeMarketState(signals: GridSignals): { state: string; description: string } {
+    const { parabolicSAR, atr, volume, roc } = signals
+    
+    if (parabolicSAR.isUptrend && atr.multiplier > 1.5) {
+      return {
+        state: 'BULL_VOLATILE',
+        description: 'Strong uptrend with high volatility - favorable for long positions'
+      }
+    }
+    
+    if (!parabolicSAR.isUptrend && atr.multiplier > 1.5) {
+      return {
+        state: 'BEAR_VOLATILE',
+        description: 'Strong downtrend with high volatility - favorable for short positions'
+      }
+    }
+    
+    if (atr.multiplier < 0.5) {
+      return {
+        state: 'LOW_VOLATILITY',
+        description: 'Low volatility market - grid may be slow to trigger'
+      }
+    }
+    
+    if (volume.isSpike) {
+      return {
+        state: 'VOLUME_SPIKE',
+        description: 'Unusual volume detected - potential breakout or reversal'
+      }
+    }
+    
+    return {
+      state: 'NORMAL',
+      description: 'Normal market conditions'
+    }
+  }
+  
+  /**
+   * Analyze individual signal effectiveness
+   */
+  private analyzeSignalEffectiveness(signals: GridSignals): {
+    insights: string[]
+    parabolicAnalysis: string
+    atrAnalysis: string
+    volumeAnalysis: string
+    rocAnalysis: string
+  } {
+    const insights: string[] = []
+    
+    // Parabolic SAR analysis
+    let parabolicAnalysis = 'SAR indicates '
+    if (signals.parabolicSAR.isUptrend) {
+      parabolicAnalysis += 'uptrend'
+      if (signals.atr.multiplier > 1) {
+        parabolicAnalysis += ' (strong momentum)'
+      }
+    } else {
+      parabolicAnalysis += 'downtrend'
+      if (signals.atr.multiplier > 1) {
+        parabolicAnalysis += ' (strong momentum)'
+      }
+    }
+    
+    // ATR analysis
+    let atrAnalysis = `Volatility: ${(signals.atr.multiplier * 100).toFixed(1)}% above average`
+    if (signals.atr.multiplier > 2) {
+      atrAnalysis += ' (very high - expect frequent triggers)'
+      insights.push('High volatility increases grid frequency')
+    } else if (signals.atr.multiplier < 0.5) {
+      atrAnalysis += ' (very low - expect slow trading)'
+      insights.push('Low volatility reduces grid frequency')
+    }
+    
+    // Volume analysis
+    let volumeAnalysis = `Volume ${signals.volume.isSpike ? 'spiking' : 'normal'}`
+    if (signals.volume.spikeMultiplier > 2) {
+      volumeAnalysis += ` (${signals.volume.spikeMultiplier.toFixed(1)}x average)`
+      insights.push('High volume may indicate institutional activity')
+    }
+    
+    // ROC analysis
+    let rocAnalysis = `Rate of change: ${signals.roc.value.toFixed(2)}%`
+    if (signals.roc.isPanic) {
+      rocAnalysis += ' (panic level - potential reversal point)'
+      insights.push('Panic selling often marks bottoms')
+    }
+    
+    return {
+      insights,
+      parabolicAnalysis,
+      atrAnalysis,
+      volumeAnalysis,
+      rocAnalysis
+    }
+  }
+  
+  /**
+   * Detect conflicts between signals
+   */
+  private detectSignalConflicts(signals: GridSignals): string[] {
+    const conflicts: string[] = []
+    
+    // SAR vs ROC conflict
+    if (signals.parabolicSAR.isUptrend && signals.roc.value < -3) {
+      conflicts.push('SAR says uptrend but ROC shows strong decline')
+    }
+    
+    if (!signals.parabolicSAR.isUptrend && signals.roc.value > 3) {
+      conflicts.push('SAR says downtrend but ROC shows strong rise')
+    }
+    
+    // Volume without price movement
+    if (signals.volume.isSpike && signals.atr.multiplier < 0.5) {
+      conflicts.push('High volume but low price movement - accumulation/distribution?')
+    }
+    
+    return conflicts
+  }
+  
+  /**
+   * Generate recommendation based on analysis
+   */
+  private generateRecommendation(
+    signals: GridSignals, 
+    marketState: any, 
+    signalAnalysis: any
+  ): { action: GridAction; confidence: number; reasoning: string; expectedOutcome: string } {
+    
+    // Default to hold - grid handles trading automatically
+    let reasoning = 'Grid strategy active - no intervention needed'
+    let expectedOutcome = 'Monitoring automatic grid execution'
+    
+    // Only suggest intervention in clear cases
+    if (marketState.state === 'BEAR_VOLATILE' && this.positions.some(p => p.side === 'long')) {
+      return {
+        action: GridAction.CLOSE_ALL,
+        confidence: 75,
+        reasoning: 'Strong downtrend detected - consider closing long positions',
+        expectedOutcome: 'Protecting capital from adverse trend'
+      }
+    }
+    
+    if (marketState.state === 'BULL_VOLATILE' && this.positions.some(p => p.side === 'short')) {
+      return {
+        action: GridAction.CLOSE_ALL,
+        confidence: 75,
+        reasoning: 'Strong uptrend detected - consider closing short positions',
+        expectedOutcome: 'Protecting capital from adverse trend'
+      }
+    }
+    
+    return {
+      action: GridAction.HOLD,
+      confidence: 90,
+      reasoning,
+      expectedOutcome
+    }
+  }
+  
+  /**
+   * Track signal performance over time
+   */
+  private updateSignalPerformance(signals: GridSignals): void {
+    // This would track how well each signal predicts profitable moves
+    // For now, just log the signals for later analysis
+    if (!this.signalPerformance) {
+      this.signalPerformance = {
+        parabolicSAR: { correct: 0, total: 0 },
+        volume: { correct: 0, total: 0 },
+        roc: { correct: 0, total: 0 },
+        atr: { correct: 0, total: 0 }
+      }
+    }
+    
+    // In a full implementation, we would:
+    // 1. Record each signal's prediction
+    // 2. Check if price movement matched the prediction
+    // 3. Update success rates
+    // 4. Flag consistently underperforming signals
+  }
+  
+  // Note: executeDecision removed - AI now only provides analysis, doesn't open positions
+  
+  /**
+   * Update positions and check for automatic grid triggers
+   */
+  private updatePositions(candle: HyperliquidCandle): void {
+    // Apply funding rates to open positions
+    this.applyFundingRates(candle)
+    
+    // Check margin utilization
+    this.checkMarginUtilization(candle)
+    
+    // Check for liquidations first
+    this.checkLiquidations(candle)
+    
+    // Check for automatic grid position triggers
+    this.checkGridTriggers(candle)
+    
+    // Check exits and risk management
+    this.checkPositionExits(candle)
+    
+    // AI risk management - cut bad positions if needed
+    this.applyAIRiskManagement(candle)
+  }
+  
+  /**
+   * Calculate current margin utilization
+   */
+  private calculateMarginUtilization(): number {
+    // Total margin used by all positions (position size / leverage)
+    const totalMarginUsed = this.positions.reduce((sum, p) => sum + (p.sizeUsd / p.leverage), 0)
+    
+    // Available margin = active capital
+    const availableMargin = this.activeCapital
+    
+    // Utilization % = (margin used / available margin) * 100
+    return (totalMarginUsed / availableMargin) * 100
+  }
+  
+  /**
+   * Check if margin utilization is too high and trigger risk management
+   */
+  private checkMarginUtilization(candle: HyperliquidCandle): void {
+    const utilization = this.calculateMarginUtilization()
+    const targetUtilization = this.config.targetMarginUtilization || 50
+    const warningThreshold = Math.min(targetUtilization + 10, 80) // Warn 10% above target or at 80%
+    
+    if (utilization > warningThreshold) {
+      logger.warn(`High margin utilization: ${utilization.toFixed(1)}% (target: ${targetUtilization}%)`)
+      
+      // AI should consider closing some positions to free up margin
+      // This is handled in applyAIRiskManagement
+    }
+    
+    // Log utilization periodically
+    if (Math.random() < 0.01) { // Log ~1% of the time
+      logger.info(`Current margin utilization: ${utilization.toFixed(1)}% (target: ${targetUtilization}%)`)
+    }
+  }
+  
+  /**
+   * Check for liquidations (Isolated Margin Mode)
+   */
+  private checkLiquidations(candle: HyperliquidCandle): void {
+    for (const position of [...this.positions]) {
+      let isLiquidated = false
+      
+      // Isolated margin: Liquidation when position loses 90% of its allocated margin
+      // Position margin = sizeUsd / leverage
+      const positionMargin = position.sizeUsd / position.leverage
+      const maxLoss = positionMargin * 0.9 // Can lose 90% of margin
+      
+      // Calculate price at which max loss occurs
+      const lossPerPriceUnit = position.side === 'long' ? 1 : -1
+      const priceMoveForLiquidation = maxLoss / (position.size * Math.abs(lossPerPriceUnit))
+      
+      const liquidationPrice = position.side === 'long'
+        ? position.entryPrice - priceMoveForLiquidation
+        : position.entryPrice + priceMoveForLiquidation
+      
+      if (position.side === 'long' && candle.low <= liquidationPrice) {
+        isLiquidated = true
+      } else if (position.side === 'short' && candle.high >= liquidationPrice) {
+        isLiquidated = true
+      }
+      
+      if (isLiquidated) {
+        // In isolated margin, you lose the position margin (not full size)
+        const loss = -positionMargin * 0.9 // Lose 90% of margin
+        const remainingMargin = positionMargin * 0.1 // Keep 10%
+        
+        // Return remaining margin to equity
+        this.equity += loss + remainingMargin
+        
+        this.trades.push({
+          entryTime: position.entryTime,
+          exitTime: candle.timestamp,
+          entryPrice: position.entryPrice,
+          exitPrice: liquidationPrice,
+          size: position.size,
+          sizeUsd: position.sizeUsd,
+          side: position.side,
+          leverage: position.leverage,
+          pnl: loss,
+          fees: position.sizeUsd * 0.001, // Liquidation fee
+          exitReason: 'liquidation'
+        })
+        
+        // Remove position
+        this.positions = this.positions.filter(p => p.id !== position.id)
+        
+        // Reset grid level
+        const gridLevel = this.virtualGrid.find(level => level.id === position.id)
+        if (gridLevel) {
+          gridLevel.status = 'pending'
+        }
+        
+        logger.warn(`Position ${position.id} liquidated at ${liquidationPrice} - Lost 90% of margin: $${loss.toFixed(2)}`)
+      }
+    }
+  }
+  
+  /**
+   * Apply funding rates to open positions
+   * Note: Funding is only applied at the exact hour mark
+   */
+  private applyFundingRates(candle: HyperliquidCandle): void {
+    // Only apply funding if this candle has a funding rate (hourly mark)
+    if (!candle.fundingRate || candle.fundingRate === 0) return
+    
+    // Apply funding to all open positions
+    for (const position of this.positions) {
+      // Funding rate is applied to position size (notional value)
+      // Positive rate = longs pay shorts, Negative rate = shorts pay longs
+      const fundingPayment = position.sizeUsd * candle.fundingRate
+      
+      // Apply based on position direction
+      if (position.side === 'long') {
+        this.equity -= fundingPayment // Longs pay positive funding
+      } else {
+        this.equity += fundingPayment // Shorts receive positive funding
+      }
+      
+      // Log significant funding payments
+      if (Math.abs(fundingPayment) > 0.1) {
+        logger.debug(`Funding applied: ${position.side} ${position.id} paid/received $${fundingPayment.toFixed(4)}`)
+      }
+    }
+  }
+  
+  /**
+   * Check if price triggers grid positions (theoretical -> real)
+   */
+  private checkGridTriggers(candle: HyperliquidCandle): void {
+    // Find theoretical levels that should become real
+    for (const level of this.virtualGrid) {
+      if (level.status !== 'pending') continue
+      
+      // Check cooldown period (prevent immediate re-triggering)
+      if (level.lastClosedAt) {
+        const candlesSinceClose = Math.floor((candle.timestamp - level.lastClosedAt) / 60000) // 1 minute per candle
+        if (candlesSinceClose < 5) { // 5 candle cooldown
+          continue
+        }
+      }
+      
+      // 1. Volume Filter Check
+      if (this.config.minVolumeMultiplier > 1.0) {
+        const volumeMultiplier = this.signals.volume.spikeMultiplier
+        if (volumeMultiplier < this.config.minVolumeMultiplier) continue
+      }
+
+      // 2. Trend Filter Check (Predictive SAR or Reactive Price Action)
+      if (this.config.useReactiveMode) {
+        if (level.side === 'long' && this.reactiveBias !== 'long') continue
+        if (level.side === 'short' && this.reactiveBias !== 'short') continue
+      } else if (this.config.useTrendFilter) {
+        const isUptrend = this.signals.parabolicSAR.isUptrend
+        if (level.side === 'long' && !isUptrend) continue
+        if (level.side === 'short' && isUptrend) continue
+      }
+      
+      // 3. Advanced Confirmation Filters
+      if (this.config.useRSIFilter) {
+        const rsi = this.signals.rsi
+        // Anti-FOMO: Don't enter long if already overbought, don't enter short if already oversold
+        if (level.side === 'long' && rsi > 65) continue 
+        if (level.side === 'short' && rsi < 35) continue
+        
+        // Momentum Confirmation: Only enter if RSI is moving in our favor
+        // (Simplified check: RSI < 45 for long entry floor, RSI > 55 for short entry ceiling)
+        if (level.side === 'long' && rsi > 50) continue
+        if (level.side === 'short' && rsi < 50) continue
+      }
+
+      if (this.config.useMACDFilter) {
+        const histogram = this.signals.macd.histogram
+        // Confirm momentum direction
+        if (level.side === 'long' && histogram <= 0) continue 
+        if (level.side === 'short' && histogram >= 0) continue
+      }
+
+      // 4. Price Hit Check
+      const priceHit = level.side === 'long' 
+        ? candle.low <= level.price 
+        : candle.high >= level.price
+      
+      if (priceHit) {
+        // 5. Reversal Confirmation Check (Candle Close)
+        if (this.config.useReversalConfirmation) {
+          const isReversal = level.side === 'long'
+            ? candle.close > candle.open && candle.close > level.price
+            : candle.close < candle.open && candle.close < level.price
+          
+          if (!isReversal) continue
+        }
+
+        this.activateGridLevel(level, candle.close, candle.timestamp)
+        level.status = 'filled'
+      }
+    }
+  }
+  
+  /**
+   * Calculate dynamic position size based on margin utilization
+   */
+  private calculateDynamicPositionSize(): number {
+    const targetUtilization = this.config.targetMarginUtilization || 50
+    const currentUtilization = this.calculateMarginUtilization()
+    
+    // Calculate available margin headroom
+    const availableMarginPercent = targetUtilization - currentUtilization
+    
+    // If already at or above target, don't open new positions
+    if (availableMarginPercent <= 0) {
+      logger.warn(`Margin utilization (${currentUtilization.toFixed(1)}%) at or above target (${targetUtilization}%). Skipping new position.`)
+      return 0 // Signal to skip trade
+    }
+    
+    // Calculate position size based on available margin
+    const totalEquity = this.equity
+    const availableMarginUsd = totalEquity * (availableMarginPercent / 100)
+    
+    // For backtesting, assume we're the only strategy (1 trading pair)
+    // In production, this would divide by number of active pairs
+    const positionSizeUsd = availableMarginUsd
+    
+    // Ensure minimum $10 position size
+    if (positionSizeUsd < 10) {
+      logger.debug(`Calculated position size ($${positionSizeUsd.toFixed(2)}) below minimum $10. Skipping trade.`)
+      return 0 // Below minimum, skip trade
+    }
+    
+    // Ensure we don't exceed active capital
+    const maxPositionSize = this.activeCapital
+    const finalPositionSize = Math.min(positionSizeUsd, maxPositionSize)
+    
+    logger.info(`Dynamic position sizing: Target ${targetUtilization}% utilization, Current ${currentUtilization.toFixed(1)}%, Position size: $${finalPositionSize.toFixed(2)}`)
+    
+    return finalPositionSize
+  }
+  
+  /**
+   * Activate a grid level (create real position)
+   */
+  private activateGridLevel(level: VirtualLevel, currentPrice: number, timestamp: number): void {
+    // Check maxActivePositions constraint
+    const maxActive = this.config.maxActivePositions || 1
+    if (this.positions.length >= maxActive) {
+      logger.warn(`Max active positions (${maxActive}) reached. Skipping activation of ${level.id}`)
+      return
+    }
+    
+    if (this.positions.length >= this.config.maxPositions) return
+    
+    // Calculate dynamic position size based on margin utilization
+    let positionSizeUsd = this.calculateDynamicPositionSize()
+    
+    // If dynamic sizing returns 0, skip the trade
+    if (positionSizeUsd === 0) {
+      logger.info(`Skipping grid level ${level.id} - insufficient margin available`)
+      return
+    }
+    
+    // For fixed position type, ensure we don't exceed configured maximum
+    if (this.config.positionType === 'fixed' && positionSizeUsd > this.config.positionSize) {
+      positionSizeUsd = this.config.positionSize
+    }
+    
+    const leverage = Math.min(this.config.leverage, this.getMaxLeverage())
+    
+    // Charge entry fee (0.05%)
+    const entryFee = positionSizeUsd * 0.0005
+    
+    // Use the configured SL/TP values directly
+    let stopLoss = level.side === 'long' 
+      ? level.price * (1 - this.config.stopLossPct / 100)
+      : level.price * (1 + this.config.stopLossPct / 100)
+    
+    let takeProfit = level.side === 'long'
+      ? level.price * (1 + this.config.takeProfitPct / 100)
+      : level.price * (1 - this.config.takeProfitPct / 100)
+
+    if (this.config.useDynamicSLTP && this.signals.atr.value > 0) {
+      const atr = this.signals.atr.value
+      
+      stopLoss = level.side === 'long'
+        ? level.price - (atr * this.config.slAtrMultiplier)
+        : level.price + (atr * this.config.slAtrMultiplier)
+      
+      takeProfit = level.side === 'long'
+        ? level.price + (atr * this.config.tpAtrMultiplier)
+        : level.price - (atr * this.config.tpAtrMultiplier)
+      
+      logger.info(`Using dynamic ATR-based SL/TP: SL=${stopLoss.toFixed(2)}, TP=${takeProfit.toFixed(2)}`)
+    }
+
+    this.positions.push({
+      id: level.id,
+      side: level.side,
+      size: (positionSizeUsd * leverage) / level.price,
+      sizeUsd: positionSizeUsd,
+      entryPrice: level.price,
+      entryTime: timestamp, // Use candle timestamp
+      leverage,
+      stopLoss,
+      takeProfit,
+      highestPrice: level.price,
+      lowestPrice: level.price
+    })
+    
+    // Deduct entry fee from equity
+    this.equity -= entryFee
+    
+    logger.info(`Activated grid level ${level.id} at ${level.price} - Size: $${positionSizeUsd.toFixed(2)} - Fee: $${entryFee.toFixed(2)} - Active positions: ${this.positions.length}/${maxActive}`)
+  }
+  
+  /**
+   * Simulate order execution latency
+   */
+  private simulateExecutionDelay(): Promise<void> {
+    // Random delay between 50-200ms to simulate network and processing latency
+    const delay = Math.random() * 150 + 50
+    return new Promise(resolve => setTimeout(resolve, delay))
+  }
+  
+  /**
+   * Calculate market impact for large positions
+   */
+  private calculateMarketImpact(positionSizeUsd: number, candle: HyperliquidCandle): number {
+    // Simple square root model: impact = k * sqrt(size / ADV)
+    const recentCandles = this.data.slice(-1440)
+    const avgVolume = recentCandles.reduce((sum, c) => sum + c.volume, 0) / recentCandles.length
+    const avgDailyVolumeUsd = avgVolume * candle.close
+    
+    const sizeRatio = positionSizeUsd / avgDailyVolumeUsd
+    const impactConstant = 0.001 // 0.1% impact constant
+    
+    return impactConstant * Math.sqrt(sizeRatio)
+  }
+  
+  /**
+   * Check position exits (stop loss, take profit)
+   */
+  private checkPositionExits(candle: HyperliquidCandle): void {
+    const isUptrend = this.signals.parabolicSAR.isUptrend
+
+    for (const position of [...this.positions]) {
+      let shouldClose = false
+      let exitReason = ''
+      
+      // 1. Trend Flip Emergency Exit
+      if (this.config.exitOnTrendFlip) {
+        if ((position.side === 'long' && !isUptrend) || (position.side === 'short' && isUptrend)) {
+          shouldClose = true
+          exitReason = 'trend_flip'
+        }
+      }
+
+      if (!shouldClose) {
+        // Update highest/lowest price for trailing stops and break-even
+        if (position.side === 'long') {
+          if (candle.high > (position.highestPrice || 0)) {
+            position.highestPrice = candle.high
+            
+            // Break-even logic
+            if (this.config.useBreakEvenStop) {
+              const profitPct = ((candle.high - position.entryPrice) / position.entryPrice) * 100
+              const tpTarget = this.config.useDynamicSLTP ? (this.signals.atr.value * this.config.tpAtrMultiplier / position.entryPrice * 100) : this.config.takeProfitPct
+              
+              if (profitPct >= tpTarget * (this.config.breakEvenThresholdPct / 100)) {
+                if (position.stopLoss < position.entryPrice) {
+                  position.stopLoss = position.entryPrice + (position.entryPrice * 0.0005) // entry + fee buffer
+                  logger.info(`Moved stop loss to break-even for ${position.id}`)
+                }
+              }
+            }
+
+            // Update trailing stop if enabled
+            if (this.config.useTrailingStop) {
+              const trailingStopPrice = candle.high * (1 - this.config.stopLossPct / 100)
+              if (trailingStopPrice > position.stopLoss) {
+                position.stopLoss = trailingStopPrice
+              }
+            }
+          }
+        } else {
+          if (candle.low < (position.lowestPrice || Infinity)) {
+            position.lowestPrice = candle.low
+            
+            // Break-even logic
+            if (this.config.useBreakEvenStop) {
+              const profitPct = ((position.entryPrice - candle.low) / position.entryPrice) * 100
+              const tpTarget = this.config.useDynamicSLTP ? (this.signals.atr.value * this.config.tpAtrMultiplier / position.entryPrice * 100) : this.config.takeProfitPct
+
+              if (profitPct >= tpTarget * (this.config.breakEvenThresholdPct / 100)) {
+                if (position.stopLoss > position.entryPrice) {
+                  position.stopLoss = position.entryPrice - (position.entryPrice * 0.0005) // entry - fee buffer
+                  logger.info(`Moved stop loss to break-even for ${position.id}`)
+                }
+              }
+            }
+
+            // Update trailing stop if enabled
+            if (this.config.useTrailingStop) {
+              const trailingStopPrice = candle.low * (1 + this.config.stopLossPct / 100)
+              if (trailingStopPrice < position.stopLoss) {
+                position.stopLoss = trailingStopPrice
+              }
+            }
+          }
+        }
+        
+        if (position.side === 'long') {
+          if (candle.low <= position.stopLoss) {
+            shouldClose = true
+            exitReason = 'stop_loss'
+          } else if (candle.high >= position.takeProfit) {
+            shouldClose = true
+            exitReason = 'take_profit'
+          }
+        } else {
+          if (candle.high >= position.stopLoss) {
+            shouldClose = true
+            exitReason = 'stop_loss'
+          } else if (candle.low <= position.takeProfit) {
+            shouldClose = true
+            exitReason = 'take_profit'
+          }
+        }
+      }
+      
+      if (shouldClose) {
+        this.closePosition(position, exitReason, candle.close, candle.timestamp)
+      }
+    }
+  }
+  
+  /**
+   * AI Risk Management - cut bad positions based on AI signals
+   */
+  private applyAIRiskManagement(candle: HyperliquidCandle): void {
+    const signals = this.signals
+    
+    // Use the configured confidence threshold directly
+    const threshold = this.config.aiConfidenceThreshold || 70
+    
+    let confidence = 0
+    let shouldCutLongs = false
+    let shouldCutShorts = false
+    let useEmergencyFund = false
+    
+    // 1. Trend mismatch check
+    const bias = this.calculatePositionBias()
+    
+    if (!signals.parabolicSAR.isUptrend && this.positions.some(p => p.side === 'long')) {
+      if (signals.atr.multiplier > 0.1 || bias > 30) {
+        confidence += 50
+        shouldCutLongs = true
+      }
+    }
+    
+    if (signals.parabolicSAR.isUptrend && this.positions.some(p => p.side === 'short')) {
+      if (signals.atr.multiplier > 0.1 || bias > 30) {
+        confidence += 50
+        shouldCutShorts = true
+      }
+    }
+    
+    // 2. Panic check
+    if (signals.roc.isPanic) {
+      confidence += 40
+      shouldCutLongs = true
+      shouldCutShorts = true
+      if (Math.abs(signals.roc.value) > signals.roc.panicThreshold * 2) {
+        useEmergencyFund = true
+      }
+    }
+    
+    // Execute if confident enough
+    if (confidence >= threshold) {
+      for (const position of [...this.positions]) {
+        if ((shouldCutLongs && position.side === 'long') || 
+            (shouldCutShorts && position.side === 'short')) {
+          
+          // Check if we need to use emergency fund to cover losses
+          if (useEmergencyFund && this.reserveCapital > 0) {
+            const estimatedLoss = Math.abs(position.entryPrice - candle.close) * position.size
+            const maxReserveUse = Math.min(estimatedLoss, this.reserveCapital)
+            
+            // Use reserve to soften the blow
+            this.reserveCapital -= maxReserveUse
+            this.equity += maxReserveUse
+            
+            logger.info(`Using emergency fund: $${maxReserveUse.toFixed(2)} to cover potential loss`)
+          }
+          
+          this.closePosition(position, 'ai_risk_management', candle.close, candle.timestamp)
+        }
+      }
+    }
+  }
+  
+  /**
+   * Calculate dynamic slippage based on position size and volume
+   */
+  private calculateSlippage(positionSizeUsd: number, candle: HyperliquidCandle): number {
+    // Base slippage
+    const baseSlippage = 0.0002 // 0.02%
+    
+    // Calculate average daily volume from recent candles
+    const recentCandles = this.data.slice(-1440) // Last 24 hours
+    const avgVolume = recentCandles.reduce((sum, c) => sum + c.volume, 0) / recentCandles.length
+    
+    // Volume ratio (position as % of average volume)
+    const volumeRatio = positionSizeUsd / (avgVolume * candle.close)
+    
+    // Scale slippage based on volume ratio
+    const volumeMultiplier = Math.max(1, 1 + (volumeRatio * 10))
+    
+    // Final slippage with minimum and maximum bounds
+    const slippage = baseSlippage * volumeMultiplier
+    return Math.max(0.0001, Math.min(slippage, 0.002)) // 0.01% to 0.2%
+  }
+  private closePosition(position: FastPosition, reason: string, exitPrice?: number, timestamp?: number): void {
+    const price = exitPrice || position.stopLoss
+    const exitTime = timestamp || Date.now()
+    
+    // Get the candle for dynamic slippage calculation
+    const currentCandle = this.data.find(c => c.timestamp === timestamp) || this.data[this.data.length - 1]
+    
+    // Calculate fees
+    const entryFee = position.sizeUsd * 0.0005 // Already charged when opened
+    const exitFee = position.sizeUsd * 0.0005
+    
+    // Calculate dynamic slippage
+    const slippageRate = currentCandle ? this.calculateSlippage(position.sizeUsd, currentCandle) : 0.0002
+    const slippage = position.sizeUsd * slippageRate
+    
+    // Calculate market impact
+    const marketImpactRate = currentCandle ? this.calculateMarketImpact(position.sizeUsd, currentCandle) : 0
+    const marketImpact = position.sizeUsd * marketImpactRate
+    
+    // Apply market impact to price (worsens execution price)
+    const adjustedPrice = position.side === 'long' 
+      ? price * (1 + marketImpactRate) 
+      : price * (1 - marketImpactRate)
+    
+    let pnl = 0
+    if (position.side === 'long') {
+      pnl = (adjustedPrice - position.entryPrice) * position.size - exitFee - slippage - marketImpact
+    } else {
+      pnl = (position.entryPrice - adjustedPrice) * position.size - exitFee - slippage - marketImpact
+    }
+    
+    // Update equity
+    this.equity += pnl
+    
+    // Track trade
+    this.trades.push({
+      entryTime: position.entryTime,
+      exitTime: exitTime,
+      entryPrice: position.entryPrice,
+      exitPrice: price,
+      size: position.size,
+      sizeUsd: position.sizeUsd,
+      side: position.side,
+      leverage: position.leverage,
+      pnl,
+      fees: entryFee + exitFee + slippage,
+      exitReason: reason
+    })
+    
+    // Remove position
+    this.positions = this.positions.filter(p => p.id !== position.id)
+    
+    // Reset the grid level to cooldown so it can't be triggered immediately
+    const gridLevel = this.virtualGrid.find(level => level.id === position.id)
+    if (gridLevel) {
+      gridLevel.status = 'cooldown'
+      gridLevel.lastClosedAt = timestamp || Date.now()
+    }
+    
+    logger.info(`Closed ${position.side} position at ${price} - PnL: $${pnl.toFixed(2)} - Reason: ${reason}`)
+  }
+
+  /**
+   * Close all open positions
+   */
+  private closeAllPositions(): void {
+    const currentTimestamp = this.data[this.data.length - 1]?.timestamp || Date.now()
+    for (const position of [...this.positions]) {
+      this.closePosition(position, 'end_of_test', undefined, currentTimestamp)
+    }
+  }
+
+  /**
+   * Record equity
+   */
+  private recordEquity(timestamp: number, equityCurve: { timestamp: number; equity: number }[]): void {
+    const unrealizedPnl = this.calculateUnrealizedPnl()
+    const totalEquity = this.equity + unrealizedPnl
+    
+    if (totalEquity > this.peakEquity) {
+      this.peakEquity = totalEquity
+    }
+    
+    const drawdown = this.peakEquity > 0 ? ((this.peakEquity - totalEquity) / this.peakEquity) * 100 : 0
+    this.maxDrawdown = Math.max(this.maxDrawdown, drawdown)
+    
+    equityCurve.push({ timestamp, equity: totalEquity })
+  }
+
+  /**
+   * Calculate unrealized PnL
+   */
+  private calculateUnrealizedPnl(): number {
+    return 0 // Simplified for backtest speed
+  }
+
+  /**
+   * Calculate current position bias percentage
+   */
+  private calculatePositionBias(): number {
+    const longPositions = this.positions.filter(p => p.side === 'long')
+    const shortPositions = this.positions.filter(p => p.side === 'short')
+    const totalExposure = longPositions.reduce((sum, p) => sum + p.sizeUsd, 0) +
+                         shortPositions.reduce((sum, p) => sum + p.sizeUsd, 0)
+    
+    if (totalExposure === 0) return 0
+    
+    const longExposure = longPositions.reduce((sum, p) => sum + p.sizeUsd, 0)
+    const shortExposure = shortPositions.reduce((sum, p) => sum + p.sizeUsd, 0)
+    
+    return Math.abs(longExposure - shortExposure) / totalExposure * 100
+  }
+
+  /**
+   * Get maximum leverage for symbol
+   */
+  private getMaxLeverage(): number {
+    const limits: Record<string, number> = {
+      'BTC': 50, 'ETH': 50, 'SOL': 50,
+      'ARB': 20, 'OP': 20, 'MATIC': 20,
+      'AVAX': 20, 'LINK': 20, 'DOT': 20,
+      'APT': 20, 'NEAR': 20, 'SEI': 20, 'JUP': 20,
+      'LDO': 10, 'TON': 10, 'BNB': 10, 'MNT': 10, 'INJ': 10,
+      'AAVE': 5, 'UNI': 5, 'SNX': 5,
+      'USDC': 3, 'USDT': 3, 'PYTH': 3, 'PRIME': 3,
+      'MON': 3, 'LIT': 3, 'XPL': 3, 'MOBILE': 3
+    }
+    return limits[this.config.symbol.toUpperCase()] || 3
+  }
+
+  /**
+   * Calculate metrics
+   */
+  private calculateMetrics(): FastMetrics {
+    const wins = this.trades.filter(t => t.pnl > 0)
+    const losses = this.trades.filter(t => t.pnl < 0)
+    
+    const totalReturn = this.equity - this.config.totalInvestmentUsd
+    const totalReturnPct = (totalReturn / this.config.totalInvestmentUsd) * 100
+    
+    const winAmount = wins.reduce((sum, t) => sum + t.pnl, 0)
+    const lossAmount = Math.abs(losses.reduce((sum, t) => sum + t.pnl, 0))
+    const profitFactor = lossAmount > 0 ? winAmount / lossAmount : 0
+    
+    // Calculate actual volatility from returns
+    const returns = this.trades.map(t => t.pnl / this.config.totalInvestmentUsd)
+    const avgReturn = returns.length > 0 ? returns.reduce((sum, r) => sum + r, 0) / returns.length : 0
+    
+    // Calculate standard deviation
+    const variance = returns.length > 0 ? 
+      returns.reduce((sum, r) => sum + Math.pow(r - avgReturn, 2), 0) / returns.length : 0
+    const volatility = Math.sqrt(variance)
+    
+    // Annualized Sharpe ratio (assuming 1-minute candles, ~525,600 per year)
+    const annualizedReturn = avgReturn * 525600
+    const annualizedVolatility = volatility * Math.sqrt(525600)
+    const sharpeRatio = annualizedVolatility > 0 ? annualizedReturn / annualizedVolatility : 0
+    
+    // Calculate backtest confidence score
+    const confidenceScore = this.calculateConfidenceScore()
+    
+    // Apply realism discount (0.7 = 30% discount for execution gaps)
+    const realismDiscount = 0.7
+    const adjustedReturn = totalReturn * realismDiscount
+    const adjustedReturnPct = totalReturnPct * realismDiscount
+    
+    return {
+      totalReturn,
+      totalReturnPct,
+      totalReturnUsd: totalReturn,
+      adjustedReturn, // After realism discount
+      adjustedReturnPct, // After realism discount
+      winRate: this.trades.length > 0 ? (wins.length / this.trades.length) * 100 : 0,
+      maxDrawdown: this.maxDrawdown,
+      profitFactor,
+      sharpeRatio,
+      totalTrades: this.trades.length,
+      positiveTrades: wins.length,
+      negativeTrades: losses.length,
+      avgWin: wins.length > 0 ? winAmount / wins.length : 0,
+      avgLoss: losses.length > 0 ? lossAmount / losses.length : 0,
+      largestWin: wins.length > 0 ? Math.max(...wins.map(t => t.pnl)) : 0,
+      largestLoss: losses.length > 0 ? Math.max(...losses.map(t => Math.abs(t.pnl))) : 0,
+      confidenceScore // New metric
+    }
+  }
+  
+  /**
+   * Calculate backtest confidence score based on various factors
+   */
+  private calculateConfidenceScore(): number {
+    let score = 100 // Start with perfect score
+    
+    // 1. Penalize for large position sizes relative to volume
+    const avgPositionSize = this.trades.length > 0 ? 
+      this.trades.reduce((sum, t) => sum + t.sizeUsd, 0) / this.trades.length : 0
+    
+    if (this.data.length > 0) {
+      const recentCandles = this.data.slice(-1440)
+      const avgVolume = recentCandles.reduce((sum, c) => sum + c.volume, 0) / recentCandles.length
+      const avgPrice = recentCandles.reduce((sum, c) => sum + c.close, 0) / recentCandles.length
+      const avgDailyVolumeUsd = avgVolume * avgPrice
+      
+      const positionSizeRatio = avgPositionSize / avgDailyVolumeUsd
+      if (positionSizeRatio > 0.01) { // More than 1% of daily volume
+        score -= 30
+      } else if (positionSizeRatio > 0.005) { // More than 0.5% of daily volume
+        score -= 15
+      }
+    }
+    
+    // 2. Penalize for high trade frequency (might indicate unrealistic execution)
+    const tradesPerHour = this.trades.length / (this.data.length / 60)
+    if (tradesPerHour > 10) {
+      score -= 20
+    } else if (tradesPerHour > 5) {
+      score -= 10
+    }
+    
+    // 3. Penalize for low liquidity symbols (based on average volume)
+    if (this.data.length > 0) {
+      const avgVolume = this.data.reduce((sum, c) => sum + c.volume, 0) / this.data.length
+      if (avgVolume < 1000000) { // Less than 1M average volume
+        score -= 25
+      } else if (avgVolume < 5000000) { // Less than 5M average volume
+        score -= 10
+      }
+    }
+    
+    // 4. Penalize for very high leverage (increases execution risk)
+    const leverage = this.config.leverage || 1
+    if (leverage > 20) {
+      score -= 20
+    } else if (leverage > 10) {
+      score -= 10
+    }
+    
+    return Math.max(0, score) // Ensure score doesn't go negative
+  }
+}
+

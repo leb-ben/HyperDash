@@ -1,0 +1,218 @@
+[
+  {
+    "symbol": "DOT",
+    "returnPct": 0.028299949855374963,
+    "sharpeRatio": 0.0018866633236916644,
+    "maxDrawdown": 0.003784968693423707,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.09
+  },
+  {
+    "symbol": "XRP",
+    "returnPct": 0.00684609542039425,
+    "sharpeRatio": 0.0004564063613596167,
+    "maxDrawdown": 0,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.09
+  },
+  {
+    "symbol": "LDO",
+    "returnPct": 0.005626625529134799,
+    "sharpeRatio": 0.0003751083686089866,
+    "maxDrawdown": 0.0034613040518138407,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.09
+  },
+  {
+    "symbol": "SEI",
+    "returnPct": 0.00511223478812326,
+    "sharpeRatio": 0.0003408156525415507,
+    "maxDrawdown": 0.003963463575075821,
+    "winRate": 100,
+    "totalTrades": 1,
+    "fees": 0.09
+  },
+  {
+    "symbol": "BTC",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "ETH",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "SOL",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "DOGE",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "SUI",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "WLD",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "LTC",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "LINK",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "AVAX",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "TIA",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "APT",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "NEAR",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "OP",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "ARB",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "TON",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "JUP",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "BNB",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "AAVE",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "UNI",
+    "returnPct": 0,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "winRate": 0,
+    "totalTrades": 0,
+    "fees": 0
+  },
+  {
+    "symbol": "HYPE",
+    "returnPct": -0.09091464430895257,
+    "sharpeRatio": 0,
+    "maxDrawdown": 0.09091464430895257,
+    "winRate": 0,
+    "totalTrades": 1,
+    "fees": 0.09
+  }
+]
