@@ -21,6 +21,7 @@ import AlertSystem from './components/AlertSystem.js';
 import AIConfigModal from './components/AIConfigModal.js';
 import SettingsPanel from './components/SettingsPanel.js';
 import StrategiesPanel from './components/StrategiesPanel.js';
+import { ErrorNotification, ToastNotification } from './components/Notifications.js';
 
 // Error Boundary to catch runtime errors
 interface ErrorBoundaryState {
@@ -114,7 +115,13 @@ interface SystemState {
   executor: { totalExecutions: number; successfulExecutions: number; totalFees: number }
   safety: { globalStopLossEnabled: boolean; stopLossPercentage: number; isKilled: boolean }
   errors: { total: number }
-  ai?: { model?: string; models?: any[] }
+  ai?: { 
+    model?: string; 
+    models?: any[];
+    emergencyBrake?: boolean;
+    reactiveMode?: boolean;
+    dynamicPositionSizing?: boolean;
+  }
   activity?: ActivityEvent[]
 }
 
@@ -147,6 +154,8 @@ function App() {
   })
   const [chatInput, setChatInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [toastMessage, setToastMessage] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
 
   // Fetch system state
@@ -162,25 +171,46 @@ function App() {
           const updated = [...prev, newPoint].slice(-30)
           return updated
         })
+        // Clear any previous errors on successful fetch
+        if (errorMessage) setErrorMessage(null)
+      } else {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`)
       }
     } catch (e) {
       console.error('Failed to fetch system state:', e)
+      setErrorMessage('Failed to connect to trading bot. Please check if the backend is running.')
     }
   }
 
   // Bot control
   const startBot = async () => {
     try {
-      await fetch(`${API_BASE}/bot/start`, { method: 'POST' })
-      fetchSystem()
-    } catch (e) { console.error(e) }
+      const res = await fetch(`${API_BASE}/bot/start`, { method: 'POST' })
+      if (res.ok) {
+        setToastMessage({ message: 'Bot started successfully', type: 'success' })
+        fetchSystem()
+      } else {
+        throw new Error('Failed to start bot')
+      }
+    } catch (e) { 
+      console.error(e)
+      setToastMessage({ message: 'Failed to start bot', type: 'error' })
+    }
   }
 
   const stopBot = async () => {
     try {
-      await fetch(`${API_BASE}/bot/stop`, { method: 'POST' })
-      fetchSystem()
-    } catch (e) { console.error(e) }
+      const res = await fetch(`${API_BASE}/bot/stop`, { method: 'POST' })
+      if (res.ok) {
+        setToastMessage({ message: 'Bot stopped successfully', type: 'info' })
+        fetchSystem()
+      } else {
+        throw new Error('Failed to stop bot')
+      }
+    } catch (e) { 
+      console.error(e)
+      setToastMessage({ message: 'Failed to stop bot', type: 'error' })
+    }
   }
 
   // Chat
@@ -645,6 +675,22 @@ function App() {
           positions={system.portfolio.positions}
           onClose={() => setShowPositionControl(false)}
           onRefresh={fetchSystem}
+        />
+      )}
+
+      {/* Notifications */}
+      {errorMessage && (
+        <ErrorNotification 
+          message={errorMessage} 
+          onClose={() => setErrorMessage(null)}
+          duration={0}
+        />
+      )}
+      {toastMessage && (
+        <ToastNotification
+          message={toastMessage.message}
+          type={toastMessage.type}
+          onClose={() => setToastMessage(null)}
         />
       )}
     </div>

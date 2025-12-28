@@ -12,6 +12,7 @@ interface RiskSettings {
   leverageMultiplier: number;
   autoAdjust: boolean;
   performanceWindow: number;
+  targetMarginUtilization: number;
 }
 
 interface RiskExplanation {
@@ -278,6 +279,36 @@ export default function RiskSettingsPanel() {
           <p className="text-xs text-slate-400 mt-2">
             Multiplier applied to default leverage (higher = more risk)
           </p>
+        </div>
+
+        {/* Target Margin Utilization */}
+        <div
+          className="bg-slate-800/50 rounded-lg border border-slate-700/50 p-4 cursor-pointer hover:border-slate-600 transition-all"
+          onClick={() => setSelectedSetting('Target Margin Utilization')}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-sm font-semibold text-slate-100">Target Margin Utilization</label>
+            <span className="text-lg font-bold text-cyan-400">{settings.targetMarginUtilization}%</span>
+          </div>
+          <input
+            type="range"
+            min="20"
+            max="80"
+            value={settings.targetMarginUtilization}
+            onChange={(e) => handleSettingChange('targetMarginUtilization', parseInt(e.target.value))}
+            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-slate-500 mt-2">
+            <span>20%</span>
+            <span>Safety Reserve</span>
+            <span>80%</span>
+          </div>
+          <p className="text-xs text-slate-400 mt-2">
+            Aims to keep {settings.targetMarginUtilization}% of capital active. Rest reserved for AI Emergency Brake.
+          </p>
+          <div className="mt-3 p-2 bg-slate-700/30 rounded text-xs text-slate-400">
+            <strong>Margin & Position Sizing:</strong> The bot automatically calculates position sizes to maintain your Target Margin Utilization. A $10 USD minimum per position is enforced. Lower utilization (20-40%) is safer; higher (60-80%) increases potential profit and risk.
+          </div>
         </div>
       </div>
 
